@@ -40,6 +40,7 @@ const Root: FC = () => {
     fetch(`${import.meta.env.VITE_PUBLIC_URL}/dataset.json`)
       .then((res) => res.json())
       .then((dataset: Dataset) => {
+        console.log("dataset", dataset);
         setDataset(dataset);
         setFiltersState({
           clusters: mapValues(keyBy(dataset.clusters, "key"), constant(true)),
