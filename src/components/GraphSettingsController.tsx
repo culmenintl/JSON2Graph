@@ -23,8 +23,6 @@ const GraphSettingsController: FC<{ hoveredNode: string | null }> = ({
      * instance:
      */
     useEffect(() => {
-        sigma.setSetting('minCameraRatio', 0.3);
-        sigma.setSetting('maxCameraRatio', 2);
         sigma.setSetting('hoverRenderer', (context, data, settings) =>
             drawHover(
                 context,
