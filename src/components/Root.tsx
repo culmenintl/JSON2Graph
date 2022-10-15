@@ -1,8 +1,20 @@
 import React, { FC, useEffect, useState } from 'react';
-import { SigmaContainer, ZoomControl, FullScreenControl } from 'react-sigma-v2';
+import {
+    SigmaContainer,
+    ZoomControl,
+    FullScreenControl,
+    ControlsContainer,
+    SearchControl,
+} from '@react-sigma/core';
 import { omit, mapValues, keyBy, constant } from 'lodash';
 
 import getNodeProgramImage from 'sigma/rendering/webgl/programs/node.image';
+
+import {
+    MagnifyingGlassMinusIcon,
+    MagnifyingGlassPlusIcon,
+    ArrowsPointingInIcon,
+} from '@heroicons/react/24/outline';
 
 import GraphSettingsController from './GraphSettingsController';
 import GraphEventsController from './GraphEventsController';
@@ -15,23 +27,19 @@ import drawLabel from '../lib/canvas-utils';
 import GraphTitle from './GraphTitle';
 import TagsPanel from './TagsPanel';
 
-import FA2Layout from 'graphology-layout-forceatlas2/worker';
-import forceAtlas2 from 'graphology-layout-forceatlas2';
-import Graph from 'graphology';
-
-import 'react-sigma-v2/lib/react-sigma-v2.css';
-import { GrClose } from 'react-icons/gr';
 import { BiRadioCircleMarked, BiBookContent } from 'react-icons/bi';
-import {
-    BsArrowsFullscreen,
-    BsFullscreenExit,
-    BsZoomIn,
-    BsZoomOut,
-} from 'react-icons/bs';
+import { BsZoomIn, BsZoomOut } from 'react-icons/bs';
 
 import Loading from './Loading';
 
-const Root: FC = () => {
+import '@react-sigma/core/lib/react-sigma.min.css';
+
+import { ToggleDev } from './ToggleDev';
+import { useStore } from '../stores/RootStore';
+import { observer } from 'mobx-react-lite';
+import { DevPanel } from './DevPanel';
+
+const Root: FC<{}> = observer(() => {
     const [showContents, setShowContents] = useState(false);
     const [dataReady, setDataReady] = useState(false);
     const [dataset, setDataset] = useState<Dataset | null>(null);
@@ -41,12 +49,15 @@ const Root: FC = () => {
     });
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
+    // mobx
+    const { devMode } = useStore();
+
     // Load data on mount:
     useEffect(() => {
         fetch(`${import.meta.env.VITE_PUBLIC_URL}/dataset.json`)
             .then((res) => res.json())
             .then((dataset: Dataset) => {
-                console.log('dataset', dataset);
+                // console.log('dataset', dataset);
                 setDataset(dataset);
                 setFiltersState({
                     clusters: mapValues(
@@ -68,10 +79,9 @@ const Root: FC = () => {
     if (!dataset) return <Loading />;
 
     return (
-        <div id="app-root" className={showContents ? 'show-contents' : ''}>
+        <div id="app-root">
             <SigmaContainer
-                graphOptions={{ type: 'directed' }}
-                initialSettings={{
+                settings={{
                     nodeProgramClasses: { image: getNodeProgramImage() },
                     labelRenderer: drawLabel,
                     defaultNodeType: 'image',
@@ -79,61 +89,40 @@ const Root: FC = () => {
                     labelDensity: 0.07,
                     labelGridCellSize: 60,
                     labelRenderedSizeThreshold: 15,
-                    labelFont: 'Lato, sans-serif',
                     zIndex: true,
                     maxCameraRatio: 2,
                     minCameraRatio: 0.3,
                 }}
-                className="react-sigma"
             >
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
                 <GraphDataController dataset={dataset} filters={filtersState} />
 
+                {/* show loading while data not ready */}
                 {!dataReady && <Loading />}
 
                 {dataReady && (
-                    <>
-                        <div className="controls">
-                            <div className="ico">
-                                <button
-                                    type="button"
-                                    className="show-contents"
-                                    onClick={() => setShowContents(true)}
-                                    title="Show caption and description"
-                                >
-                                    <BiBookContent />
-                                </button>
+                    <div className="flex flex-col">
+                        <ControlsContainer
+                            className={`!border-1 !left-0 !right-0 !mx-auto !flex !w-full !max-w-xl !justify-between ${
+                                devMode ? '!rounded-lg' : '!rounded-full'
+                            } !border border-gray-300 !px-6`}
+                        >
+                            <div className="flex w-full flex-col">
+                                {devMode && <DevPanel />}
+                                <div className="flex flex-row items-center justify-between">
+                                    <ToggleDev />
+                                    <ZoomControl className="!flex !items-center !justify-center !border-b-0" />
+                                    <SearchControl className="!border-b-2 !border-gray-300" />
+                                </div>
                             </div>
-                            <FullScreenControl
-                                className="ico"
-                                customEnterFullScreen={<BsArrowsFullscreen />}
-                                customExitFullScreen={<BsFullscreenExit />}
-                            />
-                            <ZoomControl
-                                animationDuration={1000}
-                                className="ico"
-                                customZoomIn={<BsZoomIn />}
-                                customZoomOut={<BsZoomOut />}
-                                customZoomCenter={<BiRadioCircleMarked />}
-                            />
-                        </div>
+                        </ControlsContainer>
                         <div className="contents">
-                            <div className="ico">
-                                <button
-                                    type="button"
-                                    className="ico hide-contents"
-                                    onClick={() => setShowContents(false)}
-                                    title="Show caption and description"
-                                >
-                                    <GrClose />
-                                </button>
-                            </div>
                             <GraphTitle filters={filtersState} />
                             <div className="panels">
-                                <SearchField filters={filtersState} />
-                                <DescriptionPanel />
-                                <ClustersPanel
+                                {/* <SearchField filters={filtersState} /> */}
+                                {/* <DescriptionPanel /> */}
+                                {/* <ClustersPanel
                                     clusters={dataset.clusters}
                                     filters={filtersState}
                                     setClusters={(clusters) =>
@@ -156,8 +145,8 @@ const Root: FC = () => {
                                                   },
                                         }));
                                     }}
-                                />
-                                <TagsPanel
+                                /> */}
+                                {/* <TagsPanel
                                     tags={dataset.tags}
                                     filters={filtersState}
                                     setTags={(tags) =>
@@ -177,14 +166,14 @@ const Root: FC = () => {
                                                   },
                                         }));
                                     }}
-                                />
+                                /> */}
                             </div>
                         </div>
-                    </>
+                    </div>
                 )}
             </SigmaContainer>
         </div>
     );
-};
+});
 
 export default Root;

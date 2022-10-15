@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useSigma } from 'react-sigma-v2';
+import { useSigma } from '@react-sigma/core';
 
 import { FiltersState } from '../lib/types';
 
@@ -31,7 +31,7 @@ const GraphTitle: FC<{ filters: FiltersState }> = ({ filters }) => {
     }, [filters]);
 
     return (
-        <div className="graph-title">
+        <div className="hidden md:flex">
             <h1>A cartography of Wikipedia pages around data visualization</h1>
             <h2>
                 <i>

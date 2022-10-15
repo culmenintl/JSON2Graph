@@ -1,4 +1,4 @@
-import { useSigma } from 'react-sigma-v2';
+import { useSigma } from '@react-sigma/core';
 import { FC, useEffect } from 'react';
 
 import { drawHover } from '../lib/canvas-utils';

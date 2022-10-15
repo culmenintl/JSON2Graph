@@ -1,4 +1,4 @@
-import { useRegisterEvents, useSigma } from 'react-sigma-v2';
+import { useRegisterEvents, useSigma } from '@react-sigma/core';
 import { FC, useEffect } from 'react';
 
 function getMouseLayer() {
