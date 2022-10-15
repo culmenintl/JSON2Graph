@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useSigma } from 'react-sigma-v2';
+import { useSigma } from '@react-sigma/core';
 import { sortBy, values, keyBy, mapValues } from 'lodash';
 import { MdGroupWork } from 'react-icons/md';
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';

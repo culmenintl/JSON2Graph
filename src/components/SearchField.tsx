@@ -5,7 +5,7 @@ import React, {
     useEffect,
     useState,
 } from 'react';
-import { useSigma } from 'react-sigma-v2';
+import { useSigma } from '@react-sigma/core';
 import { Attributes } from 'graphology-types';
 import { BsSearch } from 'react-icons/bs';
 
