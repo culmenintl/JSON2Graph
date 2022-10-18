@@ -1,5 +1,4 @@
 import { Instance, types } from 'mobx-state-tree';
-import { DataStore } from './DataStore';
 
 // AppStore, which handles the highest level of
 export const AppStore = types
@@ -13,32 +12,20 @@ export const AppStore = types
         },
     }));
 
-// RootStore
-export const RootStore = types.model('RootStore', {
-    dataStore: DataStore,
-    appStore: AppStore,
-});
-
 // typescript helper to get the model of the root store
-export type RootStoreModel = Instance<typeof RootStore>;
+export type AppStoreModel = Instance<typeof AppStore>;
 
-// creates the root store, which is a combo of the other stores.
-export const createStore = (): RootStoreModel => {
-    const dataStore = DataStore.create({});
-    const appStore = AppStore.create({});
+// creates the store, giving it some initial values
+export const createStore = (): AppStoreModel => {
+    const dataStore = AppStore.create({});
 
-    const rootStore = RootStore.create({
-        dataStore,
-        appStore,
-    });
-
-    return rootStore;
+    return dataStore;
 };
 
 // react hooks to use the context API for fetching root store
 import { useContext, createContext } from 'react';
 
-const StoreContext = createContext<RootStoreModel>({} as RootStoreModel);
+const StoreContext = createContext<AppStoreModel>({} as AppStoreModel);
 
 export const useStore = () => useContext(StoreContext);
 export const StoreProvider = StoreContext.Provider;

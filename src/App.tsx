@@ -1,20 +1,23 @@
 import Root from './components/Root';
 
 // mobx
-import { connectReduxDevtools } from 'mst-middlewares';
+import makeInspectable from 'mobx-devtools-mst';
 import { createStore, StoreProvider } from '../src/stores/RootStore';
 
-// layout
-
 const rootStore = createStore();
-// import remotedev from 'remotedev';
 
-// connectReduxDevtools(require('remotedev'), rootStore);
+console.log(import.meta.env.MODE);
+
+if (import.meta.env.MODE === 'development') {
+    makeInspectable(rootStore);
+}
+
+// connectReduxDevtools(remotedev, asReduxStore(rootStore));
 
 function App() {
     return (
         <div className="text-center selection:bg-green-900">
-            <header className="flex min-h-screen flex-col items-center justify-center bg-[#282c34]">
+            <header className="flex min-h-screen flex-col items-center justify-center">
                 <StoreProvider value={rootStore}>
                     <Root />
                 </StoreProvider>

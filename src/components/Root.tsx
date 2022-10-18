@@ -1,20 +1,13 @@
-import React, { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
     SigmaContainer,
     ZoomControl,
-    FullScreenControl,
     ControlsContainer,
     SearchControl,
 } from '@react-sigma/core';
 import { omit, mapValues, keyBy, constant } from 'lodash';
 
 import getNodeProgramImage from 'sigma/rendering/webgl/programs/node.image';
-
-import {
-    MagnifyingGlassMinusIcon,
-    MagnifyingGlassPlusIcon,
-    ArrowsPointingInIcon,
-} from '@heroicons/react/24/outline';
 
 import GraphSettingsController from './GraphSettingsController';
 import GraphEventsController from './GraphEventsController';
@@ -35,12 +28,17 @@ import Loading from './Loading';
 import '@react-sigma/core/lib/react-sigma.min.css';
 
 import { ToggleDev } from './ToggleDev';
-import { useStore } from '../stores/RootStore';
+import { RootStoreModel } from '../stores/RootStore';
 import { observer } from 'mobx-react-lite';
 import { DevPanel } from './DevPanel';
+import useInject from '../hooks/useInject';
+
+const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
+    appStore,
+    dataStore,
+});
 
 const Root: FC<{}> = observer(() => {
-    const [showContents, setShowContents] = useState(false);
     const [dataReady, setDataReady] = useState(false);
     const [dataset, setDataset] = useState<Dataset | null>(null);
     const [filtersState, setFiltersState] = useState<FiltersState>({
@@ -50,7 +48,7 @@ const Root: FC<{}> = observer(() => {
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
     // mobx
-    const { devMode } = useStore();
+    const { dataStore, appStore } = useInject(mapStore);
 
     // Load data on mount:
     useEffect(() => {
@@ -58,6 +56,7 @@ const Root: FC<{}> = observer(() => {
             .then((res) => res.json())
             .then((dataset: Dataset) => {
                 // console.log('dataset', dataset);
+                dataStore.setData(dataset);
                 setDataset(dataset);
                 setFiltersState({
                     clusters: mapValues(
@@ -96,7 +95,7 @@ const Root: FC<{}> = observer(() => {
             >
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
-                <GraphDataController dataset={dataset} filters={filtersState} />
+                <GraphDataController filters={filtersState} />
 
                 {/* show loading while data not ready */}
                 {!dataReady && <Loading />}
@@ -105,11 +104,13 @@ const Root: FC<{}> = observer(() => {
                     <div className="flex flex-col">
                         <ControlsContainer
                             className={`!border-1 !left-0 !right-0 !mx-auto !flex !w-full !max-w-xl !justify-between ${
-                                devMode ? '!rounded-lg' : '!rounded-full'
+                                appStore.devMode
+                                    ? '!rounded-lg'
+                                    : '!rounded-full'
                             } !border border-gray-300 !px-6`}
                         >
                             <div className="flex w-full flex-col">
-                                {devMode && <DevPanel />}
+                                {appStore.devMode && <DevPanel />}
                                 <div className="flex flex-row items-center justify-between">
                                     <ToggleDev />
                                     <ZoomControl className="!flex !items-center !justify-center !border-b-0" />

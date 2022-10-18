@@ -3,11 +3,17 @@ import { Switch } from '@headlessui/react';
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { classNames } from '../lib/Utils';
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../stores/RootStore';
+import { RootStoreModel } from '../stores/RootStore';
+import useInject from '../hooks/useInject';
+
+const mapStore = ({ dataStore, appStore }: RootStoreModel) => ({
+    dataStore,
+    appStore,
+});
 
 export const ToggleDev: FC<{}> = observer(() => {
-    const { devMode, toggleDevMode } = useStore();
-    const toggleDev = () => toggleDevMode();
+    const { appStore } = useInject(mapStore);
+    const toggleDev = () => appStore.toggleDevMode();
     return (
         <div className="my-3">
             <Switch.Group
@@ -27,17 +33,19 @@ export const ToggleDev: FC<{}> = observer(() => {
                     </Switch.Label>
                 </span>
                 <Switch
-                    checked={devMode}
+                    checked={appStore.devMode}
                     onChange={toggleDev}
                     className={classNames(
-                        devMode ? 'bg-indigo-600' : 'bg-gray-200',
+                        appStore.devMode ? 'bg-indigo-600' : 'bg-gray-200',
                         'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
                     )}
                 >
                     <span
                         aria-hidden="true"
                         className={classNames(
-                            devMode ? 'translate-x-5' : 'translate-x-0',
+                            appStore.devMode
+                                ? 'translate-x-5'
+                                : 'translate-x-0',
                             'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
                         )}
                     />
