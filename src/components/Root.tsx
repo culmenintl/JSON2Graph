@@ -1,4 +1,5 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useRef } from 'react';
+import autoAnimate from '@formkit/auto-animate';
 import {
     SigmaContainer,
     ZoomControl,
@@ -39,8 +40,11 @@ const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
 });
 
 const Root: FC<{}> = observer(() => {
-    const [dataReady, setDataReady] = useState(false);
-    const [dataset, setDataset] = useState<Dataset | null>(null);
+    const parent = useRef(null);
+    useEffect(() => {
+        parent.current && autoAnimate(parent.current);
+    }, [parent]);
+
     const [filtersState, setFiltersState] = useState<FiltersState>({
         clusters: {},
         tags: {},
@@ -52,45 +56,40 @@ const Root: FC<{}> = observer(() => {
 
     // Load data on mount:
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_PUBLIC_URL}/dataset.json`)
+        // fetch(`${import.meta.env.VITE_PUBLIC_URL}/dataset.json`)
+        fetch(`${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.dataset.json`)
             .then((res) => res.json())
-            .then((dataset: Dataset) => {
-                // console.log('dataset', dataset);
-                dataStore.setData(dataset);
-                setDataset(dataset);
-                setFiltersState({
-                    clusters: mapValues(
-                        keyBy(dataset.clusters, 'key'),
-                        constant(true)
-                    ),
-                    tags: mapValues(keyBy(dataset.tags, 'key'), constant(true)),
-                });
-                requestAnimationFrame(
-                    () => setDataReady(true)
-                    // @logan test loading
-                    // setTimeout(() => {
-                    //     setDataReady(true);
-                    // }, 5000)
+            .then((dataset: [Object]) => {
+                const subDataset = dataset.filter(
+                    (row: any, index: number) => index < dataStore.rows
                 );
+                dataStore.setData(subDataset);
+                // setDataset(dataset);
+                // setFiltersState({
+                //     clusters: mapValues(
+                //         keyBy(dataset.clusters, 'key'),
+                //         constant(true)
+                //     ),
+                //     tags: mapValues(keyBy(dataset.tags, 'key'), constant(true)),
+                // });
+                // requestAnimationFrame(
+                //     () => setDataReady(true)
+                //     // @logan test loading
+                //     // setTimeout(() => {
+                //     //     setDataReady(true);
+                //     // }, 5000)
+                // );
             });
     }, []);
 
-    if (!dataset) return <Loading />;
+    if (!dataStore.data) return <Loading />;
 
     return (
         <div id="app-root">
             <SigmaContainer
                 settings={{
-                    nodeProgramClasses: { image: getNodeProgramImage() },
                     labelRenderer: drawLabel,
-                    defaultNodeType: 'image',
-                    defaultEdgeType: 'arrow',
-                    labelDensity: 0.07,
-                    labelGridCellSize: 60,
-                    labelRenderedSizeThreshold: 15,
-                    zIndex: true,
-                    maxCameraRatio: 2,
-                    minCameraRatio: 0.3,
+                    ...dataStore.sigma.settings,
                 }}
             >
                 <GraphSettingsController hoveredNode={hoveredNode} />
@@ -98,23 +97,23 @@ const Root: FC<{}> = observer(() => {
                 <GraphDataController filters={filtersState} />
 
                 {/* show loading while data not ready */}
-                {!dataReady && <Loading />}
+                {!dataStore.data && <Loading />}
 
-                {dataReady && (
+                {dataStore.data && (
                     <div className="flex flex-col">
                         <ControlsContainer
                             className={`!border-1 !left-0 !right-0 !mx-auto !flex !w-full !max-w-xl !justify-between ${
                                 appStore.devMode
                                     ? '!rounded-lg'
                                     : '!rounded-full'
-                            } !border border-gray-300 !px-6`}
+                            } !border !border-gray-300 !bg-white/30 !px-6 !backdrop-blur-md`}
                         >
-                            <div className="flex w-full flex-col">
+                            <div className="flex w-full flex-col" ref={parent}>
                                 {appStore.devMode && <DevPanel />}
                                 <div className="flex flex-row items-center justify-between">
                                     <ToggleDev />
-                                    <ZoomControl className="!flex !items-center !justify-center !border-b-0" />
-                                    <SearchControl className="!border-b-2 !border-gray-300" />
+                                    {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
+                                    <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" />
                                 </div>
                             </div>
                         </ControlsContainer>

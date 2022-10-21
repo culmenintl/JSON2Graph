@@ -32,7 +32,10 @@ const GraphTitle: FC<{ filters: FiltersState }> = ({ filters }) => {
 
     return (
         <div className="hidden md:flex">
-            <h1>A cartography of Wikipedia pages around data visualization</h1>
+            <h1>
+                A synthetic dataset of reddit comments, subreddits and
+                usernames.
+            </h1>
             <h2>
                 <i>
                     {graph.order} node{graph.order > 1 ? 's' : ''}{' '}
