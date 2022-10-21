@@ -1,5 +1,5 @@
 import { Instance, types } from 'mobx-state-tree';
-import { DataStore } from './DataStore';
+import * as Datastore from './DataStore';
 
 // AppStore, which handles the highest level of
 export const AppStore = types
@@ -15,7 +15,7 @@ export const AppStore = types
 
 // RootStore
 export const RootStore = types.model('RootStore', {
-    dataStore: DataStore,
+    dataStore: Datastore.DataStore,
     appStore: AppStore,
 });
 
@@ -24,7 +24,7 @@ export type RootStoreModel = Instance<typeof RootStore>;
 
 // creates the root store, which is a combo of the other stores.
 export const createStore = (): RootStoreModel => {
-    const dataStore = DataStore.create({});
+    const dataStore = Datastore.createStore();
     const appStore = AppStore.create({});
 
     const rootStore = RootStore.create({
