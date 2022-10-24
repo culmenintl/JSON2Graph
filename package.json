@@ -11,6 +11,7 @@
         "@headlessui/react": "^1.7.2",
         "@heroicons/react": "^2.0.11",
         "@react-sigma/core": "^3.0.3",
+        "@react-sigma/layout-forceatlas2": "^3.0.3",
         "graphology": "^0.25.0",
         "graphology-components": "^1.5.4",
         "graphology-generators": "^0.11.2",

@@ -54,7 +54,7 @@ export const calculateDegrees = (graph: Graph) => {
     const minDegree = Math.min(...degrees);
     const maxDegree = Math.max(...degrees);
     const minSize = 2,
-        maxSize = 15;
+        maxSize = 25;
     graph.forEachNode((node) => {
         const degree = graph.degree(node);
         graph.setNodeAttribute(

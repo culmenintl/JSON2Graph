@@ -1,11 +1,22 @@
 import { FC } from 'react';
 
-const Loading: FC<{}> = ({}) => {
+type Props = {
+    size?: number;
+};
+
+const defaultSize = 20;
+
+const Loading: FC<Props> = ({ size }) => {
     return (
         <>
-            <div role="status" className="absolute top-1/2 left-1/2">
+            <div
+                role="status"
+                className={`top-1/2 left-1/2 ml-3 flex w-${
+                    size ? size : defaultSize
+                } h-${size ? size : defaultSize}`}
+            >
                 <svg
-                    className="mr-2 inline h-20 w-20 animate-spin fill-blue-600 text-gray-200"
+                    className={`animate-spin fill-gray-400 text-gray-200 `}
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

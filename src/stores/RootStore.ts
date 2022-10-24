@@ -2,16 +2,18 @@ import { Instance, types } from 'mobx-state-tree';
 import * as Datastore from './DataStore';
 
 // AppStore, which handles the highest level of
-export const AppStore = types
-    .model('AppStore', {
-        devMode: false,
-    })
-    .actions((self) => ({
-        // toggles dev mode
-        toggleDevMode() {
-            self.devMode = !self.devMode;
-        },
-    }));
+// export const AppStore = types
+//     .model('AppStore', {
+//         devMode: false,
+//         status: 'Fetching Data',
+//         loading: true,
+//     })
+//     .actions((self) => ({
+//         // toggles dev mode
+//         toggleDevMode() {
+//             self.devMode = !self.devMode;
+//         },
+//     }));
 
 // RootStore
 export const RootStore = types.model('RootStore', {
@@ -37,6 +39,7 @@ export const createStore = (): RootStoreModel => {
 
 // react hooks to use the context API for fetching root store
 import { useContext, createContext } from 'react';
+import { AppStore } from './AppStore';
 
 const StoreContext = createContext<RootStoreModel>({} as RootStoreModel);
 

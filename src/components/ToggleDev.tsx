@@ -15,7 +15,7 @@ export const ToggleDev: FC<{}> = observer(() => {
     const { appStore } = useInject(mapStore);
     const toggleDev = () => appStore.toggleDevMode();
     return (
-        <div className="my-3">
+        <>
             <Switch.Group
                 as="div"
                 className="flex items-center justify-between"
@@ -51,6 +51,6 @@ export const ToggleDev: FC<{}> = observer(() => {
                     />
                 </Switch>
             </Switch.Group>
-        </div>
+        </>
     );
 });

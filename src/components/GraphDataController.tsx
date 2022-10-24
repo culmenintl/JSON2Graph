@@ -13,13 +13,16 @@ import FA2Layout from 'graphology-layout-forceatlas2/worker';
 import circular from 'graphology-layout/circular';
 import { cropToLargestConnectedComponent } from 'graphology-components';
 import { calculateDegrees, populateGraph } from '../lib/Utils';
+import { STATUS } from '../stores/AppStore';
+
+const mapStore = ({ dataStore, appStore }: RootStoreModel) => ({
+    dataStore,
+    appStore,
+});
 
 const GraphDataController: FC<{ filters: FiltersState }> = observer(
     ({ filters, children }) => {
-        const mapStore = ({ dataStore }: RootStoreModel) => ({
-            dataStore,
-        });
-        const { dataStore } = useInject(mapStore);
+        const { dataStore, appStore } = useInject(mapStore);
         const sigma = useSigma();
         const graph = sigma.getGraph();
         const loadGraph = useLoadGraph();
@@ -29,14 +32,14 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
          */
         useEffect(() => {
             const dataset = dataStore.data as Dataset;
-            const crop =
-                dataStore.graph.settings.cropToLargestConnectedComponent;
+
             if (!graph || !dataset) return;
 
             const clusters = keyBy(dataset.clusters, 'key');
             const tags = keyBy(dataset.tags, 'key');
 
             // console.log('dataset', dataset);
+            appStore.setStatus(STATUS.SHAPING);
 
             const datasetGraph = populateGraph(dataset);
 
@@ -63,24 +66,28 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
 
             // assign circular layout to give base positions
             circular.assign(datasetGraph);
-            forceAtlas2.assign(datasetGraph, { iterations: 5 });
 
             // now that the graph is set up, load it into sigma
-            loadGraph(datasetGraph);
+            // loadGraph(datasetGraph);
 
             // dataStore.graph.setDensity(datasetGraph);
 
             // once loaded, we need to simulate the graph so it looks decent
-            const settings = forceAtlas2.inferSettings(graph);
+            const sensibleSettings = forceAtlas2.inferSettings(datasetGraph);
 
-            // console.log('settings', settings);
+            console.log('settings', sensibleSettings);
+            console.log(
+                'basic graph settings',
+                forceAtlas2.inferSettings(graph)
+            );
 
             // check if we want to use an asynchronus web worker layout (live simulation)
             // or if we want to do a blocking simulation
             if (dataStore.graph.settings.webWorkerLayout) {
+                appStore.setStatus(STATUS.SIMULATING);
                 // live simulation
                 const fa2Layout = new FA2Layout(graph, {
-                    settings,
+                    settings: forceAtlas2.inferSettings(datasetGraph),
                 });
 
                 console.log(
@@ -91,14 +98,17 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                 fa2Layout.start();
 
                 setTimeout(() => {
+                    appStore.setStatus(STATUS.GRAPH_SIMULATED);
+                    appStore.setLoading(false);
                     fa2Layout.stop();
                     fa2Layout.kill();
                     console.log('layout done');
                 }, dataStore.graph.settings.runLayoutInMs);
             } else {
                 // blocking synchronus simulation
-                forceAtlas2.assign(graph, { settings, iterations: 5 });
+                forceAtlas2.assign(datasetGraph, { iterations: 5 });
             }
+            loadGraph(datasetGraph, true);
 
             return () => graph.clear();
         }, [graph]);
