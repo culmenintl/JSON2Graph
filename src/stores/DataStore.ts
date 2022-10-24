@@ -17,97 +17,10 @@ import {
     neighborhoodPreservation,
 } from 'graphology-metrics/layout-quality';
 
-// const createEdges = (data: any) => {
-//     const nodes = new Array<Object>();
-//     const edges = new Array<Object>();
-
-//     const nodeSet = new Set<Object>();
-
-//     data.forEach((redditComment: any, index: number) => {
-//         // const authorFound = nodes.find(
-//         //     (node: any) => node.key === redditComment.author
-//         // );
-
-//         // const subredditFound = nodes.find(
-//         //     (node: any) => node.key === redditComment.subreddit
-//         // );
-
-//         // const commentFound = nodes.find(
-//         //     (node: any) => node.key === redditComment.id
-//         // );
-
-//         const authorNode = {
-//             key: redditComment.author,
-
-//             attributes: {
-//                 label: redditComment.author,
-//                 tag: 'author',
-//                 URL: '',
-//                 cluster: '0',
-//             },
-//             // cluster: '0',
-//             // x: 1,
-//             // y: 1,
-//             // size: Math.random(),
-//         };
-
-//         const subRedditNode = {
-//             key: redditComment.subreddit,
-//             attributes: {
-//                 label: redditComment.subreddit,
-//                 tag: 'subreddit',
-//                 URL: '',
-//                 cluster: '0',
-//             },
-//         };
-
-//         const commentNode = {
-//             key: redditComment.id,
-//             attributes: {
-//                 label: redditComment.body,
-//                 tag: 'comment',
-//                 URL: '',
-//                 cluster: '0',
-//             },
-//         };
-
-//         // source/target
-
-//         const authorCommentEdgeNew = {
-//             source: authorNode.key,
-//             target: commentNode.key,
-//         };
-
-//         const commentSubredditEdgeNew = {
-//             source: commentNode.key,
-//             target: subRedditNode.key,
-//         };
-
-//         if (index <= 5000) {
-//             nodes.push(authorNode);
-//             nodes.push(subRedditNode);
-//             nodes.push(commentNode);
-//             edges.push(authorCommentEdgeNew);
-//             edges.push(commentSubredditEdgeNew);
-//         }
-//     });
-
-//     console.log('array', Array.from(nodeSet.values()));
-
-//     const nodeArray = Array.from(nodeSet.values());
-//     const unique = uniqBy(nodes, 'key');
-//     // const formattedSet = [...nodeSet].map((item: any) => {
-//     //     if (typeof item === 'string') return JSON.parse(item);
-//     //     else if (typeof item === 'object') return item;
-//     // });
-
-//     const graph = {
-//         nodes: unique,
-//         edges: edges,
-//     };
-
-//     return graph;
-// };
+import forceAtlas2, {
+    ForceAtlas2Settings,
+} from 'graphology-layout-forceatlas2';
+import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
 export const GraphologySettings = types.model('GraphologySettings', {
     runLayoutInMs: 10000,
@@ -122,7 +35,7 @@ export const SigmaSettings = types.model('SigmaSettings', {
     labelRenderedSizeThreshold: 15,
     zIndex: true,
     maxCameraRatio: 2,
-    minCameraRatio: 0.3,
+    minCameraRatio: 0.2,
 });
 
 export const GraphStat = types.model('GraphStat', {
@@ -136,10 +49,15 @@ const WIKI_SEARCH_URL = 'https://en.wikipedia.org/w/index.php?search=Graph';
 
 export const GraphStore = types
     .model('GraphStore', {
+        layoutSettings: types.frozen(),
         settings: GraphologySettings,
         stats: types.array(GraphStat),
     })
     .actions((self) => ({
+        setLayoutSettings(graph: Graph) {
+            self.layoutSettings = forceAtlas2.inferSettings(graph);
+        },
+        toggleLayout() {},
         setStats(graph: Graph) {
             self.stats.push({
                 name: 'Density',
@@ -197,12 +115,19 @@ export const SigmaStore = types.model('SigmaStore', {
     settings: SigmaSettings,
 });
 
+export const EdgeAttributes = types.model('EdgeAttributes', {
+    source: types.string,
+    target: types.string,
+});
 // DataStore, handles the
 export const DataStore = types
     .model('DataStore', {
         sigma: SigmaStore,
         graph: GraphStore,
         data: types.frozen(),
+        desc: 'A synthetic dataset of reddit comments, subreddits and usernames.',
+        nodeAttributes: types.array(types.string),
+        edgeAttributes: types.array(EdgeAttributes),
         rows: 5000,
     })
     .actions((self) => ({
@@ -224,6 +149,15 @@ export const createStore = (): DataStoreModel => {
         graph: GraphStore.create({
             settings: GraphologySettings.create(),
         }),
+        nodeAttributes: new Array<string>(
+            'comment (id)',
+            'subreddit',
+            'author'
+        ),
+        edgeAttributes: [
+            { source: 'author', target: 'comment' },
+            { source: 'comment', target: 'subreddit' },
+        ],
     });
 
     return dataStore;

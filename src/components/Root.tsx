@@ -5,10 +5,9 @@ import {
     ZoomControl,
     ControlsContainer,
     SearchControl,
+    useSigma,
 } from '@react-sigma/core';
 import { omit, mapValues, keyBy, constant } from 'lodash';
-
-import getNodeProgramImage from 'sigma/rendering/webgl/programs/node.image';
 
 import GraphSettingsController from './GraphSettingsController';
 import GraphEventsController from './GraphEventsController';
@@ -30,21 +29,53 @@ import '@react-sigma/core/lib/react-sigma.min.css';
 
 import { ToggleDev } from './ToggleDev';
 import { RootStoreModel } from '../stores/RootStore';
+import { STATUS } from '../stores/AppStore';
 import { observer } from 'mobx-react-lite';
 import { DevPanel } from './DevPanel';
 import useInject from '../hooks/useInject';
+import Button from './Button';
+import { LayoutForceAtlas2Control } from '@react-sigma/layout-forceatlas2';
+import StatusDisplay from './StatusDisplay';
 
 const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
     appStore,
     dataStore,
 });
 
-const Root: FC<{}> = observer(() => {
+const Controls: FC<{}> = observer(() => {
+    const { dataStore, appStore } = useInject(mapStore);
     const parent = useRef(null);
     useEffect(() => {
         parent.current && autoAnimate(parent.current);
     }, [parent]);
 
+    return (
+        <ControlsContainer
+            className={`!border-1 !left-0 !right-0 !mx-auto !flex !w-full !max-w-xl !justify-between ${
+                appStore.devMode ? '!rounded-lg' : '!rounded-full'
+            } max-h-[75vh] !border !border-gray-300 !bg-white/30 !backdrop-blur-md`}
+        >
+            <div className="flex w-full flex-col py-3" ref={parent}>
+                {appStore.devMode && <DevPanel />}
+                <div className="flex flex-row items-center justify-between px-6">
+                    <ToggleDev />
+                    <StatusDisplay />
+                    {/* <LayoutForceAtlas2Control
+                                        settings={
+                                            dataStore.graph.layoutSettings
+                                        }
+                                    /> */}
+                    {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
+                    <div className="flex">
+                        <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" />
+                    </div>
+                </div>
+            </div>
+        </ControlsContainer>
+    );
+});
+
+const Root: FC<{}> = observer(() => {
     const [filtersState, setFiltersState] = useState<FiltersState>({
         clusters: {},
         tags: {},
@@ -56,6 +87,7 @@ const Root: FC<{}> = observer(() => {
 
     // Load data on mount:
     useEffect(() => {
+        appStore.setStatus(STATUS.FETCHING);
         // fetch(`${import.meta.env.VITE_PUBLIC_URL}/dataset.json`)
         fetch(`${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.dataset.json`)
             .then((res) => res.json())
@@ -63,6 +95,7 @@ const Root: FC<{}> = observer(() => {
                 const subDataset = dataset.filter(
                     (row: any, index: number) => index < dataStore.rows
                 );
+
                 dataStore.setData(subDataset);
                 // setDataset(dataset);
                 // setFiltersState({
@@ -101,22 +134,7 @@ const Root: FC<{}> = observer(() => {
 
                 {dataStore.data && (
                     <div className="flex flex-col">
-                        <ControlsContainer
-                            className={`!border-1 !left-0 !right-0 !mx-auto !flex !w-full !max-w-xl !justify-between ${
-                                appStore.devMode
-                                    ? '!rounded-lg'
-                                    : '!rounded-full'
-                            } !border !border-gray-300 !bg-white/30 !px-6 !backdrop-blur-md`}
-                        >
-                            <div className="flex w-full flex-col" ref={parent}>
-                                {appStore.devMode && <DevPanel />}
-                                <div className="flex flex-row items-center justify-between">
-                                    <ToggleDev />
-                                    {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
-                                    <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" />
-                                </div>
-                            </div>
-                        </ControlsContainer>
+                        <Controls />
                         <div className="contents">
                             <GraphTitle filters={filtersState} />
                             <div className="panels">
