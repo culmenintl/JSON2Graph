@@ -28,6 +28,7 @@ function App() {
                 <SnackbarProvider
                     anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
                     classes={{ containerRoot: paddingBottom }}
+                    maxSnack={3}
                 >
                     <StoreProvider value={rootStore}>
                         <Root />
