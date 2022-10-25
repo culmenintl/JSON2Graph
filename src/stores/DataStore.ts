@@ -38,6 +38,13 @@ export const SigmaSettings = types.model('SigmaSettings', {
     minCameraRatio: 0.2,
 });
 
+export const Dataset = types.model('Dataset', {
+    url: types.string,
+    data: types.frozen(),
+    description: types.string,
+    attributeToCrop: types.string,
+});
+
 export const GraphStat = types.model('GraphStat', {
     name: '',
     val: '',

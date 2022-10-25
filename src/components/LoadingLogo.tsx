@@ -11,7 +11,7 @@ import CentrifugeLogo from '/images/centrifuge-systems-spinner.svg';
 import CentrifugeText from '/images/centrifuge-text.svg';
 import CentrifugeLogoCentered from '/images/cent-logo-centered.svg';
 
-const LoadingLogo: FC<Props> = ({ size, iconOnly = false }) => {
+const LoadingLogo: FC<Props> = ({ size }) => {
     return (
         <>
             <div
@@ -20,9 +20,7 @@ const LoadingLogo: FC<Props> = ({ size, iconOnly = false }) => {
             >
                 <img
                     src={CentrifugeLogoCentered}
-                    className={`w-${size ? size : defaultSize} h-${
-                        size ? size : defaultSize
-                    } mx-auto animate-spin-logo`}
+                    className={`mx-auto h-20 w-20 animate-spin-logo`}
                 />
                 <img src={CentrifugeText} className="mt-3 w-40" />
                 <span className="sr-only">Loading...</span>
