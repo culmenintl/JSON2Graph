@@ -5,10 +5,11 @@ type Props = {
     iconOnly?: boolean;
 };
 
-const defaultSize = 20;
+const defaultSize = '20';
 
 import CentrifugeLogo from '/images/centrifuge-systems-spinner.svg';
 import CentrifugeText from '/images/centrifuge-text.svg';
+import CentrifugeLogoCentered from '/images/cent-logo-centered.svg';
 
 const LoadingLogo: FC<Props> = ({ size, iconOnly = false }) => {
     return (
@@ -18,7 +19,7 @@ const LoadingLogo: FC<Props> = ({ size, iconOnly = false }) => {
                 className={`flex-column absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 items-center justify-center`}
             >
                 <img
-                    src={CentrifugeLogo}
+                    src={CentrifugeLogoCentered}
                     className={`w-${size ? size : defaultSize} h-${
                         size ? size : defaultSize
                     } mx-auto animate-spin-logo`}
