@@ -1,20 +1,6 @@
 import { Instance, types } from 'mobx-state-tree';
 import * as Datastore from './DataStore';
 
-// AppStore, which handles the highest level of
-// export const AppStore = types
-//     .model('AppStore', {
-//         devMode: false,
-//         status: 'Fetching Data',
-//         loading: true,
-//     })
-//     .actions((self) => ({
-//         // toggles dev mode
-//         toggleDevMode() {
-//             self.devMode = !self.devMode;
-//         },
-//     }));
-
 // RootStore
 export const RootStore = types.model('RootStore', {
     dataStore: Datastore.DataStore,
