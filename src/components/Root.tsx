@@ -94,45 +94,36 @@ const Root: FC<{}> = observer(() => {
     // Load data on mount:
     useEffect(() => {
         appStore.setStatus(STATUS.FETCHING);
-        // fetch(`${import.meta.env.VITE_PUBLIC_URL}/dataset.json`)
-        fetch(`${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.dataset.json`)
-            .then((res) => res.json())
-            .then((dataset: [Object]) => {
-                const subDataset = dataset.filter(
-                    (row: any, index: number) => index < dataStore.rows
-                );
 
-                // throw new Error('Error');
+        // setup async call
+        const fetchData = async () => {
+            const data = await fetch(
+                `${
+                    import.meta.env.VITE_PUBLIC_URL
+                }/reddit.comments.dataset.json`
+            );
 
-                dataStore.setData(subDataset);
-                // setDataset(dataset);
-                // setFiltersState({
-                //     clusters: mapValues(
-                //         keyBy(dataset.clusters, 'key'),
-                //         constant(true)
-                //     ),
-                //     tags: mapValues(keyBy(dataset.tags, 'key'), constant(true)),
-                // });
-                // requestAnimationFrame(
-                //     () => setDataReady(true)
-                //     // @logan test loading
-                //     // setTimeout(() => {
-                //     //     setDataReady(true);
-                //     // }, 5000)
-                // );
-            })
-            .catch((e) => {
-                enqueueSnackbar(e.message, {
-                    variant: 'error',
-                    persist: true,
-                });
+            const json = await data.json();
+            const subDataset = json.filter(
+                (_: any, index: number) => index < dataStore.rows
+            );
+            dataStore.setData(subDataset);
+        };
+
+        try {
+            fetchData();
+        } catch (e: any) {
+            enqueueSnackbar(e.message, {
+                variant: 'error',
+                persist: true,
             });
+        }
     }, []);
 
     // if (!dataStore.data) return <LoadingLogo />;
 
     return (
-        <div id="app-root">
+        <div className="absolute inset-0">
             <SigmaContainer
                 settings={{
                     labelRenderer: drawLabel,
@@ -145,6 +136,9 @@ const Root: FC<{}> = observer(() => {
 
                 <div className="flex flex-col">
                     {!dataStore.graph.simulated && <LoadingLogo />}
+                    <span className="absolute left-0 top-0 p-3 text-sm text-gray-400">
+                        Centrifuge Widget Demo - v{APP_VERSION}
+                    </span>
                     <Controls />
                 </div>
             </SigmaContainer>
