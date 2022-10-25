@@ -61,10 +61,8 @@ const Controls: FC<{}> = observer(() => {
                     <ToggleDev />
                     <StatusDisplay />
                     {/* <LayoutForceAtlas2Control
-                                        settings={
-                                            dataStore.graph.layoutSettings
-                                        }
-                                    /> */}
+                        settings={dataStore.graph.layoutSettings}
+                    /> */}
                     {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
                     <div className="flex">
                         <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" />
