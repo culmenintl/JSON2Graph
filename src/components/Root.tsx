@@ -24,6 +24,7 @@ import { BiRadioCircleMarked, BiBookContent } from 'react-icons/bi';
 import { BsZoomIn, BsZoomOut } from 'react-icons/bs';
 
 import Loading from './Loading';
+import LoadingLogo from './LoadingLogo';
 
 import '@react-sigma/core/lib/react-sigma.min.css';
 
@@ -36,6 +37,9 @@ import useInject from '../hooks/useInject';
 import Button from './Button';
 import { LayoutForceAtlas2Control } from '@react-sigma/layout-forceatlas2';
 import StatusDisplay from './StatusDisplay';
+
+// notistack
+import { useSnackbar } from 'notistack';
 
 const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
     appStore,
@@ -78,6 +82,10 @@ const Root: FC<{}> = observer(() => {
         clusters: {},
         tags: {},
     });
+
+    // notistack
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
     // mobx
@@ -93,6 +101,8 @@ const Root: FC<{}> = observer(() => {
                 const subDataset = dataset.filter(
                     (row: any, index: number) => index < dataStore.rows
                 );
+
+                // throw new Error('Error');
 
                 dataStore.setData(subDataset);
                 // setDataset(dataset);
@@ -110,10 +120,16 @@ const Root: FC<{}> = observer(() => {
                 //     //     setDataReady(true);
                 //     // }, 5000)
                 // );
+            })
+            .catch((e) => {
+                enqueueSnackbar(e.message, {
+                    variant: 'error',
+                    persist: true,
+                });
             });
     }, []);
 
-    if (!dataStore.data) return <Loading />;
+    // if (!dataStore.data) return <LoadingLogo />;
 
     return (
         <div id="app-root">
@@ -127,66 +143,10 @@ const Root: FC<{}> = observer(() => {
                 <GraphEventsController setHoveredNode={setHoveredNode} />
                 <GraphDataController filters={filtersState} />
 
-                {/* show loading while data not ready */}
-                {!dataStore.data && <Loading />}
-
-                {dataStore.data && (
-                    <div className="flex flex-col">
-                        <Controls />
-                        <div className="contents">
-                            <GraphTitle filters={filtersState} />
-                            <div className="panels">
-                                {/* <SearchField filters={filtersState} /> */}
-                                {/* <DescriptionPanel /> */}
-                                {/* <ClustersPanel
-                                    clusters={dataset.clusters}
-                                    filters={filtersState}
-                                    setClusters={(clusters) =>
-                                        setFiltersState((filters) => ({
-                                            ...filters,
-                                            clusters,
-                                        }))
-                                    }
-                                    toggleCluster={(cluster) => {
-                                        setFiltersState((filters) => ({
-                                            ...filters,
-                                            clusters: filters.clusters[cluster]
-                                                ? omit(
-                                                      filters.clusters,
-                                                      cluster
-                                                  )
-                                                : {
-                                                      ...filters.clusters,
-                                                      [cluster]: true,
-                                                  },
-                                        }));
-                                    }}
-                                /> */}
-                                {/* <TagsPanel
-                                    tags={dataset.tags}
-                                    filters={filtersState}
-                                    setTags={(tags) =>
-                                        setFiltersState((filters) => ({
-                                            ...filters,
-                                            tags,
-                                        }))
-                                    }
-                                    toggleTag={(tag) => {
-                                        setFiltersState((filters) => ({
-                                            ...filters,
-                                            tags: filters.tags[tag]
-                                                ? omit(filters.tags, tag)
-                                                : {
-                                                      ...filters.tags,
-                                                      [tag]: true,
-                                                  },
-                                        }));
-                                    }}
-                                /> */}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <div className="flex flex-col">
+                    {!dataStore.graph.simulated && <LoadingLogo />}
+                    <Controls />
+                </div>
             </SigmaContainer>
         </div>
     );

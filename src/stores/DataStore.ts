@@ -52,12 +52,16 @@ export const GraphStore = types
         layoutSettings: types.frozen(),
         settings: GraphologySettings,
         stats: types.array(GraphStat),
+        simulated: false,
     })
     .actions((self) => ({
         setLayoutSettings(graph: Graph) {
             self.layoutSettings = forceAtlas2.inferSettings(graph);
         },
         toggleLayout() {},
+        setSimulated(sim: boolean) {
+            self.simulated = sim;
+        },
         setStats(graph: Graph) {
             self.stats.push({
                 name: 'Density',

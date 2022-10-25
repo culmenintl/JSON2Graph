@@ -5,8 +5,6 @@ import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
 import { useSigma } from '@react-sigma/core';
 import GraphRow from './GraphRow';
-import Graph from 'graphology';
-import GraphTitle from './GraphTitle';
 import DevPanelHeader from './DevPanelHeader';
 
 const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({

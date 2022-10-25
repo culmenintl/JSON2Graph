@@ -104,6 +104,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                     fa2Layout.kill();
                     console.log('layout done');
                     loadGraph(datasetGraph, true);
+                    dataStore.graph.setSimulated(true);
                 }, dataStore.graph.settings.runLayoutInMs);
             } else {
                 // blocking synchronus simulation
@@ -111,7 +112,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             }
 
             return () => sigmaGraph.clear();
-        }, [sigmaGraph]);
+        }, [dataStore.data]);
 
         /**
          * Apply filters to graphology:

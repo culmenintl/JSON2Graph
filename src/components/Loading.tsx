@@ -9,14 +9,11 @@ const defaultSize = 20;
 const Loading: FC<Props> = ({ size }) => {
     return (
         <>
-            <div
-                role="status"
-                className={`top-1/2 left-1/2 ml-3 flex w-${
-                    size ? size : defaultSize
-                } h-${size ? size : defaultSize}`}
-            >
+            <div role="status" className={`items-center justify-center`}>
                 <svg
-                    className={`animate-spin fill-gray-400 text-gray-200 `}
+                    className={`w-${size ? size : defaultSize} h-${
+                        size ? size : defaultSize
+                    } animate-spin fill-gray-400 text-gray-200 `}
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
