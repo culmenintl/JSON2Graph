@@ -7,4 +7,7 @@ export default defineConfig({
     server: {
         port: 1337,
     },
+    define: {
+        APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    },
 });

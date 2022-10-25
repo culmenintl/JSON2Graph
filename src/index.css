@@ -6,7 +6,7 @@
  * VARIABLES:
  * **********
  */
-:root {
+/* :root {
     --ruby: #e22653;
     --grey: #999;
     --dark-grey: #666;
@@ -19,7 +19,7 @@
     --stage-padding: 8px;
     --panels-width: 350px;
     --border-radius: 3px;
-}
+} */
 
 /**
  * BASE STYLES:
@@ -62,7 +62,7 @@ a:hover {
     height: 100vh;
     position: relative;
 } */
-#app-root,
+/* #app-root,
 .sigma-container {
     position: absolute;
     inset: 0;
@@ -72,7 +72,7 @@ a:hover {
     bottom: var(--stage-padding);
     left: var(--stage-padding);
 } */
-.graph-title {
+/* .graph-title {
     z-index: 1;
     position: absolute;
     top: 0;
@@ -92,13 +92,13 @@ a:hover {
     overflow-y: auto;
     padding: var(--stage-padding);
     scrollbar-width: thin;
-}
+} */
 
 /**
  * USEFUL CLASSES:
  * ***************
  */
-div.ico > button {
+/* div.ico > button {
     display: block;
     position: relative;
     font-size: 1.8em;
@@ -122,7 +122,7 @@ div.ico > button > * {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-}
+} */
 
 /* button.btn {
     background: white;
@@ -251,7 +251,7 @@ ul > li {
  * SEARCH FIELD:
  * *************
  */
-.search-wrapper {
+/* .search-wrapper {
     position: relative;
 }
 .search-wrapper > input[type='search'] {
@@ -272,7 +272,7 @@ ul > li {
     height: 1em;
     top: 1em;
     left: 1em;
-}
+} */
 
 /**
  * RESPONSIVENESS:
@@ -311,9 +311,9 @@ ul > li {
         right: var(--stage-padding);
     }
 } */
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
     button.show-contents,
     button.hide-contents {
         display: none !important;
     }
-}
+} */
