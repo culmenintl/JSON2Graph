@@ -5,13 +5,11 @@ type Props = {
     iconOnly?: boolean;
 };
 
-const defaultSize = '20';
-
-import CentrifugeLogo from '/images/centrifuge-systems-spinner.svg';
 import CentrifugeText from '/images/centrifuge-text.svg';
 import CentrifugeLogoCentered from '/images/cent-logo-centered.svg';
 
-const LoadingLogo: FC<Props> = ({ size }) => {
+// Basic fullscreen loading animation w/ centrifuge logo
+const LoadingLogo: FC<Props> = () => {
     return (
         <>
             <div
