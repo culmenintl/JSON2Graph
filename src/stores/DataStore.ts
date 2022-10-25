@@ -23,10 +23,10 @@ import forceAtlas2, {
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
 export const GraphologySettings = types.model('GraphologySettings', {
-    runLayoutInMs: 10000,
+    runLayoutInMs: 2000,
     webWorkerLayout: true,
     iterations: 10,
-    cropToLargestConnectedComponent: true,
+    cropToLargestConnectedComponent: false,
 });
 
 export const SigmaSettings = types.model('SigmaSettings', {
@@ -139,7 +139,7 @@ export const DataStore = types
         desc: 'A synthetic dataset of reddit comments, subreddits and usernames.',
         nodeAttributes: types.array(types.string),
         edgeAttributes: types.array(EdgeAttributes),
-        rows: 2000,
+        rows: 20000,
     })
     .actions((self) => ({
         setData(data: any) {

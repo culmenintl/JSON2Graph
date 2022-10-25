@@ -16,41 +16,18 @@ export const ToggleDev: FC<{}> = observer(() => {
     const toggleDev = () => appStore.toggleDevMode();
     return (
         <>
-            <Switch.Group
-                as="div"
-                className="flex items-center justify-between"
+            <button
+                type="button"
+                className={classNames(
+                    appStore.devMode
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-gray-300 text-gray-900',
+                    'inline-flex items-center rounded-full border border-transparent p-2 text-white shadow-sm hover:bg-indigo-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                )}
+                onClick={toggleDev}
             >
-                <span className="flex flex-grow flex-col">
-                    <Switch.Label
-                        as="span"
-                        className="mr-2 text-sm font-medium text-gray-900"
-                        passive
-                    >
-                        <WrenchScrewdriverIcon
-                            className="h-5 w-5"
-                            aria-hidden="true"
-                        />
-                    </Switch.Label>
-                </span>
-                <Switch
-                    checked={appStore.devMode}
-                    onChange={toggleDev}
-                    className={classNames(
-                        appStore.devMode ? 'bg-indigo-600' : 'bg-gray-200',
-                        'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-                    )}
-                >
-                    <span
-                        aria-hidden="true"
-                        className={classNames(
-                            appStore.devMode
-                                ? 'translate-x-5'
-                                : 'translate-x-0',
-                            'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-                        )}
-                    />
-                </Switch>
-            </Switch.Group>
+                <WrenchScrewdriverIcon className="h-5 w-5" aria-hidden="true" />
+            </button>
         </>
     );
 });

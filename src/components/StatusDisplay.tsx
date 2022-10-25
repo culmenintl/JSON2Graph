@@ -13,20 +13,19 @@ const StatusDisplay: FC<{}> = observer(() => {
     console.log('rendering');
     return (
         <div className="flex flex-grow pl-3">
+            <div className="flex items-center justify-self-end pr-3">
+                {appStore.loading && <Loading size={5} />}
+            </div>
             <div className="flex flex-1">
                 <div className="flex flex-col">
                     <span
-                        className={`text-md text-gray-400 ${
+                        className={`text-md text-gray-500 ${
                             appStore.loading && 'animate-pulse'
                         }`}
                     >
                         {appStore.status}
                     </span>
                 </div>
-            </div>
-
-            <div className="flex items-center justify-self-end pr-3">
-                {appStore.loading && <Loading size={5} />}
             </div>
         </div>
     );
