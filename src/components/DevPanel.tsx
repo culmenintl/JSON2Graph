@@ -41,14 +41,16 @@ const RestoreContext: FC<{}> = () => {
 
 export const DevPanel: FC<{}> = () => {
     return (
-        <div className="flex flex-col !overflow-y-auto !scroll-smooth">
-            <GraphStats />
-            <DevPanelHeader
-                title="WebGL"
-                subtitle={'Testing losing and regaining context'}
-            />
-            <GraphRow label="Lose Context" value={<LoseContext />} />
-            <GraphRow label="Restore Context" value={<RestoreContext />} />
+        <div className="border-1 pb-18 absolute bottom-20 left-0 right-0 mx-auto flex max-h-[75vh] max-w-xl rounded-lg !border !border-gray-300 !bg-white/30 !backdrop-blur-md">
+            <div className="flex flex-col !overflow-y-auto !scroll-smooth">
+                <GraphStats />
+                <DevPanelHeader
+                    title="WebGL"
+                    subtitle={'Testing losing and regaining context'}
+                />
+                <GraphRow label="Lose Context" value={<LoseContext />} />
+                <GraphRow label="Restore Context" value={<RestoreContext />} />
+            </div>
         </div>
     );
 };
