@@ -6,7 +6,7 @@ export const classNames = (...classes: string[]) => {
 };
 
 export const populateGraph = (data: [RedditNode]): Graph => {
-    const graph: Graph = new Graph({ multi: true });
+    const graph: Graph = new Graph();
     data.forEach((node: RedditNode, index: number) => {
         // Create the commment body nodes, keyed off row id
         const comment = node.id;

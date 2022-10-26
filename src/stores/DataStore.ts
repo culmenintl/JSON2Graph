@@ -1,4 +1,6 @@
-import { Instance, types } from 'mobx-state-tree';
+import { flow, Instance, types } from 'mobx-state-tree';
+import { useContext, createContext } from 'react';
+import { RedditNode } from '../lib/types';
 import Graph from 'graphology';
 import {
     density,
@@ -79,6 +81,7 @@ export const GraphStore = types
         settings: GraphologySettings,
         stats: types.array(GraphStat),
         graph: LocalGraph,
+        refreshInterval: 500,
     })
     .volatile((self) => ({
         layout: new FA2Layout(self.graph.graph, {
@@ -88,7 +91,7 @@ export const GraphStore = types
         firstSim: 0,
     }))
     .actions((self) => ({
-        toggleSimulation(sigma: Sigma) {
+        toggleSimulation() {
             console.log('toggle sim');
             console.log('is currently', self.layout.isRunning());
             if (self.layout.isRunning()) {
@@ -172,6 +175,16 @@ export const EdgeAttributes = types.model('EdgeAttributes', {
     source: types.string,
     target: types.string,
 });
+
+const fetchFromUrl = async (): Promise<[RedditNode]> => {
+    const data = await fetch(
+        `${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.dataset.json`
+    );
+
+    const json: [RedditNode] = await data.json();
+
+    return json;
+};
 // DataStore, handles the
 export const DataStore = types
     .model('DataStore', {
@@ -181,12 +194,45 @@ export const DataStore = types
         desc: 'A synthetic dataset of reddit comments, subreddits and usernames.',
         nodeAttributes: types.array(types.string),
         edgeAttributes: types.array(EdgeAttributes),
-        rows: 10000,
+        rows: 1000,
+        state: types.enumeration('State', ['pending', 'done', 'error']),
     })
     .actions((self) => ({
         setData(data: any) {
             self.data = data;
         },
+        setRows(event: React.ChangeEvent<HTMLInputElement>) {
+            const val = event.target.value;
+            console.log('val', val);
+            console.log('val', typeof val);
+            if (val) {
+                self.rows = parseInt(event.target.value);
+            } else {
+                self.rows = 0;
+            }
+        },
+        fetchData: flow(function* fetchData() {
+            // <- note the star, this a generator function!
+            self.state = 'pending';
+            try {
+                // ... yield can be used in async/await style
+
+                const data: [RedditNode] = yield fetchFromUrl();
+
+                const subDataset = data.filter(
+                    (_: any, index: number, arr) =>
+                        Math.random() <= self.rows / arr.length
+                );
+                console.log('rows ingested', subDataset.length);
+                self.data = subDataset;
+                self.state = 'done';
+            } catch (error) {
+                // ... including try/catch error handling
+                console.error('Failed to fetch projects', error);
+                self.state = 'error';
+                throw error;
+            }
+        }),
     }));
 
 // typescript helper to get the model of the DataStore
@@ -212,14 +258,11 @@ export const createStore = (): DataStoreModel => {
             { source: 'author', target: 'comment' },
             { source: 'comment', target: 'subreddit' },
         ],
+        state: 'done',
     });
 
     return dataStore;
 };
-
-// react hooks to use the context API for fetching root store
-import { useContext, createContext } from 'react';
-import Sigma from 'sigma';
 
 const StoreContext = createContext<DataStoreModel>({} as DataStoreModel);
 

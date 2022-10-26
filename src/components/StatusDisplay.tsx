@@ -12,8 +12,8 @@ const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
 const StatusDisplay: FC<{}> = observer(() => {
     const { appStore, dataStore } = useInject(mapStore);
     return (
-        <div className="flex flex-grow">
-            <div className="mx-3 my-auto w-5 items-center justify-center">
+        <div className="flex flex-grow gap-1">
+            <div className="my-auto w-5 items-center justify-center">
                 {(appStore.loading || dataStore.graph.isSimulating) && (
                     <Loading size={5} />
                 )}

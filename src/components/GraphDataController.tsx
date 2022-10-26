@@ -72,12 +72,12 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             // or if we want to do a blocking simulation
             if (dataStore.graph.settings.webWorkerLayout) {
                 appStore.setStatus(STATUS.SIMULATING);
-                dataStore.graph.toggleSimulation(sigma);
+                dataStore.graph.toggleSimulation();
 
                 setTimeout(() => {
                     appStore.setStatus(STATUS.GRAPH_SIMULATED);
                     appStore.setLoading(false);
-                    dataStore.graph.toggleSimulation(sigma);
+                    dataStore.graph.toggleSimulation();
                     try {
                         loadGraph(datasetGraph, true);
                     } catch (e: any) {
@@ -127,12 +127,12 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             // calculateDegreesAndColor(datasetGraph);
             // circlepack.assign(datasetGraph);
 
-            dataStore.graph.toggleSimulation(sigma);
+            dataStore.graph.toggleSimulation();
             appStore.setStatus(STATUS.SIMULATING);
             setTimeout(() => {
                 appStore.setStatus(STATUS.GRAPH_SIMULATED);
                 appStore.setLoading(false);
-                dataStore.graph.toggleSimulation(sigma);
+                dataStore.graph.toggleSimulation();
                 // fa2Layout.kill();
                 console.log('layout done');
                 loadGraph(graph);

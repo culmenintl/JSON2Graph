@@ -58,7 +58,7 @@ const Controls: FC<{}> = observer(() => {
                         text="Centrifuge"
                         icon={
                             <ArrowTopRightOnSquareIcon
-                                className="h-5 w-5 pl-1"
+                                className="h-5 w-5 p-1"
                                 aria-hidden="true"
                             />
                         }
@@ -93,33 +93,12 @@ const Root: FC<{}> = observer(() => {
     useEffect(() => {
         appStore.setStatus(STATUS.FETCHING);
 
-        // setup async call
-        const fetchData = async (): Promise<void> => {
-            try {
-                const data = await fetch(
-                    `${
-                        import.meta.env.VITE_PUBLIC_URL
-                    }/reddit.comments.dataset.json`
-                );
-
-                const json: [RedditNode] = await data.json();
-                const subDataset = json.filter(
-                    (_: any, index: number, arr) =>
-                        Math.random() <= dataStore.rows / arr.length
-                );
-                console.log('rows ingested', subDataset.length);
-                dataStore.setData(subDataset);
-            } catch (e: any) {
-                enqueueSnackbar(e.message, {
-                    variant: 'error',
-                    persist: true,
-                });
-            }
-        };
-
-        try {
-            fetchData();
-        } catch (e: any) {}
+        dataStore.fetchData().catch((e) => {
+            enqueueSnackbar(e.message, {
+                variant: 'error',
+                persist: true,
+            });
+        });
     }, []);
 
     // if (!dataStore.data) return <LoadingLogo />;

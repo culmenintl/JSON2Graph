@@ -3,7 +3,7 @@ import { Instance, types } from 'mobx-state-tree';
 export const enum STATUS {
     FETCHING = 'Fetching Data',
     SHAPING = 'Creating Graph',
-    SIMULATING = 'Simulating Graph',
+    SIMULATING = 'Simulating...',
     GRAPH_SIMULATED = 'Graph Simulated',
 }
 // AppStore, which handles the highest level of data within the graph
