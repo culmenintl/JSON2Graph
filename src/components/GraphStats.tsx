@@ -44,13 +44,13 @@ const GraphStats: FC<{}> = observer(() => {
                 value={
                     <ToggleSwitch
                         sr="WebWorker Simulation"
+                        disabled={true}
                         enabled={dataStore.graph.settings.webWorkerLayout}
                         onChange={() =>
                             dataStore.graph.settings.toggleWebWorkerLayout()
                         }
                     />
                 }
-                // value={new String(dataStore.graph.settings.webWorkerLayout)}
             />
             <GraphRow
                 label="Simulation Time"
