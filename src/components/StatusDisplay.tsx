@@ -22,7 +22,9 @@ const StatusDisplay: FC<{}> = observer(() => {
                 <div className="flex flex-col">
                     <span
                         className={`text-md text-gray-500 ${
-                            appStore.loading && 'animate-pulse'
+                            (appStore.loading ||
+                                dataStore.graph.isSimulating) &&
+                            'animate-pulse'
                         }`}
                     >
                         {appStore.status}
