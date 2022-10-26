@@ -1,3 +1,17 @@
+#### 0.0.3 (2022-10-26)
+
+##### New Features
+
+* **state:**  updated state management to fetch data via async function, added reload functionality, added the ability to change num rows read (d5def18b)
+* **ui:**  tweaked css for small view (e1cb981f)
+
+##### Bug Fixes
+
+* **ui:**
+  *  added pulse to status text when simming (0a5d8000)
+  *  updated naming scheme for graphRow (90823aa0)
+  *  fixed clipping issue on devpanel (4e5e7fc4)
+
 #### 0.0.2 (2022-10-26)
 
 ##### Documentation Changes
