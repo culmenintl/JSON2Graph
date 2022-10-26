@@ -5,7 +5,7 @@ type Props = {
     value?: String | JSX.Element | React.ReactNode;
     pre?: React.ReactNode;
 };
-const GraphRow: FC<Props> = ({ label, value, pre }) => {
+export const GraphRow: FC<Props> = ({ label, value, pre }) => {
     return (
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
             <dl className="sm:divide-y sm:divide-gray-200">
@@ -28,5 +28,3 @@ const GraphRow: FC<Props> = ({ label, value, pre }) => {
         </div>
     );
 };
-
-export default GraphRow;

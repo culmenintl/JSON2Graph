@@ -181,7 +181,7 @@ export const DataStore = types
         desc: 'A synthetic dataset of reddit comments, subreddits and usernames.',
         nodeAttributes: types.array(types.string),
         edgeAttributes: types.array(EdgeAttributes),
-        rows: 2000,
+        rows: 10000,
     })
     .actions((self) => ({
         setData(data: any) {

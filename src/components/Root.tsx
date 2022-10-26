@@ -38,7 +38,7 @@ const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
 const Controls: FC<{}> = observer(() => {
     return (
         <ControlsContainer
-            className={`!left-0 !right-0 !mx-auto !flex max-h-[75vh] !w-full
+            className={`!left-0 !bottom-0 !mx-auto !flex max-h-[75vh] !w-full
                 !justify-between !border-0 !border-gray-300 !bg-gray-300/20 !backdrop-blur-lg`}
         >
             <div className="mx-auto flex w-full !max-w-xl flex-col py-3">
