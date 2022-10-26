@@ -1,6 +1,8 @@
 import { useRegisterEvents, useSigma } from '@react-sigma/core';
 import { FC, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
+import { RootStoreModel } from '../stores/RootStore';
+import useInject from '../hooks/useInject';
 
 function getMouseLayer() {
     return document.querySelector('.sigma-mouse');
@@ -29,6 +31,11 @@ const WEBGL_CONTEXT_LOST = 'webglcontextlost';
 // message to display when lost
 const WEBGL_CONTEXT_LOST_MESSAGE = 'Lost WebGL Context for';
 
+const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
+    appStore,
+    dataStore,
+});
+
 const GraphEventsController: FC<{
     setHoveredNode: (node: string | null) => void;
 }> = ({ setHoveredNode, children }) => {
@@ -36,6 +43,7 @@ const GraphEventsController: FC<{
     const registerEvents = useRegisterEvents();
     const canvases = sigma.getCanvases();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { dataStore, appStore } = useInject(mapStore);
 
     /**
      * Initialize here settings that require to know the graph and/or the sigma
@@ -64,6 +72,9 @@ const GraphEventsController: FC<{
             // @logan added to reset 'hover' like state, will rename
             clickStage() {
                 setHoveredNode(null);
+                if (appStore.devMode) {
+                    appStore.toggleDevMode();
+                }
             },
             enterNode({ node }) {
                 // setHoveredNode(node);
