@@ -12,8 +12,8 @@ const StatusDisplay: FC<{}> = observer(() => {
     const { appStore } = useInject(mapStore);
     console.log('rendering');
     return (
-        <div className="flex flex-grow pl-3">
-            <div className="flex items-center justify-self-end pr-3">
+        <div className="flex flex-grow">
+            <div className="mx-3 my-auto w-5 items-center justify-center">
                 {appStore.loading && <Loading size={5} />}
             </div>
             <div className="flex flex-1">

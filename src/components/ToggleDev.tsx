@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Switch } from '@headlessui/react';
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline';
 import { classNames } from '../lib/Utils';
 import { observer } from 'mobx-react-lite';
