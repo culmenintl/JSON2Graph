@@ -6,6 +6,7 @@ import useInject from '../hooks/useInject';
 import { useSigma } from '@react-sigma/core';
 import GraphRow from './GraphRow';
 import DevPanelHeader from './DevPanelHeader';
+import ToggleSwitch from './Switch';
 
 const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
     dataStore,
@@ -40,7 +41,16 @@ const GraphStats: FC<{}> = observer(() => {
             />
             <GraphRow
                 label="WebWorker Simulation"
-                value={new String(dataStore.graph.settings.webWorkerLayout)}
+                value={
+                    <ToggleSwitch
+                        sr="WebWorker Simulation"
+                        enabled={dataStore.graph.settings.webWorkerLayout}
+                        onChange={() =>
+                            dataStore.graph.settings.toggleWebWorkerLayout()
+                        }
+                    />
+                }
+                // value={new String(dataStore.graph.settings.webWorkerLayout)}
             />
             <GraphRow
                 label="Simulation Time"
@@ -49,9 +59,13 @@ const GraphStats: FC<{}> = observer(() => {
             <GraphRow
                 label="Crop Non Connected"
                 value={
-                    new String(
-                        dataStore.graph.settings.cropToLargestConnectedComponent
-                    )
+                    <ToggleSwitch
+                        sr="Crop Non Connected"
+                        enabled={dataStore.graph.settings.crop}
+                        onChange={() =>
+                            dataStore.graph.settings.toggleCropped()
+                        }
+                    />
                 }
             />
             <DevPanelHeader

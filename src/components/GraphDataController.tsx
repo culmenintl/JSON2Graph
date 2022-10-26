@@ -6,14 +6,16 @@ import { Dataset, FiltersState, NodeData } from '../lib/types';
 import { observer } from 'mobx-react-lite';
 import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
+import { useSnackbar } from 'notistack';
 
 // layout
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 import { circular, circlepack } from 'graphology-layout';
 import { cropToLargestConnectedComponent } from 'graphology-components';
-import { calculateDegrees, populateGraph } from '../lib/Utils';
+import { calculateDegreesAndColor, populateGraph } from '../lib/Utils';
 import { STATUS } from '../stores/AppStore';
+import Graph from 'graphology';
 
 const mapStore = ({ dataStore, appStore }: RootStoreModel) => ({
     dataStore,
@@ -26,6 +28,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
         const sigma = useSigma();
         const sigmaGraph = sigma.getGraph();
         const loadGraph = useLoadGraph();
+        const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
         /**
          * Feed graphology with the new dataset:
@@ -41,28 +44,22 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             // console.log('dataset', dataset);
             appStore.setStatus(STATUS.SHAPING);
 
-            const datasetGraph = populateGraph(dataset);
+            let datasetGraph = new Graph();
+            try {
+                datasetGraph = populateGraph(dataset);
+            } catch (e: any) {
+                enqueueSnackbar(e.message, {
+                    variant: 'error',
+                });
+            }
 
             // Check to see if we only want to keep main component
-            if (dataStore.graph.settings.cropToLargestConnectedComponent) {
+            if (dataStore.graph.settings.crop) {
                 cropToLargestConnectedComponent(datasetGraph);
             }
 
-            // Add Colors
-            const COLORS: Record<string, string> = {
-                Commented: '#FA5A3D',
-                Subreddit: '#5A75DB',
-                User: '#5A85AB',
-            };
-            datasetGraph.forEachNode((node, attributes) =>
-                datasetGraph.setNodeAttribute(
-                    node,
-                    'color',
-                    COLORS[attributes.clusterLabel as string]
-                )
-            );
-
-            calculateDegrees(datasetGraph);
+            // calc degrees and colorize
+            calculateDegreesAndColor(datasetGraph);
 
             // assign circular layout to give base positions
             // circular.assign(datasetGraph);
@@ -101,9 +98,17 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                     appStore.setStatus(STATUS.GRAPH_SIMULATED);
                     appStore.setLoading(false);
                     fa2Layout.stop();
-                    fa2Layout.kill();
+                    try {
+                        loadGraph(datasetGraph, true);
+                    } catch (e: any) {
+                        enqueueSnackbar(e.message, {
+                            variant: 'error',
+                            persist: true,
+                        });
+                    }
+                    dataStore.graph.graph.setGraph(datasetGraph);
+                    // fa2Layout.kill();
                     console.log('layout done');
-                    loadGraph(datasetGraph, true);
                     dataStore.graph.setSimulated(true);
                 }, dataStore.graph.settings.runLayoutInMs);
             } else {
@@ -115,18 +120,48 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
         }, [dataStore.data]);
 
         /**
-         * Apply filters to graphology:
+         * This effect should run on if crop is selected, we need to either strip down the graph or create more
          */
         useEffect(() => {
-            // const { clusters, tags } = filters;
-            // graph.forEachNode((node, { cluster, tag }) =>
-            //     graph.setNodeAttribute(
-            //         node,
-            //         'hidden',
-            //         !clusters[cluster] || !tags[tag]
-            //     )
-            // );
-        }, [sigmaGraph, filters]);
+            if (!dataStore.data) {
+                return;
+            }
+            appStore.setStatus(STATUS.SHAPING);
+            appStore.setLoading(true);
+            // const datasetGraph = populateGraph(dataStore.data);
+
+            let graph = dataStore.graph.graph.graph;
+
+            // Check to see if we only want to keep main component
+            if (dataStore.graph.settings.crop) {
+                cropToLargestConnectedComponent(graph);
+            } else {
+                graph = populateGraph(dataStore.data);
+                calculateDegreesAndColor(graph);
+                circlepack.assign(graph);
+                dataStore.graph.graph.setGraph(graph);
+            }
+
+            // calc degrees and colorize
+            // calculateDegreesAndColor(datasetGraph);
+            // circlepack.assign(datasetGraph);
+
+            const fa2Layout = new FA2Layout(graph, {
+                settings: forceAtlas2.inferSettings(graph),
+            });
+
+            appStore.setStatus(STATUS.SIMULATING);
+            fa2Layout.start();
+            setTimeout(() => {
+                appStore.setStatus(STATUS.GRAPH_SIMULATED);
+                appStore.setLoading(false);
+                fa2Layout.stop();
+                // fa2Layout.kill();
+                console.log('layout done');
+                dataStore.graph.setSimulated(true);
+                loadGraph(graph);
+            }, dataStore.graph.settings.runLayoutInMs);
+        }, [dataStore.graph.settings.crop]);
 
         return <>{children}</>;
     }
