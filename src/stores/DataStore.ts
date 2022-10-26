@@ -1,5 +1,4 @@
 import { Instance, types } from 'mobx-state-tree';
-import { uniqBy } from 'lodash';
 import Graph from 'graphology';
 import {
     density,
@@ -22,12 +21,32 @@ import forceAtlas2, {
 } from 'graphology-layout-forceatlas2';
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
-export const GraphologySettings = types.model('GraphologySettings', {
-    runLayoutInMs: 2000,
-    webWorkerLayout: true,
-    iterations: 10,
-    cropToLargestConnectedComponent: false,
-});
+const LocalGraph = types
+    .model({})
+    .volatile((self) => ({
+        graph: new Graph(),
+    }))
+    .actions((self) => ({
+        setGraph(value: Graph) {
+            self.graph = value;
+        },
+    }));
+
+export const GraphologySettings = types
+    .model('GraphologySettings', {
+        runLayoutInMs: 2000,
+        webWorkerLayout: true,
+        iterations: 10,
+        crop: false,
+    })
+    .actions((self) => ({
+        toggleCropped() {
+            self.crop = !self.crop;
+        },
+        toggleWebWorkerLayout() {
+            self.webWorkerLayout = !self.webWorkerLayout;
+        },
+    }));
 
 export const SigmaSettings = types.model('SigmaSettings', {
     labelDensity: 0.07,
@@ -59,6 +78,7 @@ export const GraphStore = types
         layoutSettings: types.frozen(),
         settings: GraphologySettings,
         stats: types.array(GraphStat),
+        graph: LocalGraph,
         simulated: false,
     })
     .actions((self) => ({
@@ -139,7 +159,7 @@ export const DataStore = types
         desc: 'A synthetic dataset of reddit comments, subreddits and usernames.',
         nodeAttributes: types.array(types.string),
         edgeAttributes: types.array(EdgeAttributes),
-        rows: 20000,
+        rows: 2000,
     })
     .actions((self) => ({
         setData(data: any) {
@@ -159,6 +179,7 @@ export const createStore = (): DataStoreModel => {
         }),
         graph: GraphStore.create({
             settings: GraphologySettings.create(),
+            graph: LocalGraph.create(),
         }),
         nodeAttributes: new Array<string>(
             'comment (id)',
