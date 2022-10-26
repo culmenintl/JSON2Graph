@@ -7,6 +7,7 @@
         "preview": "vite preview",
         "roll": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --patch && git push --follow-tags"
     },
+    "license": "MIT",
     "dependencies": {
         "@formkit/auto-animate": "^1.0.0-beta.3",
         "@headlessui/react": "^1.7.2",
