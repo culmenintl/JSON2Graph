@@ -21,14 +21,14 @@ export const ToggleSimulation: FC<{}> = observer(() => {
         } else {
             appStore.setStatus(STATUS.SIMULATING);
         }
-        dataStore.graph.toggleSimulation(sigma);
+        dataStore.graph.toggleSimulation();
     };
     useEffect(() => {
         const interval = setInterval(() => {
             if (dataStore.graph.isSimulating) {
                 sigma.scheduleRefresh();
             }
-        }, 200);
+        }, dataStore.graph.refreshInterval);
         return () => clearInterval(interval);
     }, [dataStore.graph.isSimulating]);
     return (

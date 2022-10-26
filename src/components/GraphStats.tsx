@@ -7,6 +7,7 @@ import { useSigma } from '@react-sigma/core';
 import { GraphRow } from './GraphRow';
 import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
+import { GraphInput } from './GraphInput';
 
 const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
     dataStore,
@@ -27,6 +28,12 @@ const GraphStats: FC<{}> = observer(() => {
                 subtitle="Attributes and settings for the displayed graph"
             />
             <GraphRow label="Description" value={dataStore.desc} />
+            <GraphInput
+                label="Rows"
+                type={'number'}
+                value={dataStore.rows}
+                onChange={dataStore.setRows}
+            />
             <GraphRow label="Nodes" value={graph.order.toString()} />
             <GraphRow label="Edges" value={graph.size.toString()} />
             <GraphRow label="Type" value={graph.type} />
@@ -99,7 +106,7 @@ const GraphStats: FC<{}> = observer(() => {
             <GraphRow label="Rows of Data" value={dataStore.rows.toString()} />
             <GraphRow
                 label="Sample Data Row"
-                pre={SampleJsonData(dataStore.data[0])}
+                preRendered={SampleJsonData(dataStore.data[0])}
             />
             {dataStore.nodeAttributes.map((attribute, index) => {
                 return (
@@ -114,7 +121,7 @@ const GraphStats: FC<{}> = observer(() => {
                 return (
                     <GraphRow
                         label={`Edge Attribute #${index + 1}`}
-                        pre={SampleJsonData(attribute)}
+                        preRendered={SampleJsonData(attribute)}
                         key={index}
                     />
                 );
