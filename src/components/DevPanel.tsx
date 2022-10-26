@@ -70,7 +70,7 @@ const ReloadGraph: FC<{}> = () => {
 export const DevPanel: FC<{}> = () => {
     return (
         <div className="border-1 pb-18 absolute bottom-20 left-0 right-0 mx-auto flex max-h-[75vh] !max-w-xl rounded-lg border border-gray-300 bg-white/50 backdrop-blur-md">
-            <div className="flex flex-col !overflow-y-auto overflow-x-clip !scroll-smooth">
+            <div className="flex w-full flex-col !overflow-y-auto overflow-x-hidden !scroll-smooth">
                 <GraphStats />
                 <DevPanelHeader
                     title="WebGL"
