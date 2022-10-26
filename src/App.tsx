@@ -16,8 +16,6 @@ if (import.meta.env.MODE === 'development') {
 // notistack snackbar
 import { SnackbarProvider } from 'notistack';
 
-// connectReduxDevtools(remotedev, asReduxStore(rootStore));
-
 // padding bottom so the error tray is above the tool tray
 const paddingBottom = 'pb-16';
 
