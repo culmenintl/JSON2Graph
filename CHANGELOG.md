@@ -1,3 +1,9 @@
+#### 0.0.4 (2022-10-26)
+
+##### Bug Fixes
+
+* **ui:**  fixed overflow on dev panel (27eb7fd0)
+
 #### 0.0.3 (2022-10-26)
 
 ##### New Features
