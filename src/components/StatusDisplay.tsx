@@ -4,17 +4,19 @@ import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
 import Loading from './Loading';
 
-const mapStore = ({ appStore }: RootStoreModel) => ({
+const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
     appStore,
+    dataStore,
 });
 
 const StatusDisplay: FC<{}> = observer(() => {
-    const { appStore } = useInject(mapStore);
-    console.log('rendering');
+    const { appStore, dataStore } = useInject(mapStore);
     return (
         <div className="flex flex-grow">
             <div className="mx-3 my-auto w-5 items-center justify-center">
-                {appStore.loading && <Loading size={5} />}
+                {(appStore.loading || dataStore.graph.isSimulating) && (
+                    <Loading size={5} />
+                )}
             </div>
             <div className="flex flex-1">
                 <div className="flex flex-col">

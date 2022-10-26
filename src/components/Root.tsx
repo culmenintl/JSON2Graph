@@ -9,7 +9,7 @@ import {
 import GraphSettingsController from './GraphSettingsController';
 import GraphEventsController from './GraphEventsController';
 import GraphDataController from './GraphDataController';
-import { FiltersState } from '../lib/types';
+import { FiltersState, RedditNode } from '../lib/types';
 import drawLabel from '../lib/canvas-utils';
 
 import LoadingLogo from './LoadingLogo';
@@ -26,6 +26,9 @@ import StatusDisplay from './StatusDisplay';
 
 // notistack
 import { useSnackbar } from 'notistack';
+import { ToggleSimulation } from './ToggleSimulate';
+import Button from './Button';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
 const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
     appStore,
@@ -39,16 +42,28 @@ const Controls: FC<{}> = observer(() => {
                 !justify-between !border-0 !border-gray-300 !bg-gray-300/20 !backdrop-blur-lg`}
         >
             <div className="mx-auto flex w-full !max-w-xl flex-col py-3">
-                <div className="flex flex-row items-center justify-between px-6">
+                <div className="flex flex-row items-center justify-between gap-1 px-1 md:gap-2">
                     <ToggleDev />
+                    <ToggleSimulation />
                     <StatusDisplay />
                     {/* <LayoutForceAtlas2Control
                         settings={dataStore.graph.layoutSettings}
                     /> */}
                     {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
-                    <div className="flex">
+                    <div className="hidden md:flex">
                         <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" />
                     </div>
+
+                    <Button
+                        text="Centrifuge"
+                        icon={
+                            <ArrowTopRightOnSquareIcon
+                                className="h-5 w-5 pl-1"
+                                aria-hidden="true"
+                            />
+                        }
+                        onClick={() => alert('Opening Centrifuge')}
+                    />
                 </div>
             </div>
         </ControlsContainer>
@@ -79,28 +94,32 @@ const Root: FC<{}> = observer(() => {
         appStore.setStatus(STATUS.FETCHING);
 
         // setup async call
-        const fetchData = async () => {
-            const data = await fetch(
-                `${
-                    import.meta.env.VITE_PUBLIC_URL
-                }/reddit.comments.dataset.json`
-            );
+        const fetchData = async (): Promise<void> => {
+            try {
+                const data = await fetch(
+                    `${
+                        import.meta.env.VITE_PUBLIC_URL
+                    }/reddit.comments.dataset.json`
+                );
 
-            const json = await data.json();
-            const subDataset = json.filter(
-                (_: any, index: number) => index < dataStore.rows
-            );
-            dataStore.setData(subDataset);
+                const json: [RedditNode] = await data.json();
+                const subDataset = json.filter(
+                    (_: any, index: number, arr) =>
+                        Math.random() <= dataStore.rows / arr.length
+                );
+                console.log('rows ingested', subDataset.length);
+                dataStore.setData(subDataset);
+            } catch (e: any) {
+                enqueueSnackbar(e.message, {
+                    variant: 'error',
+                    persist: true,
+                });
+            }
         };
 
         try {
             fetchData();
-        } catch (e: any) {
-            enqueueSnackbar(e.message, {
-                variant: 'error',
-                persist: true,
-            });
-        }
+        } catch (e: any) {}
     }, []);
 
     // if (!dataStore.data) return <LoadingLogo />;
@@ -113,11 +132,12 @@ const Root: FC<{}> = observer(() => {
                     ...dataStore.sigma.settings,
                 }}
             >
+                {!dataStore.graph.firstSim && <LoadingLogo />}
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
                 <GraphDataController filters={filtersState} />
                 <div ref={parent}>{appStore.devMode && <DevPanel />}</div>
-                {!dataStore.graph.simulated && <LoadingLogo />}
+
                 <span className="absolute left-0 top-0 p-3 text-sm text-gray-400">
                     Centrifuge Widget Demo - v{APP_VERSION}
                 </span>

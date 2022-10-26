@@ -64,40 +64,20 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             // assign circular layout to give base positions
             // circular.assign(datasetGraph);
             circlepack.assign(datasetGraph);
-            // now that the graph is set up, load it into sigma
-            // loadGraph(datasetGraph);
-
-            // once loaded, we need to simulate the graph so it looks decent
-            const sensibleSettings = forceAtlas2.inferSettings(datasetGraph);
-
-            console.log('settings', sensibleSettings);
-            console.log(
-                'basic graph settings',
-                forceAtlas2.inferSettings(sigmaGraph)
-            );
 
             dataStore.graph.setLayoutSettings(datasetGraph);
+            dataStore.graph.graph.setGraph(datasetGraph);
 
             // check if we want to use an asynchronus web worker layout (live simulation)
             // or if we want to do a blocking simulation
             if (dataStore.graph.settings.webWorkerLayout) {
                 appStore.setStatus(STATUS.SIMULATING);
-                // live simulation
-                const fa2Layout = new FA2Layout(datasetGraph, {
-                    settings: forceAtlas2.inferSettings(datasetGraph),
-                });
-
-                console.log(
-                    'starting layout - runtime: ' +
-                        dataStore.graph.settings.runLayoutInMs
-                );
-
-                fa2Layout.start();
+                dataStore.graph.toggleSimulation(sigma);
 
                 setTimeout(() => {
                     appStore.setStatus(STATUS.GRAPH_SIMULATED);
                     appStore.setLoading(false);
-                    fa2Layout.stop();
+                    dataStore.graph.toggleSimulation(sigma);
                     try {
                         loadGraph(datasetGraph, true);
                     } catch (e: any) {
@@ -109,11 +89,12 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                     dataStore.graph.graph.setGraph(datasetGraph);
                     // fa2Layout.kill();
                     console.log('layout done');
-                    dataStore.graph.setSimulated(true);
                 }, dataStore.graph.settings.runLayoutInMs);
             } else {
                 // blocking synchronus simulation
-                forceAtlas2.assign(datasetGraph, { iterations: 5 });
+                forceAtlas2.assign(datasetGraph, {
+                    iterations: dataStore.graph.settings.iterations,
+                });
             }
 
             return () => sigmaGraph.clear();
@@ -146,19 +127,14 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             // calculateDegreesAndColor(datasetGraph);
             // circlepack.assign(datasetGraph);
 
-            const fa2Layout = new FA2Layout(graph, {
-                settings: forceAtlas2.inferSettings(graph),
-            });
-
+            dataStore.graph.toggleSimulation(sigma);
             appStore.setStatus(STATUS.SIMULATING);
-            fa2Layout.start();
             setTimeout(() => {
                 appStore.setStatus(STATUS.GRAPH_SIMULATED);
                 appStore.setLoading(false);
-                fa2Layout.stop();
+                dataStore.graph.toggleSimulation(sigma);
                 // fa2Layout.kill();
                 console.log('layout done');
-                dataStore.graph.setSimulated(true);
                 loadGraph(graph);
             }, dataStore.graph.settings.runLayoutInMs);
         }, [dataStore.graph.settings.crop]);

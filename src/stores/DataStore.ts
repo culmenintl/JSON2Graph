@@ -79,15 +79,37 @@ export const GraphStore = types
         settings: GraphologySettings,
         stats: types.array(GraphStat),
         graph: LocalGraph,
-        simulated: false,
     })
+    .volatile((self) => ({
+        layout: new FA2Layout(self.graph.graph, {
+            settings: { ...self.layoutSettings },
+        }),
+        isSimulating: false,
+        firstSim: 0,
+    }))
+    .actions((self) => ({
+        toggleSimulation(sigma: Sigma) {
+            console.log('toggle sim');
+            console.log('is currently', self.layout.isRunning());
+            if (self.layout.isRunning()) {
+                self.layout.stop();
+                self.isSimulating = false;
+                if (!self.firstSim) {
+                    self.firstSim = 1;
+                }
+            } else {
+                self.layout = new FA2Layout(self.graph.graph, {
+                    settings: self.layoutSettings,
+                });
+                self.layout.start();
+                self.isSimulating = true;
+            }
+            console.log('is running now', self.layout.isRunning());
+        },
+    }))
     .actions((self) => ({
         setLayoutSettings(graph: Graph) {
             self.layoutSettings = forceAtlas2.inferSettings(graph);
-        },
-        toggleLayout() {},
-        setSimulated(sim: boolean) {
-            self.simulated = sim;
         },
         setStats(graph: Graph) {
             self.stats.push({
@@ -197,6 +219,7 @@ export const createStore = (): DataStoreModel => {
 
 // react hooks to use the context API for fetching root store
 import { useContext, createContext } from 'react';
+import Sigma from 'sigma';
 
 const StoreContext = createContext<DataStoreModel>({} as DataStoreModel);
 
