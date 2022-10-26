@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
 import { useSigma } from '@react-sigma/core';
-import GraphRow from './GraphRow';
+import { GraphRow } from './GraphRow';
 import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
 

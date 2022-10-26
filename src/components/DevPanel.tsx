@@ -2,7 +2,7 @@ import { useSigma } from '@react-sigma/core';
 import { FC } from 'react';
 import Button from './Button';
 import DevPanelHeader from './DevPanelHeader';
-import GraphRow from './GraphRow';
+import { GraphRow } from './GraphRow';
 import GraphStats from './GraphStats';
 
 const LoseContext: FC<{}> = () => {
