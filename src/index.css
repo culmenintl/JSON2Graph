@@ -141,7 +141,7 @@ div.ico > button > * {
     font-family: Lato, sans-serif;
     cursor: pointer;
 } */
-button.btn:hover {
+/* button.btn:hover {
     opacity: var(--hover-opacity);
 }
 button.btn > * {
@@ -174,7 +174,7 @@ ul > li {
  * CAPTIONS PANELS:
  * ****************
  */
-.panel {
+/* .panel {
     background: white;
     padding: 1em;
     border-radius: var(--border-radius);
@@ -251,7 +251,7 @@ ul > li {
     height: 100%;
     background: var(--dark-grey);
     transition: var(--transition);
-}
+} */
 
 /**
  * SEARCH FIELD:
