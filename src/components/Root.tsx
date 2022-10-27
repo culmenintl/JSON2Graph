@@ -111,11 +111,11 @@ const Root: FC<{}> = observer(() => {
                     ...dataStore.sigma.settings,
                 }}
             >
+                <div ref={parent}>{appStore.devMode && <DevPanel />}</div>
                 {!dataStore.graph.firstSim && <LoadingLogo />}
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
                 <GraphDataController filters={filtersState} />
-                <div ref={parent}>{appStore.devMode && <DevPanel />}</div>
 
                 <span className="absolute left-0 top-0 p-3 text-sm text-gray-400">
                     Centrifuge Widget Demo - v{APP_VERSION}
