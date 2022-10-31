@@ -1,54 +1,6 @@
 import { flow, Instance, types } from 'mobx-state-tree';
 import { useContext, createContext } from 'react';
 import { RedditNode } from '../lib/types';
-import Graph from 'graphology';
-import {
-    density,
-    diameter,
-    nodeExtent,
-    edgeExtent,
-    modularity,
-    simpleSize,
-    weightedSize,
-} from 'graphology-metrics/graph';
-
-import {
-    edgeUniformity,
-    stress,
-    neighborhoodPreservation,
-} from 'graphology-metrics/layout-quality';
-
-import forceAtlas2, {
-    ForceAtlas2Settings,
-} from 'graphology-layout-forceatlas2';
-import FA2Layout from 'graphology-layout-forceatlas2/worker';
-
-const LocalGraph = types
-    .model({})
-    .volatile((self) => ({
-        graph: new Graph(),
-    }))
-    .actions((self) => ({
-        setGraph(value: Graph) {
-            self.graph = value;
-        },
-    }));
-
-export const GraphologySettings = types
-    .model('GraphologySettings', {
-        runLayoutInMs: 2000,
-        webWorkerLayout: true,
-        iterations: 10,
-        crop: false,
-    })
-    .actions((self) => ({
-        toggleCropped() {
-            self.crop = !self.crop;
-        },
-        toggleWebWorkerLayout() {
-            self.webWorkerLayout = !self.webWorkerLayout;
-        },
-    }));
 
 export const SigmaSettings = types.model('SigmaSettings', {
     labelDensity: 0.07,
@@ -60,112 +12,13 @@ export const SigmaSettings = types.model('SigmaSettings', {
 });
 
 export const Dataset = types.model('Dataset', {
+    id: types.identifier,
+    pathToConfigFile: './configs/reddit.data.mapping.json',
     url: types.string,
     data: types.frozen(),
     description: types.string,
     attributeToCrop: types.string,
 });
-
-export const GraphStat = types.model('GraphStat', {
-    name: '',
-    val: '',
-    desc: '',
-    url: '',
-});
-
-const WIKI_SEARCH_URL = 'https://en.wikipedia.org/w/index.php?search=Graph';
-
-export const GraphStore = types
-    .model('GraphStore', {
-        layoutSettings: types.frozen(),
-        settings: GraphologySettings,
-        stats: types.array(GraphStat),
-        graph: LocalGraph,
-        refreshInterval: 500,
-    })
-    .volatile((self) => ({
-        layout: new FA2Layout(self.graph.graph, {
-            settings: { ...self.layoutSettings },
-        }),
-        isSimulating: false,
-        firstSim: 0,
-    }))
-    .actions((self) => ({
-        toggleSimulation() {
-            console.log('toggle sim');
-            console.log('is currently', self.layout.isRunning());
-            if (self.layout.isRunning()) {
-                self.layout.stop();
-                self.isSimulating = false;
-                if (!self.firstSim) {
-                    self.firstSim = 1;
-                }
-            } else {
-                self.layout = new FA2Layout(self.graph.graph, {
-                    settings: self.layoutSettings,
-                });
-                self.layout.start();
-                self.isSimulating = true;
-            }
-            console.log('is running now', self.layout.isRunning());
-        },
-    }))
-    .actions((self) => ({
-        setLayoutSettings(graph: Graph) {
-            self.layoutSettings = forceAtlas2.inferSettings(graph);
-        },
-        setStats(graph: Graph) {
-            self.stats.push({
-                name: 'Density',
-                val: density(graph).toString(),
-                desc: 'Density of the given graph',
-                url: WIKI_SEARCH_URL + 'Density',
-            });
-            self.stats.push({
-                name: 'Diameter',
-                val: diameter(graph).toString(),
-                desc: 'Graph Diameter i.e the maximum eccentricity of any node of the given graph.',
-                url: WIKI_SEARCH_URL + 'Diameter',
-            });
-            //@logan broken right now
-            // self.stats.push({
-            //     name: 'Modularity',
-            //     val: modularity(graph).toString(),
-            //     desc: 'Graph Modularity',
-            //     url: WIKI_SEARCH_URL + 'Modularity',
-            // });
-            self.stats.push({
-                name: 'Simple Size',
-                val: simpleSize(graph).toString(),
-                desc: 'Number of edges if we consider the graph simple, even if it has multiple edges between pairs of nodes',
-                url: WIKI_SEARCH_URL + 'Size',
-            });
-            self.stats.push({
-                name: 'Weighted Size',
-                val: weightedSize(graph).toString(),
-                desc: 'the sum of the graph’s edges’ weight, of the given graph',
-                url: WIKI_SEARCH_URL + 'WeightedSize',
-            });
-            self.stats.push({
-                name: 'Edge Uniformity',
-                val: edgeUniformity(graph).toString(),
-                desc: 'Edge uniformity is the normalized standard deviation of edge length of the graph',
-                url: WIKI_SEARCH_URL + 'EdgeUniformity',
-            });
-            self.stats.push({
-                name: 'Neighborhood Preservation',
-                val: neighborhoodPreservation(graph).toString(),
-                desc: 'Neighborhood preservation is the average proportion of node neighborhood being the same both in the graph’s topology and its 2d layout space',
-                url: WIKI_SEARCH_URL + 'NeighborhoodPreservation',
-            });
-            self.stats.push({
-                name: 'Stress',
-                val: stress(graph).toString(),
-                desc: 'Stress is the sum of normalized delta between node topology distances and their layout space distances. Lower values should be synonym of better layout according to this particular metric.',
-                url: WIKI_SEARCH_URL + 'LayoutStress',
-            });
-        },
-    }));
 
 export const SigmaStore = types.model('SigmaStore', {
     settings: SigmaSettings,
@@ -189,17 +42,13 @@ const fetchFromUrl = async (): Promise<[RedditNode]> => {
 export const DataStore = types
     .model('DataStore', {
         sigma: SigmaStore,
-        graph: GraphStore,
-        data: types.frozen(),
-        desc: 'A synthetic dataset of reddit comments, subreddits and usernames.',
-        nodeAttributes: types.array(types.string),
-        edgeAttributes: types.array(EdgeAttributes),
+        dataSet: Dataset,
         rows: 1000,
         state: types.enumeration('State', ['pending', 'done', 'error']),
     })
     .actions((self) => ({
         setData(data: any) {
-            self.data = data;
+            self.dataSet = data;
         },
         setRows(event: React.ChangeEvent<HTMLInputElement>) {
             const val = event.target.value;
@@ -224,7 +73,7 @@ export const DataStore = types
                         Math.random() <= self.rows / arr.length
                 );
                 console.log('rows ingested', subDataset.length);
-                self.data = subDataset;
+                self.dataSet.data = subDataset;
                 self.state = 'done';
             } catch (error) {
                 // ... including try/catch error handling
@@ -245,19 +94,16 @@ export const createStore = (): DataStoreModel => {
         sigma: SigmaStore.create({
             settings: SigmaSettings.create(),
         }),
-        graph: GraphStore.create({
-            settings: GraphologySettings.create(),
-            graph: LocalGraph.create(),
+        dataSet: Dataset.create({
+            id: '',
+            url: `${
+                import.meta.env.VITE_PUBLIC_URL
+            }/reddit.comments.dataset.json`,
+            description:
+                'A synthetic dataset of reddit comments, authors and subreddits',
+            attributeToCrop: '',
         }),
-        nodeAttributes: new Array<string>(
-            'comment (id)',
-            'subreddit',
-            'author'
-        ),
-        edgeAttributes: [
-            { source: 'author', target: 'comment' },
-            { source: 'comment', target: 'subreddit' },
-        ],
+
         state: 'done',
     });
 

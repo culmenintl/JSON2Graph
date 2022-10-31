@@ -10,21 +10,20 @@ import { useSnackbar } from 'notistack';
 
 // layout
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import FA2Layout from 'graphology-layout-forceatlas2/worker';
 import { circular, circlepack } from 'graphology-layout';
 import { cropToLargestConnectedComponent } from 'graphology-components';
 import { calculateDegreesAndColor, populateGraph } from '../lib/Utils';
 import { STATUS } from '../stores/AppStore';
-import Graph from 'graphology';
 
-const mapStore = ({ dataStore, appStore }: RootStoreModel) => ({
+const mapStore = ({ dataStore, appStore, graphStore }: RootStoreModel) => ({
     dataStore,
     appStore,
+    graphStore,
 });
 
 const GraphDataController: FC<{ filters: FiltersState }> = observer(
     ({ filters, children }) => {
-        const { dataStore, appStore } = useInject(mapStore);
+        const { dataStore, appStore, graphStore } = useInject(mapStore);
         const sigma = useSigma();
         const sigmaGraph = sigma.getGraph();
         const loadGraph = useLoadGraph();
@@ -34,19 +33,18 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
          * Feed graphology with the new dataset:
          */
         useEffect(() => {
-            const dataset = dataStore.data;
+            const dataset = dataStore.dataSet.data;
 
             if (!sigmaGraph || !dataset) return;
 
-            const clusters = keyBy(dataset.clusters, 'key');
-            const tags = keyBy(dataset.tags, 'key');
+            // const clusters = keyBy(dataset.clusters, 'key');
+            // const tags = keyBy(dataset.tags, 'key');
 
             // console.log('dataset', dataset);
             appStore.setStatus(STATUS.SHAPING);
 
-            let datasetGraph = new Graph();
             try {
-                datasetGraph = populateGraph(dataset);
+                populateGraph(sigmaGraph, dataset);
             } catch (e: any) {
                 enqueueSnackbar(e.message, {
                     variant: 'error',
@@ -54,90 +52,88 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             }
 
             // Check to see if we only want to keep main component
-            if (dataStore.graph.settings.crop) {
-                cropToLargestConnectedComponent(datasetGraph);
+            if (graphStore.settings.crop) {
+                cropToLargestConnectedComponent(sigmaGraph);
             }
 
             // calc degrees and colorize
-            calculateDegreesAndColor(datasetGraph);
+            calculateDegreesAndColor(sigmaGraph);
 
             // assign circular layout to give base positions
             // circular.assign(datasetGraph);
-            circlepack.assign(datasetGraph);
+            circlepack.assign(sigmaGraph);
 
-            dataStore.graph.setLayoutSettings(datasetGraph);
-            dataStore.graph.graph.setGraph(datasetGraph);
+            graphStore.setLayoutSettings(sigmaGraph);
+            graphStore.setGraph(sigmaGraph);
 
             // check if we want to use an asynchronus web worker layout (live simulation)
             // or if we want to do a blocking simulation
-            if (dataStore.graph.settings.webWorkerLayout) {
+            if (graphStore.settings.webWorkerLayout) {
                 appStore.setStatus(STATUS.SIMULATING);
-                dataStore.graph.toggleSimulation();
+                graphStore.toggleSimulation();
 
                 setTimeout(() => {
                     appStore.setStatus(STATUS.GRAPH_SIMULATED);
                     appStore.setLoading(false);
-                    dataStore.graph.toggleSimulation();
+                    graphStore.toggleSimulation();
                     try {
-                        loadGraph(datasetGraph, true);
+                        loadGraph(sigmaGraph, true);
                     } catch (e: any) {
                         enqueueSnackbar(e.message, {
                             variant: 'error',
                             persist: true,
                         });
                     }
-                    dataStore.graph.graph.setGraph(datasetGraph);
+                    graphStore.setGraph(sigmaGraph);
                     // fa2Layout.kill();
                     console.log('layout done');
-                }, dataStore.graph.settings.runLayoutInMs);
+                }, graphStore.settings.runLayoutInMs);
             } else {
                 // blocking synchronus simulation
-                forceAtlas2.assign(datasetGraph, {
-                    iterations: dataStore.graph.settings.iterations,
+                forceAtlas2.assign(sigmaGraph, {
+                    iterations: graphStore.settings.iterations,
                 });
             }
 
             return () => sigmaGraph.clear();
-        }, [dataStore.data]);
+        }, [dataStore.dataSet]);
 
         /**
          * This effect should run on if crop is selected, we need to either strip down the graph or create more
          */
         useEffect(() => {
-            if (!dataStore.data) {
+            if (!dataStore.dataSet || !graphStore.graph) {
                 return;
             }
             appStore.setStatus(STATUS.SHAPING);
             appStore.setLoading(true);
             // const datasetGraph = populateGraph(dataStore.data);
 
-            let graph = dataStore.graph.graph.graph;
-
             // Check to see if we only want to keep main component
-            if (dataStore.graph.settings.crop) {
-                cropToLargestConnectedComponent(graph);
+            if (graphStore.settings.crop && graphStore.graph) {
+                cropToLargestConnectedComponent(graphStore.graph);
             } else {
-                graph = populateGraph(dataStore.data);
-                calculateDegreesAndColor(graph);
-                circlepack.assign(graph);
-                dataStore.graph.graph.setGraph(graph);
+                populateGraph(graphStore.graph, dataStore.dataSet.data);
+                calculateDegreesAndColor(graphStore.graph);
+                circlepack.assign(graphStore.graph);
             }
 
             // calc degrees and colorize
             // calculateDegreesAndColor(datasetGraph);
             // circlepack.assign(datasetGraph);
 
-            dataStore.graph.toggleSimulation();
+            graphStore.toggleSimulation();
             appStore.setStatus(STATUS.SIMULATING);
             setTimeout(() => {
                 appStore.setStatus(STATUS.GRAPH_SIMULATED);
                 appStore.setLoading(false);
-                dataStore.graph.toggleSimulation();
+                graphStore.toggleSimulation();
                 // fa2Layout.kill();
                 console.log('layout done');
-                loadGraph(graph);
-            }, dataStore.graph.settings.runLayoutInMs);
-        }, [dataStore.graph.settings.crop]);
+                if (!graphStore.graph) return;
+                loadGraph(graphStore.graph);
+            }, graphStore.settings.runLayoutInMs);
+        }, [graphStore.settings.crop]);
 
         return <>{children}</>;
     }
