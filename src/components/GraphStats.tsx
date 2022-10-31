@@ -106,7 +106,7 @@ const GraphStats: FC<{}> = observer(() => {
             <GraphRow label="Rows of Data" value={dataStore.rows.toString()} />
             <GraphRow
                 label="Sample Data Row"
-                preRendered={SampleJsonData(dataStore.data[0])}
+                preRendered={SampleJsonData(dataStore.dataSet[0])}
             />
             {dataStore.nodeAttributes.map((attribute, index) => {
                 return (

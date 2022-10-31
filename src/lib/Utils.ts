@@ -1,49 +1,73 @@
 import Graph from 'graphology';
 import { RedditNode } from './types';
 
+import redditConfig from '../../configs/reddit.data.mapping.json';
+
+// let dataArray = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+
 export const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
 };
 
-export const populateGraph = (data: [RedditNode]): Graph => {
-    const graph: Graph = new Graph();
-    data.forEach((node: RedditNode, index: number) => {
-        // Create the commment body nodes, keyed off row id
-        const comment = node.id;
-        const subreddit = node.subreddit_id;
-        const author = node.author;
+export type DataToGraphConfig = {
+    id: string;
+    url: string;
+    nodes: NodeConfig[];
+};
 
-        if (!graph.hasNode(comment)) {
-            graph.addNode(comment, {
-                label: node.body,
-                tag: author,
-                clusterLabel: 'Commented',
-                ...node,
-            });
-        }
-
-        // Create the subreddit nodes
-        if (!graph.hasNode(subreddit)) {
-            graph.addNode(subreddit, {
-                label: node.subreddit,
-                clusterLabel: 'Subreddit',
-                ...node,
-            });
-        }
-        // Create the author nodes
-        // first param is key followed by all attributes in the RedditNode
-        if (!graph.hasNode(author)) {
-            graph.addNode(author, {
-                label: author,
-                clusterLabel: 'User',
-                ...node,
-            });
-        }
+export const populateGraph = (graph: Graph, data: [unknown]): Graph => {
+    data.forEach((node: unknown) => {
+        redditConfig.nodes.forEach((config: NodeConfig) => {
+            addRowToGraph(graph, node, config);
+        });
 
         // now create the edges between author/comment and comment/subreddit
-        graph.addEdge(author, comment);
-        graph.addEdge(comment, subreddit);
+        // graph.addEdge(author, comment);
+        // graph.addEdge(comment, subreddit);
     });
+
+    return graph;
+};
+
+export interface GraphNode extends NodeIdConfig {
+    id: string;
+    label?: string;
+    tag?: string;
+    clusterLabel?: string;
+}
+
+export interface NodeConfig extends NodeIdConfig {
+    idAttr: string;
+    labelAttr?: string;
+    tagAttr?: string;
+    clusterLabel?: string;
+}
+
+interface NodeIdConfig {
+    [key: string]: string | number | undefined;
+}
+
+export const addRowToGraph = (
+    graph: Graph = new Graph(),
+    row: any,
+    config: NodeConfig
+): Graph => {
+    if (!row || !config) {
+        throw new Error('Please include required params.');
+    }
+
+    if (!row[config.idAttr]) {
+        throw new Error('Unable to find property with id attribute given.');
+    }
+
+    if (!graph.hasNode(row[config.idAttr])) {
+        graph.addNode(row[config.idAttr], {
+            ...(config.labelAttr && { label: row[config.labelAttr] }),
+            ...(config.tagAttr && { tag: row[config.tagAttr] }),
+            ...(config.clusterLabel && { clusterLabel: config.clusterLabel }),
+            ...row,
+        });
+    }
 
     return graph;
 };

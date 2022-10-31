@@ -30,9 +30,10 @@ import { ToggleSimulation } from './ToggleSimulate';
 import Button from './Button';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
-const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
+const mapStore = ({ appStore, dataStore, graphStore }: RootStoreModel) => ({
     appStore,
     dataStore,
+    graphStore,
 });
 
 const Controls: FC<{}> = observer(() => {
@@ -87,7 +88,7 @@ const Root: FC<{}> = observer(() => {
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
     // mobx
-    const { dataStore, appStore } = useInject(mapStore);
+    const { dataStore, appStore, graphStore } = useInject(mapStore);
 
     // Load data on mount:
     useEffect(() => {
@@ -112,7 +113,7 @@ const Root: FC<{}> = observer(() => {
                 }}
             >
                 <div ref={parent}>{appStore.devMode && <DevPanel />}</div>
-                {!dataStore.graph.firstSim && <LoadingLogo />}
+                {!graphStore.firstSim && <LoadingLogo />}
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
                 <GraphDataController filters={filtersState} />

@@ -1,0 +1,22 @@
+{
+    "data_id": "reddit",
+    "url": "http://localhost:1337/reddit.comments.dataset.json",
+    "nodes": [
+        {
+            "idAttr": "id",
+            "labelAttr": "body",
+            "tagAttr": "author",
+            "clusterLabel": "Commented"
+        },
+        {
+            "idAttr": "subreddit_id",
+            "labelAttr": "subreddit",
+            "clusterLabel": "Subreddit"
+        },
+        {
+            "idAttr": "author",
+            "labelAttr": "author",
+            "clusterLabel": "User"
+        }
+    ]
+}

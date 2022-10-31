@@ -31,9 +31,7 @@ export type AppStoreModel = Instance<typeof AppStore>;
 
 // creates the store, giving it some initial values
 export const createStore = (): AppStoreModel => {
-    const appStore = AppStore.create({});
-
-    return appStore;
+    return AppStore.create({});
 };
 
 // react hooks to use the context API for fetching root store
