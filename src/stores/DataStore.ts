@@ -1,4 +1,5 @@
 import { flow, Instance, types } from 'mobx-state-tree';
+// react hooks to use the context API for fetching root store
 import { useContext, createContext } from 'react';
 import { RedditNode } from '../lib/types';
 
@@ -38,6 +39,7 @@ const fetchFromUrl = async (): Promise<[RedditNode]> => {
 
     return json;
 };
+
 // DataStore, handles the
 export const DataStore = types
     .model('DataStore', {
@@ -48,7 +50,7 @@ export const DataStore = types
     })
     .actions((self) => ({
         setData(data: any) {
-            self.dataSet = data;
+            self.dataSet.data = data;
         },
         setRows(event: React.ChangeEvent<HTMLInputElement>) {
             const val = event.target.value;

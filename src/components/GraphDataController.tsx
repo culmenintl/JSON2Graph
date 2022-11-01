@@ -76,15 +76,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                     appStore.setStatus(STATUS.GRAPH_SIMULATED);
                     appStore.setLoading(false);
                     graphStore.toggleSimulation();
-                    try {
-                        loadGraph(sigmaGraph, true);
-                    } catch (e: any) {
-                        enqueueSnackbar(e.message, {
-                            variant: 'error',
-                            persist: true,
-                        });
-                    }
-                    graphStore.setGraph(sigmaGraph);
+                    // graphStore.setGraph(sigmaGraph);
                     // fa2Layout.kill();
                     console.log('layout done');
                 }, graphStore.settings.runLayoutInMs);
@@ -96,7 +88,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             }
 
             return () => sigmaGraph.clear();
-        }, [dataStore.dataSet]);
+        }, [dataStore.dataSet.data]);
 
         /**
          * This effect should run on if crop is selected, we need to either strip down the graph or create more
@@ -128,10 +120,9 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                 appStore.setStatus(STATUS.GRAPH_SIMULATED);
                 appStore.setLoading(false);
                 graphStore.toggleSimulation();
-                // fa2Layout.kill();
                 console.log('layout done');
-                if (!graphStore.graph) return;
-                loadGraph(graphStore.graph);
+                // if (!graphStore.graph) return;
+                // loadGraph(graphStore.graph);
             }, graphStore.settings.runLayoutInMs);
         }, [graphStore.settings.crop]);
 

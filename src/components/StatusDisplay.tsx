@@ -4,17 +4,18 @@ import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
 import Loading from './Loading';
 
-const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
+const mapStore = ({ appStore, dataStore, graphStore }: RootStoreModel) => ({
     appStore,
     dataStore,
+    graphStore,
 });
 
 const StatusDisplay: FC<{}> = observer(() => {
-    const { appStore, dataStore } = useInject(mapStore);
+    const { appStore, dataStore, graphStore } = useInject(mapStore);
     return (
         <div className="flex flex-grow gap-1">
             <div className="my-auto w-5 items-center justify-center">
-                {(appStore.loading || dataStore.graph.isSimulating) && (
+                {(appStore.loading || graphStore.isSimulating) && (
                     <Loading size={5} />
                 )}
             </div>
@@ -22,8 +23,7 @@ const StatusDisplay: FC<{}> = observer(() => {
                 <div className="flex flex-col">
                     <span
                         className={`text-md text-gray-500 ${
-                            (appStore.loading ||
-                                dataStore.graph.isSimulating) &&
+                            (appStore.loading || graphStore.isSimulating) &&
                             'animate-pulse'
                         }`}
                     >

@@ -1,5 +1,4 @@
 import Graph from 'graphology';
-import { RedditNode } from './types';
 
 import redditConfig from '../../configs/reddit.data.mapping.json';
 
@@ -13,47 +12,48 @@ export type DataToGraphConfig = {
     id: string;
     url: string;
     nodes: NodeConfig[];
+    edges: EdgeConfig[];
 };
 
-export const populateGraph = (graph: Graph, data: [unknown]): Graph => {
-    data.forEach((node: unknown) => {
-        redditConfig.nodes.forEach((config: NodeConfig) => {
-            addRowToGraph(graph, node, config);
-        });
-
-        // now create the edges between author/comment and comment/subreddit
-        // graph.addEdge(author, comment);
-        // graph.addEdge(comment, subreddit);
-    });
-
-    return graph;
-};
-
-export interface GraphNode extends NodeIdConfig {
-    id: string;
-    label?: string;
-    tag?: string;
-    clusterLabel?: string;
-}
-
-export interface NodeConfig extends NodeIdConfig {
+export interface NodeConfig extends ID_CONFIG {
     idAttr: string;
     labelAttr?: string;
     tagAttr?: string;
     clusterLabel?: string;
 }
+export interface EdgeConfig extends ID_CONFIG {
+    sourceNodeId: string;
+    targetNodeId: string;
+    edgeLabel?: string;
+}
 
-interface NodeIdConfig {
+interface ID_CONFIG {
     [key: string]: string | number | undefined;
 }
 
-export const addRowToGraph = (
+export const populateGraph = (graph: Graph, data: [unknown]): Graph => {
+    data.forEach((row: unknown) => {
+        // for every row, add a node for each node configuration in config file
+        redditConfig.nodes.forEach((config: NodeConfig) => {
+            addNodeToGraph(graph, row, config);
+        });
+
+        // now create the edges of the graph, given the edge config
+        redditConfig.edges.forEach((config: EdgeConfig) => {
+            addEdgesToGraph(graph, row, config);
+        });
+    });
+
+    return graph;
+};
+
+export const addNodeToGraph = (
     graph: Graph = new Graph(),
     row: any,
     config: NodeConfig
 ): Graph => {
     if (!row || !config) {
-        throw new Error('Please include required params.');
+        throw new Error('Please include required node params.');
     }
 
     if (!row[config.idAttr]) {
@@ -69,6 +69,27 @@ export const addRowToGraph = (
         });
     }
 
+    return graph;
+};
+
+export const addEdgesToGraph = (
+    graph: Graph,
+    row: any,
+    config: EdgeConfig
+): Graph => {
+    if (!row || !config) {
+        throw new Error('Please include required edge params.');
+    }
+
+    if (!graph.hasNode(row[config.sourceNodeId])) {
+        throw new Error('Unable to find source node with id given.');
+    }
+
+    if (!graph.hasNode(row[config.targetNodeId])) {
+        throw new Error('Unable to find target node with id given.');
+    }
+
+    graph.addEdge(row[config.sourceNodeId], row[config.targetNodeId]);
     return graph;
 };
 
@@ -100,20 +121,3 @@ export const calculateDegreesAndColor = (graph: Graph) => {
         );
     });
 };
-
-// currently calculated above
-// export const applyColor = (graph: Graph) => {
-//     // Add Colors
-//     const COLORS: Record<string, string> = {
-//         Commented: '#FA5A3D',
-//         Subreddit: '#5A75DB',
-//         User: '#5A85AB',
-//     };
-//     graph.forEachNode((node, attributes) =>
-//         graph.setNodeAttribute(
-//             node,
-//             'color',
-//             COLORS[attributes.clusterLabel as string]
-//         )
-//     );
-// };
