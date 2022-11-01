@@ -54,7 +54,7 @@ const WIKI_SEARCH_URL = 'https://en.wikipedia.org/w/index.php?search=Graph';
 interface VolatileTypes {
     layout: FA2Layout;
     graph: Graph;
-    isSimulating: false;
+    isSimulating: boolean;
     firstSim: 0;
 }
 
@@ -76,8 +76,8 @@ export const GraphStore = types
             console.log('toggle sim');
 
             console.log('is currently', self.isSimulating);
-            if (!self.layout) return;
-            if (self.isSimulating) {
+
+            if (self.isSimulating && self.layout) {
                 self.layout.stop();
                 self.isSimulating = false;
                 if (!self.firstSim) {

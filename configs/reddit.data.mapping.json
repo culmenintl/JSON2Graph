@@ -3,20 +3,35 @@
     "url": "http://localhost:1337/reddit.comments.dataset.json",
     "nodes": [
         {
+            "name": "comment",
             "idAttr": "id",
             "labelAttr": "body",
             "tagAttr": "author",
             "clusterLabel": "Commented"
         },
         {
+            "name": "subreddit",
             "idAttr": "subreddit_id",
             "labelAttr": "subreddit",
             "clusterLabel": "Subreddit"
         },
         {
+            "name": "author",
             "idAttr": "author",
             "labelAttr": "author",
             "clusterLabel": "User"
+        }
+    ],
+    "edges": [
+        {
+            "sourceNodeId": "author",
+            "targetNodeId": "id",
+            "edgeLabel": "commented"
+        },
+        {
+            "sourceNodeId": "id",
+            "targetNodeId": "subreddit_id",
+            "edgeLabel": "commented in"
         }
     ]
 }
