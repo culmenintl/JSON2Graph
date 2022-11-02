@@ -9,7 +9,8 @@ import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
 import { GraphInput } from './GraphInput';
 
-const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
+const mapStore = ({ graphStore, dataStore }: RootStoreModel) => ({
+    graphStore,
     dataStore,
 });
 
@@ -19,32 +20,48 @@ const SampleJsonData = (data: Object) => (
 
 const GraphStats: FC<{}> = observer(() => {
     const sigma = useSigma();
-    const graph = sigma.getGraph();
-    const { dataStore } = useInject(mapStore);
+    const { dataStore, graphStore } = useInject(mapStore);
     return (
         <>
             <DevPanelHeader
                 title="Graph Information"
                 subtitle="Attributes and settings for the displayed graph"
             />
-            <GraphRow label="Description" value={dataStore.desc} />
+            <GraphRow
+                label="Description"
+                value={dataStore.dataSet.description}
+            />
             <GraphInput
                 label="Rows"
                 type={'number'}
                 value={dataStore.rows}
                 onChange={dataStore.setRows}
             />
-            <GraphRow label="Nodes" value={graph.order.toString()} />
-            <GraphRow label="Edges" value={graph.size.toString()} />
-            <GraphRow label="Type" value={graph.type} />
-            <GraphRow label="Parallel Edges" value={new String(graph.multi)} />
+            <GraphRow
+                label="Nodes"
+                value={graphStore.graph?.order.toString()}
+            />
+            <GraphRow label="Edges" value={graphStore.graph?.size.toString()} />
+            <GraphRow
+                label="Rows of Data"
+                value={dataStore.dataSet.data.length.toString()}
+            />
+            <GraphRow
+                label="Sample Data Row"
+                preRendered={SampleJsonData(dataStore.dataSet.data[0])}
+            />
+            <GraphRow label="Graph Type" value={graphStore.graph?.type} />
+            <GraphRow
+                label="Parallel Edges"
+                value={new String(graphStore.graph?.multi)}
+            />
             <GraphRow
                 label="Allows Self Loops"
-                value={new String(graph.allowSelfLoops)}
+                value={new String(graphStore.graph?.allowSelfLoops)}
             />
             <GraphRow
                 label="Self Loops Count"
-                value={new String(graph.selfLoopCount)}
+                value={new String(graphStore.graph?.selfLoopCount)}
             />
             <GraphRow
                 label="WebWorker Simulation"
@@ -52,26 +69,24 @@ const GraphStats: FC<{}> = observer(() => {
                     <ToggleSwitch
                         sr="WebWorker Simulation"
                         disabled={true}
-                        enabled={dataStore.graph.settings.webWorkerLayout}
+                        enabled={graphStore.settings.webWorkerLayout}
                         onChange={() =>
-                            dataStore.graph.settings.toggleWebWorkerLayout()
+                            graphStore.settings.toggleWebWorkerLayout()
                         }
                     />
                 }
             />
             <GraphRow
                 label="Simulation Time"
-                value={dataStore.graph.settings.runLayoutInMs.toString() + 'ms'}
+                value={graphStore.settings.runLayoutInMs.toString() + 'ms'}
             />
             <GraphRow
                 label="Crop Non Connected"
                 value={
                     <ToggleSwitch
                         sr="Crop Non Connected"
-                        enabled={dataStore.graph.settings.crop}
-                        onChange={() =>
-                            dataStore.graph.settings.toggleCropped()
-                        }
+                        enabled={graphStore.settings.crop}
+                        onChange={() => graphStore.settings.toggleCropped()}
                     />
                 }
             />
@@ -86,29 +101,25 @@ const GraphStats: FC<{}> = observer(() => {
                         text={'Compute Stats'}
                         onClick={() => {
                             console.log('computing stats');
-                            dataStore.graph.setStats(graph);
+                            graphStore.setStats(graphStore.graph);
                         }}
                     />
                 }
             />
-            {dataStore.graph.stats.map((val, index) => (
+            {graphStore.stats.map((val, index) => (
                 <GraphRow label={val.name} value={val.val} key={index} />
             ))}
 
-            <div className="self-start px-4 py-5 sm:px-6">
+            {/* <div className="self-start px-4 py-5 sm:px-6">
                 <h3 className="text-left text-lg font-medium leading-6 text-gray-900">
                     Data
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
                     Attributes and settings for the displayed graph data
                 </p>
-            </div>
-            <GraphRow label="Rows of Data" value={dataStore.rows.toString()} />
-            <GraphRow
-                label="Sample Data Row"
-                preRendered={SampleJsonData(dataStore.dataSet[0])}
-            />
-            {dataStore.nodeAttributes.map((attribute, index) => {
+            </div> */}
+
+            {/* {dataStore.nodeAttributes.map((attribute, index) => {
                 return (
                     <GraphRow
                         label={`Node Attribute #${index + 1}`}
@@ -125,7 +136,7 @@ const GraphStats: FC<{}> = observer(() => {
                         key={index}
                     />
                 );
-            })}
+            })} */}
         </>
     );
 });
