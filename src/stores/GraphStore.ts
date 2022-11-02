@@ -101,7 +101,8 @@ export const GraphStore = types
         setLayoutSettings(graph: Graph) {
             self.layoutSettings = forceAtlas2.inferSettings(graph);
         },
-        setStats(graph: Graph) {
+        setStats(graph: Graph | undefined) {
+            if (!graph) return;
             self.stats.push({
                 name: 'Density',
                 val: density(graph).toString(),

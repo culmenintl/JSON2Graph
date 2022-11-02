@@ -3,6 +3,8 @@ import { flow, Instance, types } from 'mobx-state-tree';
 import { useContext, createContext } from 'react';
 import { RedditNode } from '../lib/types';
 
+import { DatasetConfigs } from '../lib/Utils';
+
 export const SigmaSettings = types.model('SigmaSettings', {
     labelDensity: 0.07,
     labelGridCellSize: 60,
@@ -18,7 +20,6 @@ export const Dataset = types.model('Dataset', {
     url: types.string,
     data: types.frozen(),
     description: types.string,
-    attributeToCrop: types.string,
 });
 
 export const SigmaStore = types.model('SigmaStore', {
@@ -30,22 +31,20 @@ export const EdgeAttributes = types.model('EdgeAttributes', {
     target: types.string,
 });
 
-const fetchFromUrl = async (): Promise<[RedditNode]> => {
-    const data = await fetch(
-        `${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.dataset.json`
-    );
+const fetchFromUrl = async (url: string): Promise<[unknown]> => {
+    const data = await fetch(url);
 
-    const json: [RedditNode] = await data.json();
+    const json: [unknown] = await data.json();
 
     return json;
 };
 
-// DataStore, handles the
+// DataStore
 export const DataStore = types
     .model('DataStore', {
         sigma: SigmaStore,
         dataSet: Dataset,
-        rows: 1000,
+        rows: 2000,
         state: types.enumeration('State', ['pending', 'done', 'error']),
     })
     .actions((self) => ({
@@ -68,7 +67,7 @@ export const DataStore = types
             try {
                 // ... yield can be used in async/await style
 
-                const data: [RedditNode] = yield fetchFromUrl();
+                const data: [RedditNode] = yield fetchFromUrl(self.dataSet.url);
 
                 const subDataset = data.filter(
                     (_: any, index: number, arr) =>
@@ -91,19 +90,17 @@ export type DataStoreModel = Instance<typeof DataStore>;
 export type SigmaSettingsModel = Instance<typeof SigmaSettings>;
 
 // creates the store, giving it some initial values
-export const createStore = (): DataStoreModel => {
+export const createStore = (config: DatasetConfigs): DataStoreModel => {
     const dataStore = DataStore.create({
         sigma: SigmaStore.create({
             settings: SigmaSettings.create(),
         }),
         dataSet: Dataset.create({
-            id: '',
-            url: `${
-                import.meta.env.VITE_PUBLIC_URL
-            }/reddit.comments.dataset.json`,
-            description:
-                'A synthetic dataset of reddit comments, authors and subreddits',
-            attributeToCrop: '',
+            id: config.datasets[0].id,
+            url: config.datasets[0].url,
+            description: config.datasets[0].description
+                ? config.datasets[0].description
+                : 'No Description.',
         }),
 
         state: 'done',

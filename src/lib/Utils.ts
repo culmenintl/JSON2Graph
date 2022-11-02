@@ -1,16 +1,21 @@
 import Graph from 'graphology';
 
-import redditConfig from '../../configs/reddit.data.mapping.json';
-
 // let dataArray = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+
+import config from '../../configs/data.mapping.json';
 
 export const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
 };
 
+export type DatasetConfigs = {
+    datasets: DataToGraphConfig[];
+};
+
 export type DataToGraphConfig = {
     id: string;
     url: string;
+    description?: string;
     nodes: NodeConfig[];
     edges: EdgeConfig[];
 };
@@ -31,15 +36,19 @@ interface ID_CONFIG {
     [key: string]: string | number | undefined;
 }
 
-export const populateGraph = (graph: Graph, data: [unknown]): Graph => {
+export const populateGraph = (
+    graph: Graph,
+    data: [unknown],
+    config: DatasetConfigs
+): Graph => {
     data.forEach((row: unknown) => {
         // for every row, add a node for each node configuration in config file
-        redditConfig.nodes.forEach((config: NodeConfig) => {
+        config.datasets[0].nodes.forEach((config: NodeConfig) => {
             addNodeToGraph(graph, row, config);
         });
 
         // now create the edges of the graph, given the edge config
-        redditConfig.edges.forEach((config: EdgeConfig) => {
+        config.datasets[0].edges.forEach((config: EdgeConfig) => {
             addEdgesToGraph(graph, row, config);
         });
     });

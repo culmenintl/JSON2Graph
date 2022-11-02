@@ -15,6 +15,8 @@ import { cropToLargestConnectedComponent } from 'graphology-components';
 import { calculateDegreesAndColor, populateGraph } from '../lib/Utils';
 import { STATUS } from '../stores/AppStore';
 
+import config from '../../configs/data.mapping.json';
+
 const mapStore = ({ dataStore, appStore, graphStore }: RootStoreModel) => ({
     dataStore,
     appStore,
@@ -44,7 +46,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             appStore.setStatus(STATUS.SHAPING);
 
             try {
-                populateGraph(sigmaGraph, dataset);
+                populateGraph(sigmaGraph, dataset, config);
             } catch (e: any) {
                 enqueueSnackbar(e.message, {
                     variant: 'error',
@@ -91,23 +93,23 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
         }, [dataStore.dataSet.data]);
 
         /**
-         * This effect should run on if crop is selected, we need to either strip down the graph or create more
+         * This effect should run on if crop is selected, we need to either strip down the graph or create reload
          */
         useEffect(() => {
             if (!dataStore.dataSet || !graphStore.graph) {
                 return;
             }
-            appStore.setStatus(STATUS.SHAPING);
-            appStore.setLoading(true);
+            // appStore.setStatus(STATUS.SHAPING);
+            // appStore.setLoading(true);
             // const datasetGraph = populateGraph(dataStore.data);
 
-            // Check to see if we only want to keep main component
+            // if graph already exists, then crop it else, clear it and reload
             if (graphStore.settings.crop && graphStore.graph) {
                 cropToLargestConnectedComponent(graphStore.graph);
             } else {
-                populateGraph(graphStore.graph, dataStore.dataSet.data);
-                calculateDegreesAndColor(graphStore.graph);
-                circlepack.assign(graphStore.graph);
+                sigmaGraph.clear();
+                dataStore.fetchData();
+                return;
             }
 
             // calc degrees and colorize
@@ -121,8 +123,6 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                 appStore.setLoading(false);
                 graphStore.toggleSimulation();
                 console.log('layout done');
-                // if (!graphStore.graph) return;
-                // loadGraph(graphStore.graph);
             }, graphStore.settings.runLayoutInMs);
         }, [graphStore.settings.crop]);
 
