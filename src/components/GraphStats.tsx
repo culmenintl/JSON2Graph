@@ -9,9 +9,10 @@ import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
 import { GraphInput } from './GraphInput';
 
-const mapStore = ({ graphStore, dataStore }: RootStoreModel) => ({
+const mapStore = ({ graphStore, dataStore, appStore }: RootStoreModel) => ({
     graphStore,
     dataStore,
+    appStore,
 });
 
 const SampleJsonData = (data: Object) => (
@@ -20,7 +21,7 @@ const SampleJsonData = (data: Object) => (
 
 const GraphStats: FC<{}> = observer(() => {
     const sigma = useSigma();
-    const { dataStore, graphStore } = useInject(mapStore);
+    const { dataStore, graphStore, appStore } = useInject(mapStore);
     return (
         <>
             <DevPanelHeader
@@ -86,7 +87,10 @@ const GraphStats: FC<{}> = observer(() => {
                     <ToggleSwitch
                         sr="Crop Non Connected"
                         enabled={graphStore.settings.crop}
-                        onChange={() => graphStore.settings.toggleCropped()}
+                        onChange={() => {
+                            appStore.toggleDevMode();
+                            graphStore.settings.toggleCropped();
+                        }}
                     />
                 }
             />
