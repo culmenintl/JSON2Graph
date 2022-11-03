@@ -1,3 +1,18 @@
+#### 0.0.5 (2022-11-03)
+
+##### New Features
+
+* **ui:**
+  *  Added yelp dataset with config description (e8ef67a1)
+  *  closed dev panel on crop click (670e9593)
+* **state:**
+  *  further refined app to populate from config file on load (04416e06)
+  *  updated graph creation code to read from config file and populate graph (c80ab5cd)
+
+##### Bug Fixes
+
+* **ui:**  small fixes (68bc748a)
+
 #### 0.0.4 (2022-10-26)
 
 ##### Bug Fixes
