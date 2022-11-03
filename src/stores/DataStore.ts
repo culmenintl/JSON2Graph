@@ -53,12 +53,8 @@ export const DataStore = types
         },
         setRows(event: React.ChangeEvent<HTMLInputElement>) {
             const val = event.target.value;
-            console.log('val', val);
-            console.log('val', typeof val);
             if (val) {
                 self.rows = parseInt(event.target.value);
-            } else {
-                self.rows = 0;
             }
         },
         fetchData: flow(function* fetchData() {
@@ -69,10 +65,12 @@ export const DataStore = types
 
                 const data: [RedditNode] = yield fetchFromUrl(self.dataSet.url);
 
-                const subDataset = data.filter(
-                    (_: any, index: number, arr) =>
-                        Math.random() <= self.rows / arr.length
-                );
+                const subDataset = data.filter((_: any, index: number, arr) => {
+                    if (self.rows === 0) {
+                        self.rows = arr.length;
+                    }
+                    return Math.random() <= self.rows / arr.length;
+                });
                 console.log('rows ingested', subDataset.length);
                 self.dataSet.data = subDataset;
                 self.state = 'done';
@@ -96,10 +94,10 @@ export const createStore = (config: DatasetConfigs): DataStoreModel => {
             settings: SigmaSettings.create(),
         }),
         dataSet: Dataset.create({
-            id: config.datasets[0].id,
-            url: config.datasets[0].url,
-            description: config.datasets[0].description
-                ? config.datasets[0].description
+            id: config.datasets[1].id,
+            url: config.datasets[1].url,
+            description: config.datasets[1].description
+                ? config.datasets[1].description
                 : 'No Description.',
         }),
 

@@ -1,8 +1,16 @@
 import Graph from 'graphology';
 
-// let dataArray = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
-
-import config from '../../configs/data.mapping.json';
+export const COLOR_PALETTE = [
+    '#9b7ad8',
+    '#8892a2',
+    '#758cec',
+    '#4d9dce',
+    '#3eb574',
+    '#cb7519',
+    '#d7674b',
+    '#dc5472',
+    '#bf62cf',
+];
 
 export const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
@@ -30,10 +38,11 @@ export interface EdgeConfig extends ID_CONFIG {
     sourceNodeId: string;
     targetNodeId: string;
     edgeLabel?: string;
+    merge?: boolean;
 }
 
 interface ID_CONFIG {
-    [key: string]: string | number | undefined;
+    [key: string]: string | number | boolean | undefined;
 }
 
 export const populateGraph = (
@@ -43,15 +52,17 @@ export const populateGraph = (
 ): Graph => {
     data.forEach((row: unknown) => {
         // for every row, add a node for each node configuration in config file
-        config.datasets[0].nodes.forEach((config: NodeConfig) => {
+        config.datasets[1].nodes.forEach((config: NodeConfig) => {
             addNodeToGraph(graph, row, config);
         });
 
         // now create the edges of the graph, given the edge config
-        config.datasets[0].edges.forEach((config: EdgeConfig) => {
+        config.datasets[1].edges.forEach((config: EdgeConfig) => {
             addEdgesToGraph(graph, row, config);
         });
     });
+
+    calculateDegreesAndColor(graph, config.datasets[1]);
 
     return graph;
 };
@@ -66,7 +77,13 @@ export const addNodeToGraph = (
     }
 
     if (!row[config.idAttr]) {
-        throw new Error('Unable to find property with id attribute given.');
+        return graph;
+        // throw new Error(
+        //     'Unable to add node. No property with id attribute given - ' +
+        //         JSON.stringify(row) +
+        //         '-' +
+        //         config.idAttr
+        // );
     }
 
     if (!graph.hasNode(row[config.idAttr])) {
@@ -91,34 +108,56 @@ export const addEdgesToGraph = (
     }
 
     if (!graph.hasNode(row[config.sourceNodeId])) {
-        throw new Error('Unable to find source node with id given.');
+        throw new Error(
+            'Unable to find source node with id given - ' + config.sourceNodeId
+        );
     }
 
     if (!graph.hasNode(row[config.targetNodeId])) {
-        throw new Error('Unable to find target node with id given.');
+        throw new Error(
+            'Unable to find target node with id given. - ' + config.targetNodeId
+        );
     }
 
-    graph.addEdge(row[config.sourceNodeId], row[config.targetNodeId]);
+    if (config.merge) {
+        graph.mergeEdge(row[config.sourceNodeId], row[config.targetNodeId]);
+    } else {
+        graph.addEdge(row[config.sourceNodeId], row[config.targetNodeId]);
+    }
+
     return graph;
 };
 
-export const calculateDegreesAndColor = (graph: Graph) => {
+export const calculateDegreesAndColor = (
+    graph: Graph,
+    config: DataToGraphConfig
+) => {
     const degrees = graph.nodes().map((node) => graph.degree(node));
     const minDegree = Math.min(...degrees);
     const maxDegree = Math.max(...degrees);
     const minSize = 2,
         maxSize = 25;
+
+    const COLOR_MAP: Record<string, string> = {};
+
+    config.nodes.forEach((val, index) => {
+        COLOR_MAP[val.clusterLabel!] =
+            COLOR_PALETTE[(COLOR_PALETTE.length * Math.random()) | 0];
+    });
+    console.log(COLOR_PALETTE);
+
     graph.forEachNode((node, attributes) => {
+        // console.log('attributes', attributes);
         // Add Colors
-        const COLORS: Record<string, string> = {
-            Commented: '#FA5A3D',
-            Subreddit: '#5A75DB',
-            User: '#5A85AB',
-        };
+        // const COLORS: Record<string, string> = {
+        //     Commented: '#FA5A3D',
+        //     Subreddit: '#5A75DB',
+        //     User: '#5A85AB',
+        // };
         graph.setNodeAttribute(
             node,
             'color',
-            COLORS[attributes.clusterLabel as string]
+            COLOR_MAP[attributes.clusterLabel]
         );
         const degree = graph.degree(node);
         graph.setNodeAttribute(

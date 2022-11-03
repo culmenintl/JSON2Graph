@@ -58,9 +58,6 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
                 cropToLargestConnectedComponent(sigmaGraph);
             }
 
-            // calc degrees and colorize
-            calculateDegreesAndColor(sigmaGraph);
-
             // assign circular layout to give base positions
             // circular.assign(datasetGraph);
             circlepack.assign(sigmaGraph);

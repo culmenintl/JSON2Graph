@@ -3,7 +3,7 @@
         {
             "id": "reddit",
             "url": "http://localhost:1337/reddit.comments.dataset.json",
-            "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits",
+            "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits. This config creates nodes from each row, subreddits and authors. The edges link authors->id and id->subreddit",
             "nodes": [
                 {
                     "name": "comment",
@@ -39,39 +39,56 @@
             ]
         },
         {
-            "id": "reddit",
-            "url": "http://localhost:1337/reddit.comments.dataset.json",
+            "id": "yelp_businesses",
+            "url": "http://localhost:1337/yelp.businesses.json",
+            "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged. The edges link business name -> state and are merged.",
             "nodes": [
                 {
-                    "name": "comment",
-                    "idAttr": "id",
-                    "labelAttr": "body",
-                    "tagAttr": "author",
-                    "clusterLabel": "Commented"
+                    "name": "business",
+                    "idAttr": "name",
+                    "labelAttr": "name",
+                    "clusterLabel": "Business"
                 },
                 {
-                    "name": "subreddit",
-                    "idAttr": "subreddit_id",
-                    "labelAttr": "subreddit",
-                    "clusterLabel": "Subreddit"
-                },
-                {
-                    "name": "author",
-                    "idAttr": "author",
-                    "labelAttr": "author",
-                    "clusterLabel": "User"
+                    "name": "State",
+                    "idAttr": "state",
+                    "labelAttr": "state",
+                    "clusterLabel": "State"
                 }
             ],
             "edges": [
                 {
-                    "sourceNodeId": "author",
-                    "targetNodeId": "id",
-                    "edgeLabel": "commented"
+                    "sourceNodeId": "name",
+                    "targetNodeId": "state",
+                    "edgeLabel": "Is in",
+                    "merge": true
+                }
+            ]
+        },
+        {
+            "id": "yelp_businesses",
+            "url": "http://localhost:1337/yelp.businesses.json",
+            "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged.",
+            "nodes": [
+                {
+                    "name": "business",
+                    "idAttr": "name",
+                    "labelAttr": "name",
+                    "clusterLabel": "Business"
                 },
                 {
-                    "sourceNodeId": "id",
-                    "targetNodeId": "subreddit_id",
-                    "edgeLabel": "commented in"
+                    "name": "State",
+                    "idAttr": "state",
+                    "labelAttr": "state",
+                    "clusterLabel": "State"
+                }
+            ],
+            "edges": [
+                {
+                    "sourceNodeId": "name",
+                    "targetNodeId": "state",
+                    "edgeLabel": "Is in",
+                    "merge": true
                 }
             ]
         }
