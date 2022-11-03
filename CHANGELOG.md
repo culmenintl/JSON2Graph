@@ -1,3 +1,9 @@
+#### 0.0.11 (2022-11-03)
+
+##### New Features
+
+* **data:**  highlighting edge nodes on click (f9d65108)
+
 #### 0.0.10 (2022-11-03)
 
 ##### New Features
