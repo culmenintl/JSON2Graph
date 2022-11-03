@@ -1,3 +1,9 @@
+#### 0.0.9 (2022-11-03)
+
+##### New Features
+
+* **build:**  updated logic to point to correct URL for data fetching (838c090d)
+
 #### 0.0.8 (2022-11-03)
 
 #### 0.0.7 (2022-11-03)
