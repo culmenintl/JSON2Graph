@@ -1,3 +1,57 @@
+#### 0.0.7 (2022-11-03)
+
+##### Documentation Changes
+
+* **license:**  added MIT license to package.json (9e1ad567)
+
+##### New Features
+
+* **ui:**
+  *  Added yelp dataset with config description (2c866119)
+  *  closed dev panel on crop click (745b9af8)
+  *  tweaked css for small view (1c120713)
+  *  added tailwind forms (5f10b3fa)
+  *  polish for demo (b13994e5)
+  *  added removal toggle for un connected nodes (298c4976)
+  *  closed dev panel on canvas click (575bdfd1)
+  *  styled dev panel (64411c22)
+  *  moved dev panel and added animation (7945d0a5)
+  *  styled loading icon (47474cf9)
+  *  removed switch for dev panel button to save space (0b86aaa5)
+  *  added package json version to screen for demo (f0759d5f)
+  *  added handling and snack notif for losing webGL context (2fd0bb59)
+  *  added centrifuge loading spinner, added error notif tray, added some polish on basic loading screens and animation (f3fd7962)
+  *  added a lot of graph/data values to the dev panel and state management (1e7496a5)
+  *  added dev panel, customized rendering, adding settings into state management (ab7df001)
+  *  added state management and dev mode panel as well as styled zoom controls (fc4bfa20)
+* **state:**
+  *  further refined app to populate from config file on load (82cdeaf6)
+  *  updated graph creation code to read from config file and populate graph (79b4b1ae)
+  *  updated state management to fetch data via async function, added reload functionality, added the ability to change num rows read (4569177b)
+  *  seperated app and data store (f795db9f)
+* **build:**  added changelog roll script and tagging (34491da2)
+* **data:**  added sample dataset to repo, fixed button onClick (5d651f83)
+
+##### Bug Fixes
+
+* **ui:**
+  *  small fixes (68bc748a)
+  *  small fixes (77e33169)
+  *  fixed overflow on dev panel (087d2f26)
+  *  added pulse to status text when simming (b5e040fb)
+  *  updated naming scheme for graphRow (828eb56a)
+  *  fixed clipping issue on devpanel (b568f8c0)
+  *  fix for prod build ui loading spinner (aa008f0b)
+  *  updated logo to be slightly off centered (b12acc3d)
+
+##### Other Changes
+
+* //github.com/Surge-Workshop/surge-web (6dc87a9c)
+
+##### Refactors
+
+* **settings:**  updated default settings on sigma init for min/max zoom (e566ab77)
+
 #### 0.0.6 (2022-11-03)
 
 #### 0.0.5 (2022-11-03)
