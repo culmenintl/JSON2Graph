@@ -1,3 +1,9 @@
+#### 0.0.10 (2022-11-03)
+
+##### New Features
+
+* **data:**  added datasets, updated ingestion to assign node id if none present (d33ae29f)
+
 #### 0.0.9 (2022-11-03)
 
 ##### New Features
