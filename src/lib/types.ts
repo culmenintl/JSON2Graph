@@ -1,3 +1,5 @@
+import { DefaultSerializer } from 'v8';
+
 export interface NodeData {
     key: string;
     label?: string;
