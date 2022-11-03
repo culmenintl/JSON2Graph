@@ -48,21 +48,21 @@ interface ID_CONFIG {
 export const populateGraph = (
     graph: Graph,
     data: [unknown],
-    config: DatasetConfigs
+    config: DataToGraphConfig
 ): Graph => {
     data.forEach((row: unknown) => {
         // for every row, add a node for each node configuration in config file
-        config.datasets[1].nodes.forEach((config: NodeConfig) => {
+        config.nodes.forEach((config: NodeConfig) => {
             addNodeToGraph(graph, row, config);
         });
 
         // now create the edges of the graph, given the edge config
-        config.datasets[1].edges.forEach((config: EdgeConfig) => {
+        config.edges.forEach((config: EdgeConfig) => {
             addEdgesToGraph(graph, row, config);
         });
     });
 
-    calculateDegreesAndColor(graph, config.datasets[1]);
+    calculateDegreesAndColor(graph, config);
 
     return graph;
 };
@@ -76,14 +76,9 @@ export const addNodeToGraph = (
         throw new Error('Please include required node params.');
     }
 
+    // @logan added to handle no node value
     if (!row[config.idAttr]) {
-        return graph;
-        // throw new Error(
-        //     'Unable to add node. No property with id attribute given - ' +
-        //         JSON.stringify(row) +
-        //         '-' +
-        //         config.idAttr
-        // );
+        row[config.idAttr] = 'No Value';
     }
 
     if (!graph.hasNode(row[config.idAttr])) {

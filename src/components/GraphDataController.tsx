@@ -10,12 +10,10 @@ import { useSnackbar } from 'notistack';
 
 // layout
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-import { circular, circlepack } from 'graphology-layout';
+import { circlepack } from 'graphology-layout';
 import { cropToLargestConnectedComponent } from 'graphology-components';
-import { calculateDegreesAndColor, populateGraph } from '../lib/Utils';
+import { populateGraph } from '../lib/Utils';
 import { STATUS } from '../stores/AppStore';
-
-import config from '../../configs/data.mapping.json';
 
 const mapStore = ({ dataStore, appStore, graphStore }: RootStoreModel) => ({
     dataStore,
@@ -35,7 +33,7 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
          * Feed graphology with the new dataset:
          */
         useEffect(() => {
-            const dataset = dataStore.dataSet.data;
+            const dataset = dataStore.dataSet[dataStore.datasetIndex].data;
 
             if (!sigmaGraph || !dataset) return;
 
@@ -46,8 +44,13 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             appStore.setStatus(STATUS.SHAPING);
 
             try {
-                populateGraph(sigmaGraph, dataset, config);
+                populateGraph(
+                    sigmaGraph,
+                    dataset,
+                    dataStore.dataSet[dataStore.datasetIndex]
+                );
             } catch (e: any) {
+                console.log('error');
                 enqueueSnackbar(e.message, {
                     variant: 'error',
                 });
@@ -87,7 +90,10 @@ const GraphDataController: FC<{ filters: FiltersState }> = observer(
             }
 
             return () => sigmaGraph.clear();
-        }, [dataStore.dataSet.data]);
+        }, [
+            dataStore.dataSet[dataStore.datasetIndex].data,
+            dataStore.datasetIndex,
+        ]);
 
         /**
          * This effect should run on if crop is selected, we need to either strip down the graph or create reload

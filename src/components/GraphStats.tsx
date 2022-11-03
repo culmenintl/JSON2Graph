@@ -8,6 +8,8 @@ import { GraphRow } from './GraphRow';
 import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
 import { GraphInput } from './GraphInput';
+import { DatasetSelect } from './DatasetSelect';
+import { isGenerator } from 'mobx/dist/internal';
 
 const mapStore = ({ graphStore, dataStore, appStore }: RootStoreModel) => ({
     graphStore,
@@ -22,15 +24,19 @@ const SampleJsonData = (data: Object) => (
 const GraphStats: FC<{}> = observer(() => {
     const sigma = useSigma();
     const { dataStore, graphStore, appStore } = useInject(mapStore);
+    if (!dataStore.dataSet[dataStore.datasetIndex].data) {
+        return <></>;
+    }
     return (
         <>
             <DevPanelHeader
                 title="Graph Information"
                 subtitle="Attributes and settings for the displayed graph"
             />
+            <GraphRow label="Dataset" value={<DatasetSelect />} />
             <GraphRow
                 label="Description"
-                value={dataStore.dataSet.description}
+                value={dataStore.dataSet[dataStore.datasetIndex].description}
             />
             <GraphInput
                 label="Rows"
@@ -45,11 +51,15 @@ const GraphStats: FC<{}> = observer(() => {
             <GraphRow label="Edges" value={graphStore.graph?.size.toString()} />
             <GraphRow
                 label="Rows of Data"
-                value={dataStore.dataSet.data.length.toString()}
+                value={dataStore.dataSet[
+                    dataStore.datasetIndex
+                ].data.length.toString()}
             />
             <GraphRow
                 label="Sample Data Row"
-                preRendered={SampleJsonData(dataStore.dataSet.data[0])}
+                preRendered={SampleJsonData(
+                    dataStore.dataSet[dataStore.datasetIndex].data[0]
+                )}
             />
             <GraphRow label="Graph Type" value={graphStore.graph?.type} />
             <GraphRow

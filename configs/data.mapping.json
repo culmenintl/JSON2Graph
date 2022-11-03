@@ -39,6 +39,33 @@
             ]
         },
         {
+            "id": "reddit",
+            "url": "reddit.comments.dataset.json",
+            "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits. This config creates nodes from each row, and subreddit. The edges link comment to subreddit. Its easy to tell which is the most popular.",
+            "nodes": [
+                {
+                    "name": "comment",
+                    "idAttr": "id",
+                    "labelAttr": "body",
+                    "tagAttr": "author",
+                    "clusterLabel": "Commented"
+                },
+                {
+                    "name": "subreddit",
+                    "idAttr": "subreddit_id",
+                    "labelAttr": "subreddit",
+                    "clusterLabel": "Subreddit"
+                }
+            ],
+            "edges": [
+                {
+                    "sourceNodeId": "id",
+                    "targetNodeId": "subreddit_id",
+                    "edgeLabel": "commented in"
+                }
+            ]
+        },
+        {
             "id": "yelp_businesses",
             "url": "yelp.businesses.json",
             "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged. The edges link business name -> state and are merged.",
@@ -81,12 +108,24 @@
                     "idAttr": "state",
                     "labelAttr": "state",
                     "clusterLabel": "State"
+                },
+                {
+                    "name": "Postal Code",
+                    "idAttr": "postal_code",
+                    "labelAttr": "postal_code",
+                    "clusterLabel": "Zip"
                 }
             ],
             "edges": [
                 {
-                    "sourceNodeId": "name",
+                    "sourceNodeId": "postal_code",
                     "targetNodeId": "state",
+                    "edgeLabel": "Is in",
+                    "merge": true
+                },
+                {
+                    "sourceNodeId": "name",
+                    "targetNodeId": "postal_code",
                     "edgeLabel": "Is in",
                     "merge": true
                 }

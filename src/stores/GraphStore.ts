@@ -35,7 +35,7 @@ export const GraphStat = types.model('GraphStat', {
 
 export const GraphologySettings = types
     .model('GraphologySettings', {
-        runLayoutInMs: 2000,
+        runLayoutInMs: 5000,
         webWorkerLayout: true,
         iterations: 10,
         crop: false,

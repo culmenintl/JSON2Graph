@@ -15,11 +15,12 @@ export const SigmaSettings = types.model('SigmaSettings', {
 });
 
 export const Dataset = types.model('Dataset', {
-    id: types.identifier,
-    pathToConfigFile: './configs/reddit.data.mapping.json',
+    id: types.string,
     url: types.string,
     data: types.frozen(),
     description: types.string,
+    nodes: types.frozen(),
+    edges: types.frozen(),
 });
 
 export const SigmaStore = types.model('SigmaStore', {
@@ -44,13 +45,24 @@ const fetchFromUrl = async (url: string): Promise<[unknown]> => {
 export const DataStore = types
     .model('DataStore', {
         sigma: SigmaStore,
-        dataSet: Dataset,
+        dataSet: types.array(Dataset),
+        datasetIndex: 2,
         rows: 2000,
         state: types.enumeration('State', ['pending', 'done', 'error']),
     })
     .actions((self) => ({
         setData(data: any) {
-            self.dataSet.data = data;
+            self.dataSet[self.datasetIndex].data = data;
+        },
+        setDatasetIndex(val: number) {
+            if (val >= self.dataSet.length - 1) {
+                self.datasetIndex = self.dataSet.length - 1;
+                return;
+            } else if (val <= 0) {
+                self.datasetIndex = 0;
+                return;
+            }
+            self.datasetIndex = val;
         },
         setRows(event: React.ChangeEvent<HTMLInputElement>) {
             const val = event.target.value;
@@ -64,8 +76,10 @@ export const DataStore = types
             try {
                 // ... yield can be used in async/await style
 
-                const data: [RedditNode] = yield fetchFromUrl(
-                    `${import.meta.env.VITE_PUBLIC_URL}/${self.dataSet.url}`
+                const data: [unknown] = yield fetchFromUrl(
+                    `${import.meta.env.VITE_PUBLIC_URL}/${
+                        self.dataSet[self.datasetIndex].url
+                    }`
                 );
 
                 const subDataset = data.filter((_: any, index: number, arr) => {
@@ -75,7 +89,7 @@ export const DataStore = types
                     return Math.random() <= self.rows / arr.length;
                 });
                 console.log('rows ingested', subDataset.length);
-                self.dataSet.data = subDataset;
+                self.dataSet[self.datasetIndex].data = subDataset;
                 self.state = 'done';
             } catch (error) {
                 // ... including try/catch error handling
@@ -96,12 +110,16 @@ export const createStore = (config: DatasetConfigs): DataStoreModel => {
         sigma: SigmaStore.create({
             settings: SigmaSettings.create(),
         }),
-        dataSet: Dataset.create({
-            id: config.datasets[1].id,
-            url: config.datasets[1].url,
-            description: config.datasets[1].description
-                ? config.datasets[1].description
-                : 'No Description.',
+        dataSet: config.datasets.map((val) => {
+            return Dataset.create({
+                id: val.id,
+                url: val.url,
+                description: val.description
+                    ? val.description
+                    : 'No Description.',
+                nodes: val.nodes,
+                edges: val.edges,
+            });
         }),
 
         state: 'done',
