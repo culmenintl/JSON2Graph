@@ -32,6 +32,7 @@ export const EdgeAttributes = types.model('EdgeAttributes', {
 });
 
 const fetchFromUrl = async (url: string): Promise<[unknown]> => {
+    console.log(url);
     const data = await fetch(url);
 
     const json: [unknown] = await data.json();
@@ -63,7 +64,9 @@ export const DataStore = types
             try {
                 // ... yield can be used in async/await style
 
-                const data: [RedditNode] = yield fetchFromUrl(self.dataSet.url);
+                const data: [RedditNode] = yield fetchFromUrl(
+                    `${import.meta.env.VITE_PUBLIC_URL}/${self.dataSet.url}`
+                );
 
                 const subDataset = data.filter((_: any, index: number, arr) => {
                     if (self.rows === 0) {

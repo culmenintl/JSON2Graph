@@ -2,7 +2,7 @@
     "datasets": [
         {
             "id": "reddit",
-            "url": "http://localhost:1337/reddit.comments.dataset.json",
+            "url": "reddit.comments.dataset.json",
             "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits. This config creates nodes from each row, subreddits and authors. The edges link authors->id and id->subreddit",
             "nodes": [
                 {
@@ -40,7 +40,7 @@
         },
         {
             "id": "yelp_businesses",
-            "url": "http://localhost:1337/yelp.businesses.json",
+            "url": "yelp.businesses.json",
             "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged. The edges link business name -> state and are merged.",
             "nodes": [
                 {
@@ -67,7 +67,7 @@
         },
         {
             "id": "yelp_businesses",
-            "url": "http://localhost:1337/yelp.businesses.json",
+            "url": "yelp.businesses.json",
             "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged.",
             "nodes": [
                 {
