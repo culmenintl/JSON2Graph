@@ -48,7 +48,14 @@ const GraphSettingsController: FC<{ hoveredNode: string | null }> = ({
                       node === debouncedHoveredNode ||
                       graph.hasEdge(node, debouncedHoveredNode) ||
                       graph.hasEdge(debouncedHoveredNode, node)
-                          ? { ...data, zIndex: 1 }
+                          ? {
+                                ...data,
+                                zIndex: 1,
+                                highlighted:
+                                    graph.inDegree(hoveredNode) < 10
+                                        ? true
+                                        : false,
+                            }
                           : {
                                 ...data,
                                 zIndex: 0,
