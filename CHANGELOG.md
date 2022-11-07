@@ -1,3 +1,9 @@
+#### 0.0.12 (2022-11-07)
+
+##### New Features
+
+* **ui:**  added on node click panel and context, removed unused files, added dataset options selector (ecd3521a)
+
 #### 0.0.11 (2022-11-03)
 
 ##### New Features
