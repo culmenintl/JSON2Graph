@@ -1,8 +1,6 @@
 import { useSigma, useLoadGraph } from '@react-sigma/core';
 import { FC, useEffect } from 'react';
-import { keyBy, omit, uniqBy } from 'lodash';
 
-import { Dataset, FiltersState, NodeData } from '../lib/types';
 import { observer } from 'mobx-react-lite';
 import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
@@ -21,116 +19,101 @@ const mapStore = ({ dataStore, appStore, graphStore }: RootStoreModel) => ({
     graphStore,
 });
 
-const GraphDataController: FC<{ filters: FiltersState }> = observer(
-    ({ filters, children }) => {
-        const { dataStore, appStore, graphStore } = useInject(mapStore);
-        const sigma = useSigma();
-        const sigmaGraph = sigma.getGraph();
-        const loadGraph = useLoadGraph();
-        const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+const GraphDataController: FC<{}> = observer(({ children }) => {
+    const { dataStore, appStore, graphStore } = useInject(mapStore);
+    const sigma = useSigma();
+    const sigmaGraph = sigma.getGraph();
+    const loadGraph = useLoadGraph();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-        /**
-         * Feed graphology with the new dataset:
-         */
-        useEffect(() => {
-            const dataset = dataStore.dataSet[dataStore.datasetIndex].data;
+    /**
+     * Feed graphology with the new dataset:
+     */
+    useEffect(() => {
+        const dataset = dataStore.dataSet[dataStore.datasetIndex].data;
 
-            if (!sigmaGraph || !dataset) return;
+        if (!sigmaGraph || !dataset) return;
 
-            // const clusters = keyBy(dataset.clusters, 'key');
-            // const tags = keyBy(dataset.tags, 'key');
+        // console.log('dataset', dataset);
+        appStore.setStatus(STATUS.SHAPING);
 
-            // console.log('dataset', dataset);
-            appStore.setStatus(STATUS.SHAPING);
+        try {
+            populateGraph(
+                sigmaGraph,
+                dataset,
+                dataStore.dataSet[dataStore.datasetIndex]
+            );
+        } catch (e: any) {
+            // console.log('error');
+            enqueueSnackbar(e.message, {
+                variant: 'error',
+            });
+        }
 
-            try {
-                populateGraph(
-                    sigmaGraph,
-                    dataset,
-                    dataStore.dataSet[dataStore.datasetIndex]
-                );
-            } catch (e: any) {
-                console.log('error');
-                enqueueSnackbar(e.message, {
-                    variant: 'error',
-                });
-            }
+        // Check to see if we only want to keep main component
+        if (graphStore.settings.crop) {
+            cropToLargestConnectedComponent(sigmaGraph);
+        }
 
-            // Check to see if we only want to keep main component
-            if (graphStore.settings.crop) {
-                cropToLargestConnectedComponent(sigmaGraph);
-            }
+        // assign circular layout to give base positions
+        // circular.assign(datasetGraph);
+        circlepack.assign(sigmaGraph);
 
-            // assign circular layout to give base positions
-            // circular.assign(datasetGraph);
-            circlepack.assign(sigmaGraph);
+        graphStore.setLayoutSettings(sigmaGraph);
+        graphStore.setGraph(sigmaGraph);
 
-            graphStore.setLayoutSettings(sigmaGraph);
-            graphStore.setGraph(sigmaGraph);
-
-            // check if we want to use an asynchronus web worker layout (live simulation)
-            // or if we want to do a blocking simulation
-            if (graphStore.settings.webWorkerLayout) {
-                appStore.setStatus(STATUS.SIMULATING);
-                graphStore.toggleSimulation();
-
-                setTimeout(() => {
-                    appStore.setStatus(STATUS.GRAPH_SIMULATED);
-                    appStore.setLoading(false);
-                    graphStore.toggleSimulation();
-                    // graphStore.setGraph(sigmaGraph);
-                    // fa2Layout.kill();
-                    console.log('layout done');
-                }, graphStore.settings.runLayoutInMs);
-            } else {
-                // blocking synchronus simulation
-                forceAtlas2.assign(sigmaGraph, {
-                    iterations: graphStore.settings.iterations,
-                });
-            }
-
-            return () => sigmaGraph.clear();
-        }, [
-            dataStore.dataSet[dataStore.datasetIndex].data,
-            dataStore.datasetIndex,
-        ]);
-
-        /**
-         * This effect should run on if crop is selected, we need to either strip down the graph or create reload
-         */
-        useEffect(() => {
-            if (!dataStore.dataSet || !graphStore.graph) {
-                return;
-            }
-            // appStore.setStatus(STATUS.SHAPING);
-            // appStore.setLoading(true);
-            // const datasetGraph = populateGraph(dataStore.data);
-
-            // if graph already exists, then crop it else, clear it and reload
-            if (graphStore.settings.crop && graphStore.graph) {
-                cropToLargestConnectedComponent(graphStore.graph);
-            } else {
-                sigmaGraph.clear();
-                dataStore.fetchData();
-                return;
-            }
-
-            // calc degrees and colorize
-            // calculateDegreesAndColor(datasetGraph);
-            // circlepack.assign(datasetGraph);
-
-            graphStore.toggleSimulation();
+        // check if we want to use an asynchronus web worker layout (live simulation)
+        // or if we want to do a blocking simulation
+        if (graphStore.settings.webWorkerLayout) {
             appStore.setStatus(STATUS.SIMULATING);
+            graphStore.toggleSimulation();
+
             setTimeout(() => {
                 appStore.setStatus(STATUS.GRAPH_SIMULATED);
                 appStore.setLoading(false);
                 graphStore.toggleSimulation();
-                console.log('layout done');
+                // console.log('layout done');
             }, graphStore.settings.runLayoutInMs);
-        }, [graphStore.settings.crop]);
+        } else {
+            // blocking synchronus simulation
+            forceAtlas2.assign(sigmaGraph, {
+                iterations: graphStore.settings.iterations,
+            });
+        }
 
-        return <>{children}</>;
-    }
-);
+        return () => sigmaGraph.clear();
+    }, [
+        dataStore.dataSet[dataStore.datasetIndex].data,
+        dataStore.datasetIndex,
+    ]);
+
+    /**
+     * This effect should run on if crop is selected, we need to either strip down the graph or create reload
+     */
+    useEffect(() => {
+        if (!dataStore.dataSet || !graphStore.graph) {
+            return;
+        }
+        // if graph already exists, then crop it else, clear it and reload
+        if (graphStore.settings.crop && graphStore.graph) {
+            cropToLargestConnectedComponent(graphStore.graph);
+        } else {
+            sigmaGraph.clear();
+            dataStore.fetchData();
+            return;
+        }
+
+        graphStore.toggleSimulation();
+        appStore.setStatus(STATUS.SIMULATING);
+        setTimeout(() => {
+            appStore.setStatus(STATUS.GRAPH_SIMULATED);
+            appStore.setLoading(false);
+            graphStore.toggleSimulation();
+            // console.log('layout done');
+        }, graphStore.settings.runLayoutInMs);
+    }, [graphStore.settings.crop]);
+
+    return <>{children}</>;
+});
 
 export default GraphDataController;

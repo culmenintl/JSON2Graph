@@ -22,6 +22,7 @@ export type DatasetConfigs = {
 
 export type DataToGraphConfig = {
     id: string;
+    label: string;
     url: string;
     description?: string;
     nodes: NodeConfig[];
@@ -139,16 +140,9 @@ export const calculateDegreesAndColor = (
         COLOR_MAP[val.clusterLabel!] =
             COLOR_PALETTE[(COLOR_PALETTE.length * Math.random()) | 0];
     });
-    console.log(COLOR_PALETTE);
+    // console.log(COLOR_PALETTE);
 
     graph.forEachNode((node, attributes) => {
-        // console.log('attributes', attributes);
-        // Add Colors
-        // const COLORS: Record<string, string> = {
-        //     Commented: '#FA5A3D',
-        //     Subreddit: '#5A75DB',
-        //     User: '#5A85AB',
-        // };
         graph.setNodeAttribute(
             node,
             'color',

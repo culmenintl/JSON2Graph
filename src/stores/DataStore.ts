@@ -1,7 +1,6 @@
 import { flow, Instance, types } from 'mobx-state-tree';
 // react hooks to use the context API for fetching root store
 import { useContext, createContext } from 'react';
-import { RedditNode } from '../lib/types';
 
 import { DatasetConfigs } from '../lib/Utils';
 
@@ -17,6 +16,7 @@ export const SigmaSettings = types.model('SigmaSettings', {
 export const Dataset = types.model('Dataset', {
     id: types.string,
     url: types.string,
+    label: types.string,
     data: types.frozen(),
     description: types.string,
     nodes: types.frozen(),
@@ -33,7 +33,7 @@ export const EdgeAttributes = types.model('EdgeAttributes', {
 });
 
 const fetchFromUrl = async (url: string): Promise<[unknown]> => {
-    console.log(url);
+    // console.log(url);
     const data = await fetch(url);
 
     const json: [unknown] = await data.json();
@@ -88,7 +88,7 @@ export const DataStore = types
                     }
                     return Math.random() <= self.rows / arr.length;
                 });
-                console.log('rows ingested', subDataset.length);
+                // console.log('rows ingested', subDataset.length);
                 self.dataSet[self.datasetIndex].data = subDataset;
                 self.state = 'done';
             } catch (error) {
@@ -114,6 +114,7 @@ export const createStore = (config: DatasetConfigs): DataStoreModel => {
             return Dataset.create({
                 id: val.id,
                 url: val.url,
+                label: val.label,
                 description: val.description
                     ? val.description
                     : 'No Description.',

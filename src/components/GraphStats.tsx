@@ -3,13 +3,11 @@ import Button from './Button';
 import { observer } from 'mobx-react-lite';
 import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
-import { useSigma } from '@react-sigma/core';
 import { GraphRow } from './GraphRow';
 import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
 import { GraphInput } from './GraphInput';
 import { DatasetSelect } from './DatasetSelect';
-import { isGenerator } from 'mobx/dist/internal';
 
 const mapStore = ({ graphStore, dataStore, appStore }: RootStoreModel) => ({
     graphStore,
@@ -22,7 +20,6 @@ const SampleJsonData = (data: Object) => (
 );
 
 const GraphStats: FC<{}> = observer(() => {
-    const sigma = useSigma();
     const { dataStore, graphStore, appStore } = useInject(mapStore);
     if (!dataStore.dataSet[dataStore.datasetIndex].data) {
         return <></>;
@@ -39,22 +36,22 @@ const GraphStats: FC<{}> = observer(() => {
                 value={dataStore.dataSet[dataStore.datasetIndex].description}
             />
             <GraphInput
-                label="Rows"
+                label="Target # Rows"
                 type={'number'}
                 value={dataStore.rows}
                 onChange={dataStore.setRows}
+            />
+            <GraphRow
+                label="Rows randomly selected"
+                value={dataStore.dataSet[
+                    dataStore.datasetIndex
+                ].data.length.toString()}
             />
             <GraphRow
                 label="Nodes"
                 value={graphStore.graph?.order.toString()}
             />
             <GraphRow label="Edges" value={graphStore.graph?.size.toString()} />
-            <GraphRow
-                label="Rows of Data"
-                value={dataStore.dataSet[
-                    dataStore.datasetIndex
-                ].data.length.toString()}
-            />
             <GraphRow
                 label="Sample Data Row"
                 preRendered={SampleJsonData(
@@ -114,7 +111,7 @@ const GraphStats: FC<{}> = observer(() => {
                     <Button
                         text={'Compute Stats'}
                         onClick={() => {
-                            console.log('computing stats');
+                            // console.log('computing stats');
                             graphStore.setStats(graphStore.graph);
                         }}
                     />
@@ -123,34 +120,6 @@ const GraphStats: FC<{}> = observer(() => {
             {graphStore.stats.map((val, index) => (
                 <GraphRow label={val.name} value={val.val} key={index} />
             ))}
-
-            {/* <div className="self-start px-4 py-5 sm:px-6">
-                <h3 className="text-left text-lg font-medium leading-6 text-gray-900">
-                    Data
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">
-                    Attributes and settings for the displayed graph data
-                </p>
-            </div> */}
-
-            {/* {dataStore.nodeAttributes.map((attribute, index) => {
-                return (
-                    <GraphRow
-                        label={`Node Attribute #${index + 1}`}
-                        value={attribute}
-                        key={attribute}
-                    />
-                );
-            })}
-            {dataStore.edgeAttributes.map((attribute, index) => {
-                return (
-                    <GraphRow
-                        label={`Edge Attribute #${index + 1}`}
-                        preRendered={SampleJsonData(attribute)}
-                        key={index}
-                    />
-                );
-            })} */}
         </>
     );
 });

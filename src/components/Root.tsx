@@ -6,13 +6,12 @@ import {
     SearchControl,
 } from '@react-sigma/core';
 
+import { Transition } from '@headlessui/react';
+
 import GraphSettingsController from './GraphSettingsController';
 import GraphEventsController from './GraphEventsController';
 import GraphDataController from './GraphDataController';
-import { FiltersState, RedditNode } from '../lib/types';
 import drawLabel from '../lib/canvas-utils';
-
-import LoadingLogo from './LoadingLogo';
 
 import '@react-sigma/core/lib/react-sigma.min.css';
 
@@ -29,6 +28,7 @@ import { useSnackbar } from 'notistack';
 import { ToggleSimulation } from './ToggleSimulate';
 import Button from './Button';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { NodeContextPanel } from './NodeContextPanel';
 
 const mapStore = ({ appStore, dataStore, graphStore }: RootStoreModel) => ({
     appStore,
@@ -47,10 +47,6 @@ const Controls: FC<{}> = observer(() => {
                     <ToggleDev />
                     <ToggleSimulation />
                     <StatusDisplay />
-                    {/* <LayoutForceAtlas2Control
-                        settings={dataStore.graph.layoutSettings}
-                    /> */}
-                    {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
                     <div className="hidden md:flex">
                         <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" />
                     </div>
@@ -72,11 +68,6 @@ const Controls: FC<{}> = observer(() => {
 });
 
 const Root: FC<{}> = observer(() => {
-    const [filtersState, setFiltersState] = useState<FiltersState>({
-        clusters: {},
-        tags: {},
-    });
-
     const parent = useRef(null);
     useEffect(() => {
         parent.current && autoAnimate(parent.current);
@@ -102,21 +93,39 @@ const Root: FC<{}> = observer(() => {
         });
     }, []);
 
-    // if (!dataStore.data) return <LoadingLogo />;
-
     return (
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 h-screen">
             <SigmaContainer
                 settings={{
                     labelRenderer: drawLabel,
                     ...dataStore.sigma.settings,
                 }}
             >
-                <div ref={parent}>{appStore.devMode && <DevPanel />}</div>
-                {!graphStore.firstSim && <LoadingLogo />}
+                <Transition
+                    show={appStore.devMode}
+                    enter="transform transition"
+                    enterFrom="opacity-0 translate-y-10"
+                    enterTo="opacity-100 translate-y--10"
+                    leave="transform transition"
+                    leaveFrom="opacity-100 translate-y--10"
+                    leaveTo="opacity-0 translate-y-10"
+                >
+                    <DevPanel />
+                </Transition>
+                <Transition
+                    show={appStore.showTargetNode}
+                    enter="transform transition"
+                    enterFrom="opacity-0 translate-y-10"
+                    enterTo="opacity-100 translate-y--10"
+                    leave="transform transition"
+                    leaveFrom="opacity-100 translate-y--10"
+                    leaveTo="opacity-0 translate-y-10"
+                >
+                    <NodeContextPanel />
+                </Transition>
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
-                <GraphDataController filters={filtersState} />
+                <GraphDataController />
 
                 <span className="absolute left-0 top-0 p-3 text-sm text-gray-400">
                     Centrifuge Widget Demo - v{APP_VERSION}

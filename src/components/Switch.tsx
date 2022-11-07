@@ -1,15 +1,11 @@
-import { useState } from 'react';
 import { Switch } from '@headlessui/react';
-
-function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ');
-}
 
 import { FC } from 'react';
 import { observer } from 'mobx-react-lite';
 import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
 import Loading from './Loading';
+import { classNames } from '../lib/Utils';
 
 const mapStore = ({ appStore }: RootStoreModel) => ({
     appStore,

@@ -9,15 +9,13 @@ import { useSigma } from '@react-sigma/core';
 import { Attributes } from 'graphology-types';
 import { BsSearch } from 'react-icons/bs';
 
-import { FiltersState } from '../lib/types';
-
 /**
  * This component is basically a fork from React-sigma-v2's SearchControl
  * component, to get some minor adjustments:
  * 1. We need to hide hidden nodes from results
  * 2. We need custom markup
  */
-const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
+const SearchField: FC<{}> = ({}) => {
     const sigma = useSigma();
 
     const [search, setSearch] = useState<string>('');
@@ -50,7 +48,7 @@ const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
     // Refresh values when filters are updated (but wait a frame first):
     useEffect(() => {
         requestAnimationFrame(refreshValues);
-    }, [filters]);
+    }, []);
 
     useEffect(() => {
         if (!selected) return;

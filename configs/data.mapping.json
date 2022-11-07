@@ -2,6 +2,7 @@
     "datasets": [
         {
             "id": "reddit",
+            "label": "reddit messages - comments/authors/subreddits",
             "url": "reddit.comments.dataset.json",
             "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits. This config creates nodes from each row, subreddits and authors. The edges link authors->id and id->subreddit",
             "nodes": [
@@ -40,8 +41,9 @@
         },
         {
             "id": "reddit",
+            "label": "reddit messages - authors/subreddits",
             "url": "reddit.comments.dataset.json",
-            "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits. This config creates nodes from each row, and subreddit. The edges link comment to subreddit. Its easy to tell which is the most popular.",
+            "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits. This config creates nodes from each row as a comment, and subreddit. The edges link comment to subreddit. Its easy to tell which subreddit is the most popular.",
             "nodes": [
                 {
                     "name": "comment",
@@ -68,6 +70,7 @@
         {
             "id": "yelp_businesses",
             "url": "yelp.businesses.json",
+            "label": "yelp businesses - businesses/states",
             "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged. The edges link business name -> state and are merged.",
             "nodes": [
                 {
@@ -95,6 +98,7 @@
         {
             "id": "yelp_businesses",
             "url": "yelp.businesses.json",
+            "label": "yelp businesses - businesses/zip/states",
             "description": "Yelp business data. This configuration shows businesses and states, and created nodes on business name. You can see businesses with multiple locations since the edges are merged.",
             "nodes": [
                 {

@@ -18,6 +18,7 @@ export const RootStore = types.model('RootStore', {
 // typescript helper to get the model of the root store
 export type RootStoreModel = Instance<typeof RootStore>;
 
+// import of the defined config file
 import config from '../../configs/data.mapping.json';
 
 // creates the root store, which is a combo of the other stores.

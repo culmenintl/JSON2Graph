@@ -3,6 +3,7 @@ import { FC, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { RootStoreModel } from '../stores/RootStore';
 import useInject from '../hooks/useInject';
+import { graph } from 'graphology-metrics';
 
 function getMouseLayer() {
     return document.querySelector('.sigma-mouse');
@@ -65,19 +66,19 @@ const GraphEventsController: FC<{
         registerEvents({
             clickNode({ node }) {
                 setHoveredNode(node);
-                // if (!graph.getNodeAttribute(node, 'hidden')) {
-                //     window.open(graph.getNodeAttribute(node, "URL"), "_blank");
-                // }
+                const graph = sigma.getGraph();
+                const attributes = graph.getNodeAttributes(node);
+                appStore.setTargetNode(attributes);
             },
             // @logan added to reset 'hover' like state, will rename
             clickStage() {
                 setHoveredNode(null);
+                appStore.clearNode();
                 if (appStore.devMode) {
                     appStore.toggleDevMode();
                 }
             },
             enterNode({ node }) {
-                // setHoveredNode(node);
                 // TODO: Find a better way to get the DOM mouse layer:
                 const mouseLayer = getMouseLayer();
                 if (mouseLayer) mouseLayer.classList.add('mouse-pointer');

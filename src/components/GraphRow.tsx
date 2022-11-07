@@ -8,9 +8,9 @@ type Props = {
 
 export const GraphRow: FC<Props> = ({ label, value, preRendered }) => {
     return (
-        <div className="border-t border-gray-300 px-4 py-5 sm:p-0">
+        <div className="border-t border-gray-300 px-4 py-1 sm:p-0">
             <dl className="sm:divide-y sm:divide-gray-300">
-                <div className="items-center py-4 text-left sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
+                <div className="items-center py-3 text-left sm:grid sm:grid-cols-3 sm:gap-4 sm:py-3 sm:px-6">
                     <dt className="text-sm font-medium text-gray-500">
                         {label}
                     </dt>

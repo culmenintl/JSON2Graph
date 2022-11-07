@@ -3,9 +3,6 @@ import Graph from 'graphology';
 import {
     density,
     diameter,
-    // nodeExtent,
-    // edgeExtent,
-    // modularity,
     simpleSize,
     weightedSize,
 } from 'graphology-metrics/graph';
@@ -51,13 +48,6 @@ export const GraphologySettings = types
 
 const WIKI_SEARCH_URL = 'https://en.wikipedia.org/w/index.php?search=Graph';
 
-interface VolatileTypes {
-    layout: FA2Layout;
-    graph: Graph;
-    isSimulating: boolean;
-    firstSim: 0;
-}
-
 export const GraphStore = types
     .model('GraphStore', {
         layoutSettings: types.frozen(),
@@ -73,9 +63,9 @@ export const GraphStore = types
     }))
     .actions((self) => ({
         toggleSimulation() {
-            console.log('toggle sim');
+            // console.log('toggle sim');
 
-            console.log('is currently', self.isSimulating);
+            // console.log('is currently', self.isSimulating);
 
             if (self.isSimulating && self.layout) {
                 self.layout.stop();
@@ -91,7 +81,7 @@ export const GraphStore = types
                 self.layout.start();
                 self.isSimulating = true;
             }
-            console.log('is running now', self.layout.isRunning());
+            // console.log('is running now', self.layout.isRunning());
         },
         setGraph(value: Graph) {
             self.graph = value;
@@ -115,13 +105,6 @@ export const GraphStore = types
                 desc: 'Graph Diameter i.e the maximum eccentricity of any node of the given graph.',
                 url: WIKI_SEARCH_URL + 'Diameter',
             });
-            //@logan broken right now
-            // self.stats.push({
-            //     name: 'Modularity',
-            //     val: modularity(graph).toString(),
-            //     desc: 'Graph Modularity',
-            //     url: WIKI_SEARCH_URL + 'Modularity',
-            // });
             self.stats.push({
                 name: 'Simple Size',
                 val: simpleSize(graph).toString(),
