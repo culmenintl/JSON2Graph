@@ -12,7 +12,7 @@ const mapStore = ({ appStore }: RootStoreModel) => ({
 export const NodeContextPanel: FC<{}> = observer(() => {
     const { appStore } = useInject(mapStore);
     return (
-        <div className="border-1 pb-18 absolute bottom-20 left-0 right-0 mx-auto flex max-h-[25vh] !max-w-xl rounded-lg border border-gray-300 bg-white/50 backdrop-blur-md">
+        <div className="border-1 pb-18 absolute bottom-20 left-0 right-0 mx-auto flex max-h-[75vh] !max-w-xl rounded-lg border border-gray-300 bg-white/50  backdrop-blur-md lg:max-h-[25vh]">
             <div className="flex w-full flex-col !overflow-y-auto overflow-x-hidden !scroll-smooth">
                 <DevPanelHeader
                     title={appStore.targetNode?.label}

@@ -1,4 +1,5 @@
 import Graph from 'graphology';
+import { DataToGraphConfig, NodeConfig, EdgeConfig } from '../stores/DataStore';
 
 export const COLOR_PALETTE = [
     '#9b7ad8',
@@ -15,36 +16,6 @@ export const COLOR_PALETTE = [
 export const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(' ');
 };
-
-export type DatasetConfigs = {
-    datasets: DataToGraphConfig[];
-};
-
-export type DataToGraphConfig = {
-    id: string;
-    label: string;
-    url: string;
-    description?: string;
-    nodes: NodeConfig[];
-    edges: EdgeConfig[];
-};
-
-export interface NodeConfig extends ID_CONFIG {
-    idAttr: string;
-    labelAttr?: string;
-    tagAttr?: string;
-    clusterLabel?: string;
-}
-export interface EdgeConfig extends ID_CONFIG {
-    sourceNodeId: string;
-    targetNodeId: string;
-    edgeLabel?: string;
-    merge?: boolean;
-}
-
-interface ID_CONFIG {
-    [key: string]: string | number | boolean | undefined;
-}
 
 export const populateGraph = (
     graph: Graph,

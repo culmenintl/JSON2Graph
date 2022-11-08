@@ -16,13 +16,6 @@ import {
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import FA2Layout from 'graphology-layout-forceatlas2/worker';
 
-export const enum STATUS {
-    FETCHING = 'Fetching Data',
-    SHAPING = 'Creating Graph',
-    SIMULATING = 'Simulating...',
-    GRAPH_SIMULATED = 'Graph Simulated',
-}
-
 export const GraphStat = types.model('GraphStat', {
     name: '',
     val: '',

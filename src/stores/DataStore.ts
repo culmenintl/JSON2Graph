@@ -2,7 +2,35 @@ import { flow, Instance, types } from 'mobx-state-tree';
 // react hooks to use the context API for fetching root store
 import { useContext, createContext } from 'react';
 
-import { DatasetConfigs } from '../lib/Utils';
+export type DatasetConfigs = {
+    datasets: DataToGraphConfig[];
+};
+
+export type DataToGraphConfig = {
+    id: string;
+    label: string;
+    url: string;
+    description?: string;
+    nodes: NodeConfig[];
+    edges: EdgeConfig[];
+};
+
+export interface NodeConfig extends ID_CONFIG {
+    idAttr: string;
+    labelAttr?: string;
+    tagAttr?: string;
+    clusterLabel?: string;
+}
+export interface EdgeConfig extends ID_CONFIG {
+    sourceNodeId: string;
+    targetNodeId: string;
+    edgeLabel?: string;
+    merge?: boolean;
+}
+
+interface ID_CONFIG {
+    [key: string]: string | number | boolean | undefined;
+}
 
 export const SigmaSettings = types.model('SigmaSettings', {
     labelDensity: 0.07,
@@ -46,7 +74,7 @@ export const DataStore = types
     .model('DataStore', {
         sigma: SigmaStore,
         dataSet: types.array(Dataset),
-        datasetIndex: 2,
+        datasetIndex: 0,
         rows: 2000,
         state: types.enumeration('State', ['pending', 'done', 'error']),
     })
