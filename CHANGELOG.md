@@ -1,3 +1,9 @@
+#### 0.0.14 (2022-11-08)
+
+##### Documentation Changes
+
+* **readme:**  updated readme (282aa833)
+
 #### 0.0.13 (2022-11-08)
 
 ##### Documentation Changes
