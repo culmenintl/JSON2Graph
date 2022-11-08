@@ -1,3 +1,13 @@
+#### 0.0.13 (2022-11-08)
+
+##### Documentation Changes
+
+* **readme:**  cleaned up and updated the readme (332ec71a)
+
+##### Bug Fixes
+
+* **ui:**  data select fix updating whats currently selected (2e05142c)
+
 #### 0.0.12 (2022-11-07)
 
 ##### New Features
