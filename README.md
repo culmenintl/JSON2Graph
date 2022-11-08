@@ -1,6 +1,6 @@
 # Surge Graph Demo
 
-![](images/table ./public/images/widget-demo.png?raw=true)
+![demo image](./public/images/widget-demo.png?raw=true)
 
 -   **React** 17
 -   **tailwindcss:** v3.x
