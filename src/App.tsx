@@ -1,17 +1,11 @@
 import Root from './components/Root';
 
 // mobx
-import makeInspectable from 'mobx-devtools-mst';
 import { createStore, StoreProvider } from '../src/stores/RootStore';
 
 const rootStore = createStore();
 
 // console.log(import.meta.env.MODE);
-
-// dev tooling
-if (import.meta.env.MODE === 'development') {
-    makeInspectable(rootStore);
-}
 
 // notistack snackbar
 import { SnackbarProvider } from 'notistack';
