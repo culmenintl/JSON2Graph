@@ -111,7 +111,6 @@ export const calculateDegreesAndColor = (
         COLOR_MAP[val.clusterLabel!] =
             COLOR_PALETTE[(COLOR_PALETTE.length * Math.random()) | 0];
     });
-    // console.log(COLOR_PALETTE);
 
     graph.forEachNode((node, attributes) => {
         graph.setNodeAttribute(

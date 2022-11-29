@@ -55,11 +55,6 @@ export const SigmaStore = types.model('SigmaStore', {
     settings: SigmaSettings,
 });
 
-export const EdgeAttributes = types.model('EdgeAttributes', {
-    source: types.string,
-    target: types.string,
-});
-
 const fetchFromUrl = async (url: string): Promise<[unknown]> => {
     // console.log(url);
     const data = await fetch(url);

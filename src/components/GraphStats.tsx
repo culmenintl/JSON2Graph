@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import Button from './Button';
 import { observer } from 'mobx-react-lite';
 import { RootStoreModel } from '../stores/RootStore';
@@ -8,6 +8,7 @@ import DevPanelHeader from './DevPanelHeader';
 import ToggleSwitch from './Switch';
 import { GraphInput } from './GraphInput';
 import { DatasetSelect } from './DatasetSelect';
+import { useSigma } from '@react-sigma/core';
 
 const mapStore = ({ graphStore, dataStore, appStore }: RootStoreModel) => ({
     graphStore,
@@ -24,6 +25,19 @@ const GraphStats: FC<{}> = observer(() => {
     if (!dataStore.dataSet[dataStore.datasetIndex].data) {
         return <></>;
     }
+    const sigma = useSigma();
+
+    // @logan for some reason this seems to have the graph recalculate nodes/edges correctly on simulation. This is so the nodes/edges correctly update when the graph is manually reloaded.
+    useEffect(() => {
+        if (!dataStore.dataSet || !graphStore.graph) {
+            return;
+        }
+        const nodes = sigma.getGraph().order.toString();
+        const edges = sigma.getGraph().size.toString();
+        // console.log('nodes', nodes);
+        // console.log('edges', edges);
+    }, [graphStore.isSimulating]);
+
     return (
         <>
             <DevPanelHeader
@@ -47,11 +61,8 @@ const GraphStats: FC<{}> = observer(() => {
                     dataStore.datasetIndex
                 ].data.length.toString()}
             />
-            <GraphRow
-                label="Nodes"
-                value={graphStore.graph?.order.toString()}
-            />
-            <GraphRow label="Edges" value={graphStore.graph?.size.toString()} />
+            <GraphRow label="Nodes" value={sigma.getGraph().order.toString()} />
+            <GraphRow label="Edges" value={sigma.getGraph().size.toString()} />
             <GraphRow
                 label="Sample Data Row"
                 preRendered={SampleJsonData(

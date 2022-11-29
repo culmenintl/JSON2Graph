@@ -1,4 +1,6 @@
 import { flow, Instance, types } from 'mobx-state-tree';
+// react hooks to use the context API for fetching root store
+import { useContext, createContext } from 'react';
 import Graph from 'graphology';
 import {
     density,
@@ -142,9 +144,6 @@ export const createStore = (): GraphStoreModel => {
 
     return graphStore;
 };
-
-// react hooks to use the context API for fetching root store
-import { useContext, createContext } from 'react';
 
 const StoreContext = createContext<GraphStoreModel>({} as GraphStoreModel);
 

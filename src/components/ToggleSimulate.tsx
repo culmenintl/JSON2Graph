@@ -14,8 +14,7 @@ const mapStore = ({ dataStore, appStore, graphStore }: RootStoreModel) => ({
 });
 
 export const ToggleSimulation: FC<{}> = observer(() => {
-    const { dataStore, appStore, graphStore } = useInject(mapStore);
-    const sigma = useSigma();
+    const { appStore, graphStore } = useInject(mapStore);
     const toggleSimulation = () => {
         if (graphStore.isSimulating) {
             appStore.setStatus(STATUS.GRAPH_SIMULATED);
@@ -24,14 +23,6 @@ export const ToggleSimulation: FC<{}> = observer(() => {
         }
         graphStore.toggleSimulation();
     };
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (graphStore.isSimulating) {
-                sigma.scheduleRefresh();
-            }
-        }, graphStore.refreshInterval);
-        return () => clearInterval(interval);
-    }, [graphStore.isSimulating]);
     return (
         <>
             <button
