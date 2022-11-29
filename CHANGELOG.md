@@ -1,3 +1,9 @@
+#### 0.0.16 (2022-11-29)
+
+##### Bug Fixes
+
+* **ui:**  nodes/edges update for when diff rows are selected (ff586911)
+
 #### 0.0.15 (2022-11-08)
 
 ##### Documentation Changes
