@@ -27,17 +27,6 @@ const GraphStats: FC<{}> = observer(() => {
     }
     const sigma = useSigma();
 
-    // @logan for some reason this seems to have the graph recalculate nodes/edges correctly on simulation. This is so the nodes/edges correctly update when the graph is manually reloaded.
-    useEffect(() => {
-        if (!dataStore.dataSet || !graphStore.graph) {
-            return;
-        }
-        const nodes = sigma.getGraph().order.toString();
-        const edges = sigma.getGraph().size.toString();
-        // console.log('nodes', nodes);
-        // console.log('edges', edges);
-    }, [graphStore.isSimulating]);
-
     return (
         <>
             <DevPanelHeader
@@ -59,7 +48,7 @@ const GraphStats: FC<{}> = observer(() => {
                 label="Rows randomly selected"
                 value={dataStore.dataSet[
                     dataStore.datasetIndex
-                ].data.length.toString()}
+                ].data?.length.toString()}
             />
             <GraphRow label="Nodes" value={sigma.getGraph().order.toString()} />
             <GraphRow label="Edges" value={sigma.getGraph().size.toString()} />

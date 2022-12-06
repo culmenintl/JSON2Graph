@@ -87,6 +87,10 @@ const GraphDataController: FC<{}> = observer(({ children }) => {
         dataStore.datasetIndex,
     ]);
 
+    const fetch = async () => {
+        await dataStore.fetchData();
+    };
+
     /**
      * This effect should run on if crop is selected, we need to either strip down the graph or create reload
      */
@@ -99,7 +103,7 @@ const GraphDataController: FC<{}> = observer(({ children }) => {
             cropToLargestConnectedComponent(graphStore.graph);
         } else {
             sigmaGraph.clear();
-            dataStore.fetchData();
+            fetch();
             return;
         }
 
