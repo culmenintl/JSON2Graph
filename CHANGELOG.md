@@ -1,3 +1,10 @@
+#### 0.0.17 (2022-12-06)
+
+##### Bug Fixes
+
+* **demo:**  fixed issue when switching datasets (a054cb7b)
+* **build:**  removed broken dependency (264ee90d)
+
 #### 0.0.16 (2022-11-29)
 
 ##### Bug Fixes
