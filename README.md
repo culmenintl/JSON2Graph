@@ -1,4 +1,4 @@
-# Surge Graph Demo
+# JSON2Graph Demo
 
 ![demo image](./public/images/widget-demo.png?raw=true)
 
