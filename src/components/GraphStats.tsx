@@ -1,41 +1,40 @@
-import { FC } from 'react';
-import Button from './Button';
-import { observer } from 'mobx-react-lite';
-import { RootStoreModel } from '../stores/RootStore';
-import useInject from '../hooks/useInject';
-import { useSigma } from '@react-sigma/core';
-import { GraphRow } from './GraphRow';
-import DevPanelHeader from './DevPanelHeader';
-import ToggleSwitch from './Switch';
-import { GraphInput } from './GraphInput';
+import { FC } from "react"
+import Button from "./Button"
+import { observer } from "mobx-react-lite"
+import { RootStoreModel } from "../stores/RootStore"
+import useInject from "../hooks/useInject"
+import { useSigma } from "@react-sigma/core"
+import { GraphRow } from "./GraphRow"
+import DevPanelHeader from "./DevPanelHeader"
+import ToggleSwitch from "./Switch"
+import { GraphInput } from "./GraphInput"
+import useStore from "../stores/_Store"
 
-const mapStore = ({ graphStore, dataStore }: RootStoreModel) => ({
+const mapStore = ({ graphStore }: RootStoreModel) => ({
     graphStore,
-    dataStore,
-});
+})
 
 const SampleJsonData = (data: Object) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
-);
+)
 
 const GraphStats: FC<{}> = observer(() => {
-    const sigma = useSigma();
-    const { dataStore, graphStore } = useInject(mapStore);
+    const sigma = useSigma()
+    const { graphStore } = useInject(mapStore)
+
+    const { rows, setRows, dataSet } = useStore()
     return (
         <>
             <DevPanelHeader
                 title="Graph Information"
                 subtitle="Attributes and settings for the displayed graph"
             />
-            <GraphRow
-                label="Description"
-                value={dataStore.dataSet.description}
-            />
+            <GraphRow label="Description" value={dataSet.description} />
             <GraphInput
                 label="Rows"
-                type={'number'}
-                value={dataStore.rows}
-                onChange={dataStore.setRows}
+                type={"number"}
+                value={rows}
+                onChange={setRows}
             />
             <GraphRow
                 label="Nodes"
@@ -44,11 +43,13 @@ const GraphStats: FC<{}> = observer(() => {
             <GraphRow label="Edges" value={graphStore.graph?.size.toString()} />
             <GraphRow
                 label="Rows of Data"
-                value={dataStore.dataSet.data.length.toString()}
+                value={dataSet.data?.length.toString()}
             />
             <GraphRow
                 label="Sample Data Row"
-                preRendered={SampleJsonData(dataStore.dataSet.data[0])}
+                preRendered={SampleJsonData(
+                    dataSet.data ? (dataSet.data[0] as Object) : {},
+                )}
             />
             <GraphRow label="Graph Type" value={graphStore.graph?.type} />
             <GraphRow
@@ -78,7 +79,7 @@ const GraphStats: FC<{}> = observer(() => {
             />
             <GraphRow
                 label="Simulation Time"
-                value={graphStore.settings.runLayoutInMs.toString() + 'ms'}
+                value={`${graphStore.settings.runLayoutInMs.toString()}ms`}
             />
             <GraphRow
                 label="Crop Non Connected"
@@ -92,21 +93,22 @@ const GraphStats: FC<{}> = observer(() => {
             />
             <DevPanelHeader
                 title="Graph Metrics"
-                subtitle={'Compute Graph Metrics using Graphology Utilities'}
+                subtitle={"Compute Graph Metrics using Graphology Utilities"}
             />
             <GraphRow
                 label="Graph Stats"
                 value={
                     <Button
-                        text={'Compute Stats'}
+                        text={"Compute Stats"}
                         onClick={() => {
-                            console.log('computing stats');
-                            graphStore.setStats(graphStore.graph);
+                            console.log("computing stats")
+                            graphStore.setStats(graphStore.graph)
                         }}
                     />
                 }
             />
             {graphStore.stats.map((val, index) => (
+                // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 <GraphRow label={val.name} value={val.val} key={index} />
             ))}
 
@@ -138,7 +140,7 @@ const GraphStats: FC<{}> = observer(() => {
                 );
             })} */}
         </>
-    );
-});
+    )
+})
 
-export default GraphStats;
+export default GraphStats

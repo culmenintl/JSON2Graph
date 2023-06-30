@@ -1,60 +1,56 @@
-import { useSigma } from '@react-sigma/core';
-import { FC } from 'react';
-import useInject from '../hooks/useInject';
-import { RootStoreModel } from '../stores/RootStore';
-import Button from './Button';
-import DevPanelHeader from './DevPanelHeader';
-import { GraphRow } from './GraphRow';
-import GraphStats from './GraphStats';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
-
-const mapStore = ({ appStore, dataStore }: RootStoreModel) => ({
-    appStore,
-    dataStore,
-});
+import { useSigma } from "@react-sigma/core"
+import { FC } from "react"
+import useInject from "../hooks/useInject"
+import { RootStoreModel } from "../stores/RootStore"
+import Button from "./Button"
+import DevPanelHeader from "./DevPanelHeader"
+import { GraphRow } from "./GraphRow"
+import GraphStats from "./GraphStats"
+import { ArrowPathIcon } from "@heroicons/react/24/outline"
+import useStore from "../stores/_Store"
 
 const LoseContext: FC<{}> = () => {
-    const sigma = useSigma();
+    const sigma = useSigma()
     return (
         <Button
             text="LoseContext"
             onClick={() => {
-                const canvases = sigma.getCanvases();
+                const canvases = sigma.getCanvases()
 
                 canvases.edges
-                    .getContext('webgl2')
-                    ?.getExtension('WEBGL_lose_context')
-                    ?.loseContext();
+                    .getContext("webgl2")
+                    ?.getExtension("WEBGL_lose_context")
+                    ?.loseContext()
             }}
         />
-    );
-};
+    )
+}
 
 const RestoreContext: FC<{}> = () => {
-    const sigma = useSigma();
+    const sigma = useSigma()
     return (
         <Button
             text="RestoreContext"
             onClick={() => {
-                const canvases = sigma.getCanvases();
+                const canvases = sigma.getCanvases()
 
                 canvases.edges
-                    .getContext('webgl2')
-                    ?.getExtension('WEBGL_lose_context')
-                    ?.restoreContext();
+                    .getContext("webgl2")
+                    ?.getExtension("WEBGL_lose_context")
+                    ?.restoreContext()
             }}
         />
-    );
-};
+    )
+}
 
 const ReloadGraph: FC<{}> = () => {
-    const { dataStore, appStore } = useInject(mapStore);
+    const fetchData = useStore((state) => state.fetchData)
     return (
         <div className="border-1 sticky bottom-0 mx-auto flex w-full justify-center bg-black/10 py-3 backdrop-blur-lg">
             <Button
                 text="Reload"
                 onClick={async () => {
-                    await dataStore.fetchData();
+                    await fetchData()
                 }}
                 icon={
                     <ArrowPathIcon
@@ -64,8 +60,8 @@ const ReloadGraph: FC<{}> = () => {
                 }
             />
         </div>
-    );
-};
+    )
+}
 
 export const DevPanel: FC<{}> = () => {
     return (
@@ -74,12 +70,12 @@ export const DevPanel: FC<{}> = () => {
                 <GraphStats />
                 <DevPanelHeader
                     title="WebGL"
-                    subtitle={'Testing losing and regaining context'}
+                    subtitle={"Testing losing and regaining context"}
                 />
                 <GraphRow label="Lose Context" value={<LoseContext />} />
                 <GraphRow label="Restore Context" value={<RestoreContext />} />
                 <ReloadGraph />
             </div>
         </div>
-    );
-};
+    )
+}

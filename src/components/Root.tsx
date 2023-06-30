@@ -1,40 +1,39 @@
-import { FC, useEffect, useState, useRef } from 'react';
-import autoAnimate from '@formkit/auto-animate';
+import { FC, useEffect, useState, useRef } from "react"
+import autoAnimate from "@formkit/auto-animate"
 import {
     SigmaContainer,
     ControlsContainer,
     SearchControl,
-} from '@react-sigma/core';
+} from "@react-sigma/core"
 
-import GraphSettingsController from './GraphSettingsController';
-import GraphEventsController from './GraphEventsController';
-import GraphDataController from './GraphDataController';
-import { FiltersState, RedditNode } from '../lib/types';
-import drawLabel from '../lib/canvas-utils';
+import GraphSettingsController from "./GraphSettingsController"
+import GraphEventsController from "./GraphEventsController"
+import GraphDataController from "./GraphDataController"
+import { FiltersState, RedditNode } from "../lib/types"
+import drawLabel from "../lib/canvas-utils"
 
-import LoadingLogo from './LoadingLogo';
+import LoadingLogo from "./LoadingLogo"
 
-import '@react-sigma/core/lib/react-sigma.min.css';
+import "@react-sigma/core/lib/react-sigma.min.css"
 
-import { ToggleDev } from './ToggleDev';
-import { RootStoreModel } from '../stores/RootStore';
-import { STATUS } from '../stores/AppStore';
-import { observer } from 'mobx-react-lite';
-import { DevPanel } from './DevPanel';
-import useInject from '../hooks/useInject';
-import StatusDisplay from './StatusDisplay';
+import { ToggleDev } from "./ToggleDev"
+import { RootStoreModel } from "../stores/RootStore"
+import { observer } from "mobx-react-lite"
+import { DevPanel } from "./DevPanel"
+import useInject from "../hooks/useInject"
+import StatusDisplay from "./StatusDisplay"
 
 // notistack
-import { useSnackbar } from 'notistack';
-import { ToggleSimulation } from './ToggleSimulate';
-import Button from './Button';
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { useSnackbar } from "notistack"
+import { ToggleSimulation } from "./ToggleSimulate"
+import Button from "./Button"
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import useStore from "../stores/_Store"
+import { STATUS } from "../stores/_AppSlice"
 
-const mapStore = ({ appStore, dataStore, graphStore }: RootStoreModel) => ({
-    appStore,
-    dataStore,
+const mapStore = ({ graphStore }: RootStoreModel) => ({
     graphStore,
-});
+})
 
 const Controls: FC<{}> = observer(() => {
     return (
@@ -63,56 +62,68 @@ const Controls: FC<{}> = observer(() => {
                                 aria-hidden="true"
                             />
                         }
-                        onClick={() => alert('Opening Centrifuge')}
+                        onClick={() => alert("Opening Centrifuge")}
                     />
                 </div>
             </div>
         </ControlsContainer>
-    );
-});
+    )
+})
 
 const Root: FC<{}> = observer(() => {
     const [filtersState, setFiltersState] = useState<FiltersState>({
         clusters: {},
         tags: {},
-    });
+    })
 
-    const parent = useRef(null);
+    const parent = useRef(null)
+
     useEffect(() => {
-        parent.current && autoAnimate(parent.current);
-    }, [parent]);
+        parent.current && autoAnimate(parent.current)
+    }, [parent])
 
     // notistack
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-    const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+    const [hoveredNode, setHoveredNode] = useState<string | null>(null)
 
     // mobx
-    const { dataStore, appStore, graphStore } = useInject(mapStore);
+    const { graphStore } = useInject(mapStore)
+
+    // zustand
+    const { fetchData, settings, devMode, setStatus, dataSet } = useStore()
 
     // Load data on mount:
     useEffect(() => {
-        appStore.setStatus(STATUS.FETCHING);
+        setStatus(STATUS.FETCHING)
 
-        dataStore.fetchData().catch((e) => {
+        const asyncFetch = async () => {
+            await fetchData()
+        }
+
+        try {
+            asyncFetch()
+        } catch (e: any) {
             enqueueSnackbar(e.message, {
-                variant: 'error',
+                variant: "error",
                 persist: true,
-            });
-        });
-    }, []);
+            })
+        }
 
-    // if (!dataStore.data) return <LoadingLogo />;
+        fetchData().catch((e) => {})
+    }, [])
+
+    if (!dataSet.data) return <LoadingLogo />
 
     return (
         <div className="absolute inset-0">
             <SigmaContainer
                 settings={{
                     labelRenderer: drawLabel,
-                    ...dataStore.sigma.settings,
+                    ...settings,
                 }}
             >
-                <div ref={parent}>{appStore.devMode && <DevPanel />}</div>
+                <div ref={parent}>{devMode && <DevPanel />}</div>
                 {!graphStore.firstSim && <LoadingLogo />}
                 <GraphSettingsController hoveredNode={hoveredNode} />
                 <GraphEventsController setHoveredNode={setHoveredNode} />
@@ -125,7 +136,7 @@ const Root: FC<{}> = observer(() => {
                 <Controls />
             </SigmaContainer>
         </div>
-    );
-});
+    )
+})
 
-export default Root;
+export default Root
