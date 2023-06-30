@@ -9,6 +9,10 @@
     },
     "license": "MIT",
     "dependencies": {
+        "@antv/g6": "^4.8.17",
+        "@antv/graphin": "^2.7.19",
+        "@antv/graphin-components": "^2.4.1",
+        "@antv/graphin-icons": "^1.0.0",
         "@formkit/auto-animate": "^1.0.0-beta.3",
         "@headlessui/react": "^1.7.2",
         "@heroicons/react": "^2.0.11",
@@ -33,7 +37,8 @@
         "react-animate-height": "^2.0.23",
         "react-dom": "^17.0.2",
         "react-icons": "^4.3.1",
-        "sigma": "^2.3.1"
+        "sigma": "^2.3.1",
+        "zustand": "^4.3.8"
     },
     "devDependencies": {
         "@types/lodash": "^4.14.178",
