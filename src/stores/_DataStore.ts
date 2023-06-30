@@ -1,5 +1,5 @@
-import { StateCreator } from "zustand"
 import { StoreState } from "./_Store"
+import { StateCreator } from "zustand"
 
 import { RedditNode } from "../lib/types"
 

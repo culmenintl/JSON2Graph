@@ -1,9 +1,9 @@
-import { useRegisterEvents, useSigma } from "@react-sigma/core"
-import { FC, useEffect } from "react"
-import { useSnackbar } from "notistack"
-import { RootStoreModel } from "../stores/RootStore"
 import useInject from "../hooks/useInject"
+import { RootStoreModel } from "../stores/RootStore"
 import useStore from "../stores/_Store"
+import { useRegisterEvents, useSigma } from "@react-sigma/core"
+import { useSnackbar } from "notistack"
+import { FC, useEffect } from "react"
 
 function getMouseLayer() {
     return document.querySelector(".sigma-mouse")

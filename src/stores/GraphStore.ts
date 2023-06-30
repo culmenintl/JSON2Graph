@@ -1,4 +1,3 @@
-import { flow, Instance, types } from "mobx-state-tree"
 import Graph from "graphology"
 import {
     density,
@@ -9,11 +8,12 @@ import {
     simpleSize,
     weightedSize,
 } from "graphology-metrics/graph"
+import { Instance, flow, types } from "mobx-state-tree"
 
 import {
     edgeUniformity,
-    stress,
     neighborhoodPreservation,
+    stress,
 } from "graphology-metrics/layout-quality"
 
 import forceAtlas2 from "graphology-layout-forceatlas2"
@@ -168,7 +168,7 @@ export const createStore = (): GraphStoreModel => {
 }
 
 // react hooks to use the context API for fetching root store
-import { useContext, createContext } from "react"
+import { createContext, useContext } from "react"
 
 const StoreContext = createContext<GraphStoreModel>({} as GraphStoreModel)
 

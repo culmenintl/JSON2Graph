@@ -1,8 +1,8 @@
 import Root from "./components/Root"
 
+import { StoreProvider, createStore } from "../src/stores/RootStore"
 // mobx
 import makeInspectable from "mobx-devtools-mst"
-import { createStore, StoreProvider } from "../src/stores/RootStore"
 
 const rootStore = createStore()
 

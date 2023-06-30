@@ -1,5 +1,5 @@
-import { FC } from "react"
 import Button from "./Button"
+import { FC } from "react"
 
 const GraphSelector: FC<{}> = ({}) => {
     return (

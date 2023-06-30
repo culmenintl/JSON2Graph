@@ -1,11 +1,11 @@
 import { Instance, types } from "mobx-state-tree"
 
 // react hooks to use the context API for fetching root store
-import { useContext, createContext } from "react"
+import { createContext, useContext } from "react"
 
+import * as AppStore from "./AppStore"
 // stores
 import * as Datastore from "./DataStore"
-import * as AppStore from "./AppStore"
 import * as GraphStore from "./GraphStore"
 
 // RootStore

@@ -1,13 +1,13 @@
-import { useSigma } from "@react-sigma/core"
-import { FC } from "react"
 import useInject from "../hooks/useInject"
 import { RootStoreModel } from "../stores/RootStore"
+import useStore from "../stores/_Store"
 import Button from "./Button"
 import DevPanelHeader from "./DevPanelHeader"
 import { GraphRow } from "./GraphRow"
 import GraphStats from "./GraphStats"
 import { ArrowPathIcon } from "@heroicons/react/24/outline"
-import useStore from "../stores/_Store"
+import { useSigma } from "@react-sigma/core"
+import { FC } from "react"
 
 const LoseContext: FC<{}> = () => {
     const sigma = useSigma()

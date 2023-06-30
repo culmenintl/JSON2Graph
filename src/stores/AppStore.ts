@@ -28,9 +28,9 @@ export const createStore = (): AppStoreModel => {
     return AppStore.create({})
 }
 
-// react hooks to use the context API for fetching root store
-import { useContext, createContext } from "react"
 import { STATUS } from "./_AppSlice"
+// react hooks to use the context API for fetching root store
+import { createContext, useContext } from "react"
 
 const StoreContext = createContext<AppStoreModel>({} as AppStoreModel)
 

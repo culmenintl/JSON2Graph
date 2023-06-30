@@ -1,7 +1,7 @@
-import { FC } from "react"
-import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
 import { classNames } from "../lib/Utils"
 import useStore from "../stores/_Store"
+import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
+import { FC } from "react"
 
 export const ToggleDev: FC<{}> = () => {
     const toggleDevMode = useStore((state) => state.toggleDevMode)

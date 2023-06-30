@@ -1,9 +1,9 @@
-import { FC } from "react"
-import { observer } from "mobx-react-lite"
-import { RootStoreModel } from "../stores/RootStore"
 import useInject from "../hooks/useInject"
-import Loading from "./Loading"
+import { RootStoreModel } from "../stores/RootStore"
 import useStore from "../stores/_Store"
+import Loading from "./Loading"
+import { observer } from "mobx-react-lite"
+import { FC } from "react"
 
 const mapStore = ({ graphStore }: RootStoreModel) => ({
     graphStore,

@@ -1,35 +1,35 @@
-import { FC, useEffect, useState, useRef } from "react"
 import autoAnimate from "@formkit/auto-animate"
 import {
-    SigmaContainer,
     ControlsContainer,
     SearchControl,
+    SigmaContainer,
 } from "@react-sigma/core"
+import { FC, useEffect, useRef, useState } from "react"
 
-import GraphSettingsController from "./GraphSettingsController"
-import GraphEventsController from "./GraphEventsController"
-import GraphDataController from "./GraphDataController"
-import { FiltersState, RedditNode } from "../lib/types"
 import drawLabel from "../lib/canvas-utils"
+import { FiltersState, RedditNode } from "../lib/types"
+import GraphDataController from "./GraphDataController"
+import GraphEventsController from "./GraphEventsController"
+import GraphSettingsController from "./GraphSettingsController"
 
 import LoadingLogo from "./LoadingLogo"
 
 import "@react-sigma/core/lib/react-sigma.min.css"
 
-import { ToggleDev } from "./ToggleDev"
-import { RootStoreModel } from "../stores/RootStore"
-import { observer } from "mobx-react-lite"
-import { DevPanel } from "./DevPanel"
 import useInject from "../hooks/useInject"
+import { RootStoreModel } from "../stores/RootStore"
+import { DevPanel } from "./DevPanel"
 import StatusDisplay from "./StatusDisplay"
+import { ToggleDev } from "./ToggleDev"
+import { observer } from "mobx-react-lite"
 
+import { STATUS } from "../stores/_AppSlice"
+import useStore from "../stores/_Store"
+import Button from "./Button"
+import { ToggleSimulation } from "./ToggleSimulate"
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 // notistack
 import { useSnackbar } from "notistack"
-import { ToggleSimulation } from "./ToggleSimulate"
-import Button from "./Button"
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
-import useStore from "../stores/_Store"
-import { STATUS } from "../stores/_AppSlice"
 
 const mapStore = ({ graphStore }: RootStoreModel) => ({
     graphStore,

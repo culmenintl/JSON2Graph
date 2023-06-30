@@ -1,18 +1,18 @@
-import { useSigma, useLoadGraph } from "@react-sigma/core"
-import { FC, useEffect } from "react"
+import { useLoadGraph, useSigma } from "@react-sigma/core"
 import { keyBy, omit, uniqBy } from "lodash"
+import { FC, useEffect } from "react"
 
-import { Dataset, FiltersState, NodeData } from "../lib/types"
-import { observer } from "mobx-react-lite"
-import { RootStoreModel } from "../stores/RootStore"
 import useInject from "../hooks/useInject"
+import { Dataset, FiltersState, NodeData } from "../lib/types"
+import { RootStoreModel } from "../stores/RootStore"
+import { observer } from "mobx-react-lite"
 import { useSnackbar } from "notistack"
 
+import { calculateDegreesAndColor, populateGraph } from "../lib/Utils"
+import { cropToLargestConnectedComponent } from "graphology-components"
+import { circlepack, circular } from "graphology-layout"
 // layout
 import forceAtlas2 from "graphology-layout-forceatlas2"
-import { circular, circlepack } from "graphology-layout"
-import { cropToLargestConnectedComponent } from "graphology-components"
-import { calculateDegreesAndColor, populateGraph } from "../lib/Utils"
 
 import config from "../../configs/data.mapping.json"
 import { STATUS } from "../stores/_AppSlice"

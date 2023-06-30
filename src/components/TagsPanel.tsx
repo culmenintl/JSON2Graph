@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useMemo, useState } from "react"
 import { useSigma } from "@react-sigma/core"
-import { MdCategory } from "react-icons/md"
 import { keyBy, mapValues, sortBy, values } from "lodash"
+import React, { FC, useEffect, useMemo, useState } from "react"
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai"
+import { MdCategory } from "react-icons/md"
 
 import { FiltersState, Tag } from "../lib/types"
 import Panel from "./Panel"
@@ -18,7 +18,7 @@ const TagsPanel: FC<{
 
     const nodesPerTag = useMemo(() => {
         const index: Record<string, number> = {}
-        graph.forEachNode((_, { tag }) => (index[tag] = (index[tag] || 0) + 1))
+        graph.forEachNode((_, { tag }) => index[tag] === (index[tag] || 0) + 1)
         return index
     }, [])
 
@@ -41,7 +41,7 @@ const TagsPanel: FC<{
             const index: Record<string, number> = {}
             graph.forEachNode(
                 (_, { tag, hidden }) =>
-                    !hidden && (index[tag] = (index[tag] || 0) + 1),
+                    !hidden && index[tag] === (index[tag] || 0) + 1,
             )
             setVisibleNodesPerTag(index)
         })
@@ -126,19 +126,19 @@ const TagsPanel: FC<{
                                     <div
                                         className="bar"
                                         style={{
-                                            width:
+                                            width: `${
                                                 (100 * nodesCount) /
-                                                    maxNodesPerTag +
-                                                "%",
+                                                maxNodesPerTag
+                                            }%`,
                                         }}
                                     >
                                         <div
                                             className="inside-bar"
                                             style={{
-                                                width:
+                                                width: `${
                                                     (100 * visibleNodesCount) /
-                                                        nodesCount +
-                                                    "%",
+                                                    nodesCount
+                                                }%`,
                                             }}
                                         />
                                     </div>

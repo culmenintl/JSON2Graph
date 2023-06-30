@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from "react"
 import { useSigma } from "@react-sigma/core"
+import React, { FC, useEffect, useState } from "react"
 
 import { FiltersState } from "../lib/types"
 
 function prettyPercentage(val: number): string {
-    return (val * 100).toFixed(1) + "%"
+    return `${(val * 100).toFixed(1)}%`
 }
 
 const GraphTitle: FC<{ filters: FiltersState }> = ({ filters }) => {

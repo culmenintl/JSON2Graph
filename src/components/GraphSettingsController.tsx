@@ -38,7 +38,7 @@ const GraphSettingsController: FC<{ hoveredNode: string | null }> = ({
      */
     useEffect(() => {
         const hoveredColor: string = debouncedHoveredNode
-            ? sigma.getNodeDisplayData(debouncedHoveredNode)!.color
+            ? sigma.getNodeDisplayData(debouncedHoveredNode)?.color
             : ""
 
         sigma.setSetting(

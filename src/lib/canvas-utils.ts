@@ -1,5 +1,5 @@
-import { NodeDisplayData, PartialButFor, PlainObject } from "sigma/types"
 import { Settings } from "sigma/settings"
+import { NodeDisplayData, PartialButFor, PlainObject } from "sigma/types"
 
 const TEXT_COLOR = "#000000"
 
@@ -123,9 +123,9 @@ export default function drawLabel(
 ): void {
     if (!data.label) return
 
-    const size = settings.labelSize,
-        font = settings.labelFont,
-        weight = settings.labelWeight
+    const size = settings.labelSize
+    const font = settings.labelFont
+    const weight = settings.labelWeight
 
     context.font = `${weight} ${size}px ${font}`
     const width = context.measureText(data.label).width + 8

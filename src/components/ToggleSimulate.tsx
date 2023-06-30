@@ -1,12 +1,12 @@
-import { FC, useEffect } from "react"
-import { PlayIcon, StopIcon } from "@heroicons/react/24/outline"
-import { classNames } from "../lib/Utils"
-import { observer } from "mobx-react-lite"
-import { RootStoreModel } from "../stores/RootStore"
 import useInject from "../hooks/useInject"
-import { useSigma } from "@react-sigma/core"
+import { classNames } from "../lib/Utils"
+import { RootStoreModel } from "../stores/RootStore"
 import { STATUS } from "../stores/_AppSlice"
 import useStore from "../stores/_Store"
+import { PlayIcon, StopIcon } from "@heroicons/react/24/outline"
+import { useSigma } from "@react-sigma/core"
+import { observer } from "mobx-react-lite"
+import { FC, useEffect } from "react"
 
 const mapStore = ({ graphStore }: RootStoreModel) => ({
     graphStore,

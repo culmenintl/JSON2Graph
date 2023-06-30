@@ -1,6 +1,6 @@
-import { StateCreator } from "zustand"
 import { StoreState } from "./_Store"
 import { produce } from "immer"
+import { StateCreator } from "zustand"
 
 export enum STATUS {
     FETCHING = "Fetching Data",

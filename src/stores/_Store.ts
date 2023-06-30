@@ -1,7 +1,7 @@
-import { StoreApi, create } from "zustand"
-import { devtools } from "zustand/middleware"
 import createAppSlice, { AppSlice } from "./_AppSlice"
 import createDataSlice, { DataSlice } from "./_DataStore"
+import { StoreApi, create } from "zustand"
+import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 // import createUserSlice, { UserSlice } from "./user/UserSlice"
 

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from "react"
-import { MdExpandLess, MdExpandMore } from "react-icons/md"
 import AnimateHeight from "react-animate-height"
+import { MdExpandLess, MdExpandMore } from "react-icons/md"
 
 const DURATION = 300
 
@@ -15,7 +15,7 @@ const Panel: FC<{
         if (isDeployed)
             setTimeout(() => {
                 if (dom.current)
-                    dom.current.parentElement!.scrollTo({
+                    dom.current.parentElement?.scrollTo({
                         top: dom.current.offsetTop - 5,
                         behavior: "smooth",
                     })

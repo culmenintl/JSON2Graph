@@ -1,14 +1,14 @@
-import { FC } from "react"
-import Button from "./Button"
-import { observer } from "mobx-react-lite"
-import { RootStoreModel } from "../stores/RootStore"
 import useInject from "../hooks/useInject"
-import { useSigma } from "@react-sigma/core"
-import { GraphRow } from "./GraphRow"
-import DevPanelHeader from "./DevPanelHeader"
-import ToggleSwitch from "./Switch"
-import { GraphInput } from "./GraphInput"
+import { RootStoreModel } from "../stores/RootStore"
 import useStore from "../stores/_Store"
+import Button from "./Button"
+import DevPanelHeader from "./DevPanelHeader"
+import { GraphInput } from "./GraphInput"
+import { GraphRow } from "./GraphRow"
+import ToggleSwitch from "./Switch"
+import { useSigma } from "@react-sigma/core"
+import { observer } from "mobx-react-lite"
+import { FC } from "react"
 
 const mapStore = ({ graphStore }: RootStoreModel) => ({
     graphStore,

@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useMemo, useState } from "react"
 import { useSigma } from "@react-sigma/core"
-import { sortBy, values, keyBy, mapValues } from "lodash"
-import { MdGroupWork } from "react-icons/md"
+import { keyBy, mapValues, sortBy, values } from "lodash"
+import React, { FC, useEffect, useMemo, useState } from "react"
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai"
+import { MdGroupWork } from "react-icons/md"
 
 import { Cluster, FiltersState } from "../lib/types"
 import Panel from "./Panel"
@@ -19,7 +19,7 @@ const ClustersPanel: FC<{
     const nodesPerCluster = useMemo(() => {
         const index: Record<string, number> = {}
         graph.forEachNode(
-            (_, { cluster }) => (index[cluster] = (index[cluster] || 0) + 1),
+            (_, { cluster }) => index[cluster] === (index[cluster] || 0) + 1,
         )
         return index
     }, [])
@@ -43,7 +43,7 @@ const ClustersPanel: FC<{
             const index: Record<string, number> = {}
             graph.forEachNode(
                 (_, { cluster, hidden }) =>
-                    !hidden && (index[cluster] = (index[cluster] || 0) + 1),
+                    !hidden && index[cluster] === (index[cluster] || 0) + 1,
             )
             setVisibleNodesPerCluster(index)
         })
@@ -126,19 +126,19 @@ const ClustersPanel: FC<{
                                     <div
                                         className="bar"
                                         style={{
-                                            width:
+                                            width: `${
                                                 (100 * nodesCount) /
-                                                    maxNodesPerCluster +
-                                                "%",
+                                                maxNodesPerCluster
+                                            }%`,
                                         }}
                                     >
                                         <div
                                             className="inside-bar"
                                             style={{
-                                                width:
+                                                width: `${
                                                     (100 * visibleNodesCount) /
-                                                        nodesCount +
-                                                    "%",
+                                                    nodesCount
+                                                }%`,
                                             }}
                                         />
                                     </div>

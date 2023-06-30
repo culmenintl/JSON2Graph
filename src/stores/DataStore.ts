@@ -1,7 +1,7 @@
-import { flow, Instance, types } from "mobx-state-tree"
-// react hooks to use the context API for fetching root store
-import { useContext, createContext } from "react"
 import { RedditNode } from "../lib/types"
+import { Instance, flow, types } from "mobx-state-tree"
+// react hooks to use the context API for fetching root store
+import { createContext, useContext } from "react"
 
 import { DatasetConfigs } from "../lib/Utils"
 

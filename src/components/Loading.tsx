@@ -9,7 +9,7 @@ const defaultSize = 20
 const Loading: FC<Props> = ({ size }) => {
     return (
         <>
-            <div role="status" className={`items-center justify-center`}>
+            <div role="status" className={"items-center justify-center"}>
                 <svg
                     className={`w-${size ? size : defaultSize} h-${
                         size ? size : defaultSize
