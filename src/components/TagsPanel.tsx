@@ -1,59 +1,59 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useSigma } from '@react-sigma/core';
-import { MdCategory } from 'react-icons/md';
-import { keyBy, mapValues, sortBy, values } from 'lodash';
-import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
+import React, { FC, useEffect, useMemo, useState } from "react"
+import { useSigma } from "@react-sigma/core"
+import { MdCategory } from "react-icons/md"
+import { keyBy, mapValues, sortBy, values } from "lodash"
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai"
 
-import { FiltersState, Tag } from '../lib/types';
-import Panel from './Panel';
+import { FiltersState, Tag } from "../lib/types"
+import Panel from "./Panel"
 
 const TagsPanel: FC<{
-    tags: Tag[];
-    filters: FiltersState;
-    toggleTag: (tag: string) => void;
-    setTags: (tags: Record<string, boolean>) => void;
+    tags: Tag[]
+    filters: FiltersState
+    toggleTag: (tag: string) => void
+    setTags: (tags: Record<string, boolean>) => void
 }> = ({ tags, filters, toggleTag, setTags }) => {
-    const sigma = useSigma();
-    const graph = sigma.getGraph();
+    const sigma = useSigma()
+    const graph = sigma.getGraph()
 
     const nodesPerTag = useMemo(() => {
-        const index: Record<string, number> = {};
-        graph.forEachNode((_, { tag }) => (index[tag] = (index[tag] || 0) + 1));
-        return index;
-    }, []);
+        const index: Record<string, number> = {}
+        graph.forEachNode((_, { tag }) => (index[tag] = (index[tag] || 0) + 1))
+        return index
+    }, [])
 
     const maxNodesPerTag = useMemo(
         () => Math.max(...values(nodesPerTag)),
-        [nodesPerTag]
-    );
+        [nodesPerTag],
+    )
     const visibleTagsCount = useMemo(
         () => Object.keys(filters.tags).length,
-        [filters]
-    );
+        [filters],
+    )
 
     const [visibleNodesPerTag, setVisibleNodesPerTag] =
-        useState<Record<string, number>>(nodesPerTag);
+        useState<Record<string, number>>(nodesPerTag)
     useEffect(() => {
         // To ensure the graphology instance has up to data "hidden" values for
         // nodes, we wait for next frame before reindexing. This won't matter in the
         // UX, because of the visible nodes bar width transition.
         requestAnimationFrame(() => {
-            const index: Record<string, number> = {};
+            const index: Record<string, number> = {}
             graph.forEachNode(
                 (_, { tag, hidden }) =>
-                    !hidden && (index[tag] = (index[tag] || 0) + 1)
-            );
-            setVisibleNodesPerTag(index);
-        });
-    }, [filters]);
+                    !hidden && (index[tag] = (index[tag] || 0) + 1),
+            )
+            setVisibleNodesPerTag(index)
+        })
+    }, [filters])
 
     const sortedTags = useMemo(
         () =>
             sortBy(tags, (tag) =>
-                tag.key === 'unknown' ? Infinity : -nodesPerTag[tag.key]
+                tag.key === "unknown" ? Infinity : -nodesPerTag[tag.key],
             ),
-        [tags, nodesPerTag]
-    );
+        [tags, nodesPerTag],
+    )
 
     return (
         <Panel
@@ -62,11 +62,11 @@ const TagsPanel: FC<{
                     <MdCategory className="text-muted" /> Categories
                     {visibleTagsCount < tags.length ? (
                         <span className="text-muted text-small">
-                            {' '}
+                            {" "}
                             ({visibleTagsCount} / {tags.length})
                         </span>
                     ) : (
-                        ''
+                        ""
                     )}
                 </>
             }
@@ -81,29 +81,29 @@ const TagsPanel: FC<{
                 <button
                     className="btn"
                     onClick={() =>
-                        setTags(mapValues(keyBy(tags, 'key'), () => true))
+                        setTags(mapValues(keyBy(tags, "key"), () => true))
                     }
                 >
                     <AiOutlineCheckCircle /> Check all
-                </button>{' '}
+                </button>{" "}
                 <button className="btn" onClick={() => setTags({})}>
                     <AiOutlineCloseCircle /> Uncheck all
                 </button>
             </p>
             <ul>
                 {sortedTags.map((tag) => {
-                    const nodesCount = nodesPerTag[tag.key];
-                    const visibleNodesCount = visibleNodesPerTag[tag.key] || 0;
+                    const nodesCount = nodesPerTag[tag.key]
+                    const visibleNodesCount = visibleNodesPerTag[tag.key] || 0
                     return (
                         <li
                             className="caption-row"
                             key={tag.key}
                             title={`${nodesCount} page${
-                                nodesCount > 1 ? 's' : ''
+                                nodesCount > 1 ? "s" : ""
                             }${
                                 visibleNodesCount !== nodesCount
                                     ? ` (only ${visibleNodesCount} visible)`
-                                    : ''
+                                    : ""
                             }`}
                         >
                             <input
@@ -120,7 +120,7 @@ const TagsPanel: FC<{
                                             import.meta.env.VITE_PUBLIC_URL
                                         }/images/${tag.image})`,
                                     }}
-                                />{' '}
+                                />{" "}
                                 <div className="node-label">
                                     <span>{tag.key}</span>
                                     <div
@@ -129,7 +129,7 @@ const TagsPanel: FC<{
                                             width:
                                                 (100 * nodesCount) /
                                                     maxNodesPerTag +
-                                                '%',
+                                                "%",
                                         }}
                                     >
                                         <div
@@ -138,18 +138,18 @@ const TagsPanel: FC<{
                                                 width:
                                                     (100 * visibleNodesCount) /
                                                         nodesCount +
-                                                    '%',
+                                                    "%",
                                             }}
                                         />
                                     </div>
                                 </div>
                             </label>
                         </li>
-                    );
+                    )
                 })}
             </ul>
         </Panel>
-    );
-};
+    )
+}
 
-export default TagsPanel;
+export default TagsPanel

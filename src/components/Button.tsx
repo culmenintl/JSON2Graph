@@ -1,12 +1,12 @@
-import { FC } from 'react';
+import { FC } from "react"
 
 interface Props {
-    text: string;
-    onClick?: () => void;
-    icon?: JSX.Element;
+    text: string
+    onClick?: () => void
+    icon?: JSX.Element
 }
 
-const Button: FC<Props> = ({ text, onClick: onClick, icon }) => {
+const Button: FC<Props> = ({ text, onClick, icon }) => {
     return (
         <button
             type="button"
@@ -16,7 +16,7 @@ const Button: FC<Props> = ({ text, onClick: onClick, icon }) => {
             {icon}
             {text}
         </button>
-    );
-};
+    )
+}
 
-export default Button;
+export default Button

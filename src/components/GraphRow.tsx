@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC } from "react"
 
 type Props = {
-    label: string;
-    value?: String | JSX.Element | React.ReactNode;
-    preRendered?: React.ReactNode;
-};
+    label: string
+    value?: String | JSX.Element | React.ReactNode
+    preRendered?: React.ReactNode
+}
 
 export const GraphRow: FC<Props> = ({ label, value, preRendered }) => {
     return (
@@ -27,5 +27,5 @@ export const GraphRow: FC<Props> = ({ label, value, preRendered }) => {
                 </div>
             </dl>
         </div>
-    );
-};
+    )
+}

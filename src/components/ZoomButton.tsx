@@ -1,8 +1,8 @@
-import { FC } from 'react';
+import { FC } from "react"
 
 interface Props {
-    icon: JSX.Element;
-    onPress?: () => void;
+    icon: JSX.Element
+    onPress?: () => void
 }
 const ZoomButton: FC<Props> = ({ icon, onPress }) => {
     return (
@@ -12,7 +12,7 @@ const ZoomButton: FC<Props> = ({ icon, onPress }) => {
         >
             {icon}
         </div>
-    );
-};
+    )
+}
 
-export default ZoomButton;
+export default ZoomButton

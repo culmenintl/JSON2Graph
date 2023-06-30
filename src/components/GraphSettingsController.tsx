@@ -1,36 +1,36 @@
-import { useSigma } from '@react-sigma/core';
-import { FC, useEffect } from 'react';
+import { useSigma } from "@react-sigma/core"
+import { FC, useEffect } from "react"
 
-import { drawHover } from '../lib/canvas-utils';
-import useDebounce from '../lib/use-debounce';
+import { drawHover } from "../lib/canvas-utils"
+import useDebounce from "../lib/use-debounce"
 
-const NODE_FADE_COLOR = '#bbb';
-const EDGE_FADE_COLOR = '#eee';
+const NODE_FADE_COLOR = "#bbb"
+const EDGE_FADE_COLOR = "#eee"
 
 const GraphSettingsController: FC<{ hoveredNode: string | null }> = ({
     children,
     hoveredNode,
 }) => {
-    const sigma = useSigma();
-    const graph = sigma.getGraph();
+    const sigma = useSigma()
+    const graph = sigma.getGraph()
 
     // Here we debounce the value to avoid having too much highlights refresh when
     // moving the mouse over the graph:
-    const debouncedHoveredNode = useDebounce(hoveredNode, 40);
+    const debouncedHoveredNode = useDebounce(hoveredNode, 40)
 
     /**
      * Initialize here settings that require to know the graph and/or the sigma
      * instance:
      */
     useEffect(() => {
-        sigma.setSetting('hoverRenderer', (context, data, settings) =>
+        sigma.setSetting("hoverRenderer", (context, data, settings) =>
             drawHover(
                 context,
                 { ...sigma.getNodeDisplayData(data.key), ...data },
-                settings
-            )
-        );
-    }, [sigma, graph]);
+                settings,
+            ),
+        )
+    }, [sigma, graph])
 
     /**
      * Update node and edge reducers when a node is hovered, to highlight its
@@ -39,10 +39,10 @@ const GraphSettingsController: FC<{ hoveredNode: string | null }> = ({
     useEffect(() => {
         const hoveredColor: string = debouncedHoveredNode
             ? sigma.getNodeDisplayData(debouncedHoveredNode)!.color
-            : '';
+            : ""
 
         sigma.setSetting(
-            'nodeReducer',
+            "nodeReducer",
             debouncedHoveredNode
                 ? (node, data) =>
                       node === debouncedHoveredNode ||
@@ -50,27 +50,27 @@ const GraphSettingsController: FC<{ hoveredNode: string | null }> = ({
                       graph.hasEdge(debouncedHoveredNode, node)
                           ? { ...data, zIndex: 1 }
                           : {
-                                ...data,
-                                zIndex: 0,
-                                label: '',
-                                color: NODE_FADE_COLOR,
-                                image: null,
-                                highlighted: false,
-                            }
-                : null
-        );
+                                  ...data,
+                                  zIndex: 0,
+                                  label: "",
+                                  color: NODE_FADE_COLOR,
+                                  image: null,
+                                  highlighted: false,
+                              }
+                : null,
+        )
         sigma.setSetting(
-            'edgeReducer',
+            "edgeReducer",
             debouncedHoveredNode
                 ? (edge, data) =>
                       graph.hasExtremity(edge, debouncedHoveredNode)
                           ? { ...data, color: hoveredColor, size: 3 }
                           : { ...data, color: EDGE_FADE_COLOR, hidden: true }
-                : null
-        );
-    }, [debouncedHoveredNode]);
+                : null,
+        )
+    }, [debouncedHoveredNode])
 
-    return <>{children}</>;
-};
+    return <>{children}</>
+}
 
-export default GraphSettingsController;
+export default GraphSettingsController

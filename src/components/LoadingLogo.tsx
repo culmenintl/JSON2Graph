@@ -1,12 +1,12 @@
-import { FC } from 'react';
+import { FC } from "react"
 
 type Props = {
-    size?: number;
-    iconOnly?: boolean;
-};
+    size?: number
+    iconOnly?: boolean
+}
 
-import CentrifugeText from '/images/centrifuge-text.svg';
-import CentrifugeLogoCentered from '/images/cent-logo-centered.svg';
+import CentrifugeText from "/images/centrifuge-text.svg"
+import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 
 // Basic fullscreen loading animation w/ centrifuge logo
 const LoadingLogo: FC<Props> = () => {
@@ -24,7 +24,7 @@ const LoadingLogo: FC<Props> = () => {
                 <span className="sr-only">Loading...</span>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default LoadingLogo;
+export default LoadingLogo

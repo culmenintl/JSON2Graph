@@ -1,15 +1,15 @@
-import { FC } from 'react';
+import { FC } from "react"
 
 type Props = {
-    label: string;
-    pre?: React.ReactNode;
-    type: React.HTMLInputTypeAttribute;
-    disabled?: boolean;
-    placehoder?: string;
-    value?: string | number | readonly string[] | undefined;
-    onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
-    max?: number;
-};
+    label: string
+    pre?: React.ReactNode
+    type: React.HTMLInputTypeAttribute
+    disabled?: boolean
+    placehoder?: string
+    value?: string | number | readonly string[] | undefined
+    onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined
+    max?: number
+}
 export const GraphInput: FC<Props> = ({
     label,
     type,
@@ -41,5 +41,5 @@ export const GraphInput: FC<Props> = ({
                 </div>
             </dl>
         </div>
-    );
-};
+    )
+}

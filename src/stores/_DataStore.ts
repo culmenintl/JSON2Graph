@@ -1,6 +1,5 @@
 import { StateCreator } from "zustand"
 import { StoreState } from "./_Store"
-import { immer } from "zustand/middleware/immer"
 
 import { RedditNode } from "../lib/types"
 

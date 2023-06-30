@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { BsInfoCircle } from 'react-icons/bs';
+import React, { FC } from "react"
+import { BsInfoCircle } from "react-icons/bs"
 
-import Panel from './Panel';
+import Panel from "./Panel"
 
 const DescriptionPanel: FC = () => {
     return (
@@ -15,8 +15,8 @@ const DescriptionPanel: FC = () => {
         >
             <p>
                 This map represents a <i>network</i> of Wikipedia articles
-                around the topic of "Data vizualisation". Each <i>node</i>{' '}
-                represents an article, and each edge a{' '}
+                around the topic of "Data vizualisation". Each <i>node</i>{" "}
+                represents an article, and each edge a{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -27,15 +27,15 @@ const DescriptionPanel: FC = () => {
                 .
             </p>
             <p>
-                The seed articles were selected by hand by the{' '}
+                The seed articles were selected by hand by the{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
                     href="https://medialab.sciencespo.fr/"
                 >
                     Sciences-Po médialab
-                </a>{' '}
-                team, and the network was crawled using{' '}
+                </a>{" "}
+                team, and the network was crawled using{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -44,7 +44,7 @@ const DescriptionPanel: FC = () => {
                     Seealsology
                 </a>
                 , and then cleaned and enriched manually. This makes the dataset
-                creditable to both the médialab team and{' '}
+                creditable to both the médialab team and{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -55,7 +55,7 @@ const DescriptionPanel: FC = () => {
                 .
             </p>
             <p>
-                This web application has been developed by{' '}
+                This web application has been developed by{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -63,11 +63,11 @@ const DescriptionPanel: FC = () => {
                 >
                     OuestWare
                 </a>
-                , using{' '}
+                , using{" "}
                 <a target="_blank" rel="noreferrer" href="https://reactjs.org/">
                     react
-                </a>{' '}
-                and{' '}
+                </a>{" "}
+                and{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -75,7 +75,7 @@ const DescriptionPanel: FC = () => {
                 >
                     sigma.js
                 </a>
-                . You can read the source code{' '}
+                . You can read the source code{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -86,7 +86,7 @@ const DescriptionPanel: FC = () => {
                 .
             </p>
             <p>
-                Nodes sizes are related to their{' '}
+                Nodes sizes are related to their{" "}
                 <a
                     target="_blank"
                     rel="noreferrer"
@@ -99,7 +99,7 @@ const DescriptionPanel: FC = () => {
                 related Wikipedia article.
             </p>
         </Panel>
-    );
-};
+    )
+}
 
-export default DescriptionPanel;
+export default DescriptionPanel

@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC } from "react"
 
 type Props = {
-    size?: number;
-};
+    size?: number
+}
 
-const defaultSize = 20;
+const defaultSize = 20
 
 const Loading: FC<Props> = ({ size }) => {
     return (
@@ -30,7 +30,7 @@ const Loading: FC<Props> = ({ size }) => {
                 <span className="sr-only">Loading...</span>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default Loading;
+export default Loading

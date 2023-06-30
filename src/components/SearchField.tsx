@@ -4,12 +4,12 @@ import React, {
     FC,
     useEffect,
     useState,
-} from 'react';
-import { useSigma } from '@react-sigma/core';
-import { Attributes } from 'graphology-types';
-import { BsSearch } from 'react-icons/bs';
+} from "react"
+import { useSigma } from "@react-sigma/core"
+import { Attributes } from "graphology-types"
+import { BsSearch } from "react-icons/bs"
 
-import { FiltersState } from '../lib/types';
+import { FiltersState } from "../lib/types"
 
 /**
  * This component is basically a fork from React-sigma-v2's SearchControl
@@ -18,17 +18,17 @@ import { FiltersState } from '../lib/types';
  * 2. We need custom markup
  */
 const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
-    const sigma = useSigma();
+    const sigma = useSigma()
 
-    const [search, setSearch] = useState<string>('');
+    const [search, setSearch] = useState<string>("")
     const [values, setValues] = useState<Array<{ id: string; label: string }>>(
-        []
-    );
-    const [selected, setSelected] = useState<string | null>(null);
+        [],
+    )
+    const [selected, setSelected] = useState<string | null>(null)
 
     const refreshValues = () => {
-        const newValues: Array<{ id: string; label: string }> = [];
-        const lcSearch = search.toLowerCase();
+        const newValues: Array<{ id: string; label: string }> = []
+        const lcSearch = search.toLowerCase()
         if (!selected && search.length > 1) {
             sigma
                 .getGraph()
@@ -38,58 +38,58 @@ const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
                         attributes.label &&
                         attributes.label.toLowerCase().indexOf(lcSearch) === 0
                     )
-                        newValues.push({ id: key, label: attributes.label });
-                });
+                        newValues.push({ id: key, label: attributes.label })
+                })
         }
-        setValues(newValues);
-    };
+        setValues(newValues)
+    }
 
     // Refresh values when search is updated:
-    useEffect(() => refreshValues(), [search]);
+    useEffect(() => refreshValues(), [search])
 
     // Refresh values when filters are updated (but wait a frame first):
     useEffect(() => {
-        requestAnimationFrame(refreshValues);
-    }, [filters]);
+        requestAnimationFrame(refreshValues)
+    }, [filters])
 
     useEffect(() => {
-        if (!selected) return;
+        if (!selected) return
 
-        sigma.getGraph().setNodeAttribute(selected, 'highlighted', true);
-        const nodeDisplayData = sigma.getNodeDisplayData(selected);
+        sigma.getGraph().setNodeAttribute(selected, "highlighted", true)
+        const nodeDisplayData = sigma.getNodeDisplayData(selected)
 
         if (nodeDisplayData)
             sigma.getCamera().animate(
                 { ...nodeDisplayData, ratio: 0.05 },
                 {
                     duration: 600,
-                }
-            );
+                },
+            )
 
         return () => {
-            sigma.getGraph().setNodeAttribute(selected, 'highlighted', false);
-        };
-    }, [selected]);
+            sigma.getGraph().setNodeAttribute(selected, "highlighted", false)
+        }
+    }, [selected])
 
     const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const searchString = e.target.value;
-        const valueItem = values.find((value) => value.label === searchString);
+        const searchString = e.target.value
+        const valueItem = values.find((value) => value.label === searchString)
         if (valueItem) {
-            setSearch(valueItem.label);
-            setValues([]);
-            setSelected(valueItem.id);
+            setSearch(valueItem.label)
+            setValues([])
+            setSelected(valueItem.id)
         } else {
-            setSelected(null);
-            setSearch(searchString);
+            setSelected(null)
+            setSearch(searchString)
         }
-    };
+    }
 
     const onKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && values.length) {
-            setSearch(values[0].label);
-            setSelected(values[0].id);
+        if (e.key === "Enter" && values.length) {
+            setSearch(values[0].label)
+            setSelected(values[0].id)
         }
-    };
+    }
 
     return (
         <div className="search-wrapper">
@@ -110,7 +110,7 @@ const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
                 ))}
             </datalist>
         </div>
-    );
-};
+    )
+}
 
-export default SearchField;
+export default SearchField

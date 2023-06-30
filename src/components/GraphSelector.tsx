@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import Button from './Button';
+import { FC } from "react"
+import Button from "./Button"
 
 const GraphSelector: FC<{}> = ({}) => {
     return (
@@ -13,7 +13,7 @@ const GraphSelector: FC<{}> = ({}) => {
                 <Button text="Karate Club" />
             </span>
         </div>
-    );
-};
+    )
+}
 
-export default GraphSelector;
+export default GraphSelector
