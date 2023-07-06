@@ -1,5 +1,4 @@
 import useInject from "../hooks/useInject"
-import { RootStoreModel } from "../stores/RootStore"
 import useStore from "../stores/_Store"
 import Button from "./Button"
 import DevPanelHeader from "./DevPanelHeader"
@@ -7,25 +6,19 @@ import { GraphInput } from "./GraphInput"
 import { GraphRow } from "./GraphRow"
 import ToggleSwitch from "./Switch"
 import { useSigma } from "@react-sigma/core"
-import { observer } from "mobx-react-lite"
 import { FC } from "react"
-
-const mapStore = ({ graphStore }: RootStoreModel) => ({
-    graphStore,
-})
 
 const SampleJsonData = (data: Object) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
 )
 
-const GraphStats: FC<{}> = observer(() => {
-    const sigma = useSigma()
-    const { graphStore } = useInject(mapStore)
+const GraphStats: FC<{}> = () => {
+    // const sigma = useSigma()
 
     const { rows, setRows, dataSet } = useStore()
     return (
         <>
-            <DevPanelHeader
+            {/* <DevPanelHeader
                 title="Graph Information"
                 subtitle="Attributes and settings for the displayed graph"
             />
@@ -106,11 +99,11 @@ const GraphStats: FC<{}> = observer(() => {
                         }}
                     />
                 }
-            />
-            {graphStore.stats.map((val, index) => (
+            /> */}
+            {/* {graphStore.stats.map((val, index) => (
                 // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 <GraphRow label={val.name} value={val.val} key={index} />
-            ))}
+            ))} */}
 
             {/* <div className="self-start px-4 py-5 sm:px-6">
                 <h3 className="text-left text-lg font-medium leading-6 text-gray-900">
@@ -141,6 +134,6 @@ const GraphStats: FC<{}> = observer(() => {
             })} */}
         </>
     )
-})
+}
 
 export default GraphStats

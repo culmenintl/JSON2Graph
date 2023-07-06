@@ -18,7 +18,7 @@ import { FiltersState } from "../lib/types"
  * 2. We need custom markup
  */
 const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
-    const sigma = useSigma()
+    // const sigma = useSigma()
 
     const [search, setSearch] = useState<string>("")
     const [values, setValues] = useState<Array<{ id: string; label: string }>>(
@@ -29,19 +29,19 @@ const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
     const refreshValues = () => {
         const newValues: Array<{ id: string; label: string }> = []
         const lcSearch = search.toLowerCase()
-        if (!selected && search.length > 1) {
-            sigma
-                .getGraph()
-                .forEachNode((key: string, attributes: Attributes): void => {
-                    if (
-                        !attributes.hidden &&
-                        attributes.label &&
-                        attributes.label.toLowerCase().indexOf(lcSearch) === 0
-                    )
-                        newValues.push({ id: key, label: attributes.label })
-                })
-        }
-        setValues(newValues)
+        // if (!selected && search.length > 1) {
+        //     sigma
+        //         .getGraph()
+        //         .forEachNode((key: string, attributes: Attributes): void => {
+        //             if (
+        //                 !attributes.hidden &&
+        //                 attributes.label &&
+        //                 attributes.label.toLowerCase().indexOf(lcSearch) === 0
+        //             )
+        //                 newValues.push({ id: key, label: attributes.label })
+        //         })
+        // }
+        // setValues(newValues)
     }
 
     // Refresh values when search is updated:
@@ -55,20 +55,20 @@ const SearchField: FC<{ filters: FiltersState }> = ({ filters }) => {
     useEffect(() => {
         if (!selected) return
 
-        sigma.getGraph().setNodeAttribute(selected, "highlighted", true)
-        const nodeDisplayData = sigma.getNodeDisplayData(selected)
+        // sigma.getGraph().setNodeAttribute(selected, "highlighted", true)
+        // const nodeDisplayData = sigma.getNodeDisplayData(selected)
 
-        if (nodeDisplayData)
-            sigma.getCamera().animate(
-                { ...nodeDisplayData, ratio: 0.05 },
-                {
-                    duration: 600,
-                },
-            )
+        // if (nodeDisplayData)
+        //     sigma.getCamera().animate(
+        //         { ...nodeDisplayData, ratio: 0.05 },
+        //         {
+        //             duration: 600,
+        //         },
+        //     )
 
-        return () => {
-            sigma.getGraph().setNodeAttribute(selected, "highlighted", false)
-        }
+        // return () => {
+        //     sigma.getGraph().setNodeAttribute(selected, "highlighted", false)
+        // }
     }, [selected])
 
     const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {

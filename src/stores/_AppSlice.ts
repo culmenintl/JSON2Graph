@@ -1,8 +1,8 @@
 import { StoreState } from "./_Store"
-import { produce } from "immer"
 import { StateCreator } from "zustand"
 
 export enum STATUS {
+    DONE = "Done",
     FETCHING = "Fetching Data",
     SHAPING = "Creating Graph",
     SIMULATING = "Simulating...",
@@ -24,16 +24,15 @@ const initialState: State = {
 
 interface Actions {
     // drop actions
-    setLoading: (value: boolean) => void
     toggleDevMode: () => void
-    setStatus: (status: STATUS) => void
+    setStatus: (status: STATUS, loading: boolean) => void
 }
 
 export type AppSlice = State & Actions
 
 const createAppSlice: StateCreator<
     StoreState,
-    [["zustand/devtools", never]],
+    [["zustand/immer", never], ["zustand/devtools", never]],
     [],
     State & Actions
 > = (set, get) => ({
@@ -44,20 +43,21 @@ const createAppSlice: StateCreator<
     loading: true,
 
     toggleDevMode: () =>
-        set((state) => {
-            return { devMode: !state.devMode }
-        }),
-    setStatus: (status: STATUS) =>
         set(
-            produce((state) => {
-                state.status = status
-            }),
+            (state) => {
+                return { devMode: !state.devMode }
+            },
+            false,
+            "toggleDevMode",
         ),
-    setLoading: (loading: boolean) =>
+    setStatus: (status: STATUS, loading: boolean) =>
         set(
-            produce((state) => {
+            (state) => {
+                state.status = status
                 state.loading = loading
-            }),
+            },
+            false,
+            "setStatus",
         ),
 })
 

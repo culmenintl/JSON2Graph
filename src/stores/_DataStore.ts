@@ -1,9 +1,18 @@
-import { StoreState } from "./_Store"
+import useStore, { StoreState } from "./_Store"
 import { StateCreator } from "zustand"
 
 import { RedditNode } from "../lib/types"
 
 import config from "../../configs/data.mapping.json"
+import { Graph } from "@antv/g6"
+import {
+    populateG6Graph,
+    convertG6ToGraphinData,
+    pupulateGraphinData,
+} from "../lib/Utils"
+import { GraphinData } from "@antv/graphin"
+import { STATUS } from "./_AppSlice"
+
 interface SigmaSettings {
     labelDensity: number
     labelGridCellSize: number
@@ -23,13 +32,15 @@ interface Dataset {
 interface State {
     settings: SigmaSettings
     dataSet: Dataset
+    graph: Graph | undefined
+    graphinData: GraphinData | undefined
     rows: number
     state: "pending" | "done" | "error"
 }
 
 const initialState: State = {
-    rows: 2000,
-    state: "pending",
+    rows: 200,
+    state: "done",
     settings: {
         labelDensity: 0.07,
         labelGridCellSize: 60,
@@ -38,6 +49,8 @@ const initialState: State = {
         maxCameraRatio: 2,
         minCameraRatio: 0.2,
     },
+    graph: undefined,
+    graphinData: undefined,
     dataSet: {
         id: config.datasets[0].id,
         url: config.datasets[0].url,
@@ -51,6 +64,7 @@ const initialState: State = {
 interface Actions {
     setRows: (event: React.ChangeEvent<HTMLInputElement>) => void
     fetchData: () => Promise<void>
+    setData: (data: unknown) => void
 }
 
 export type DataSlice = State & Actions
@@ -62,52 +76,63 @@ const createDataSlice: StateCreator<
     DataSlice
 > = (set, get) => ({
     ...initialState,
+
+    setData: (data: unknown) => {
+        set((state) => {
+            state.dataSet.data = Array.isArray(data) ? data : [data]
+        })
+    },
+
+    // sets the rows of the dataset
     setRows: (event: React.ChangeEvent<HTMLInputElement>) => {
         const val = event.target.value
         if (val) {
-            set((state) => {
-                state.rows = parseInt(event.target.value)
-            })
+            set(
+                (state) => {
+                    state.rows = parseInt(event.target.value)
+                },
+                false,
+                "setRows",
+            )
         } else {
-            set((state) => {
-                state.rows = 0
-            })
+            set(
+                (state) => {
+                    state.rows = 0
+                },
+                false,
+                "setRows",
+            )
         }
     },
+
+    // fetches the data from the 'backend' and sets the graphinData
     fetchData: async () => {
-        set({
-            state: "pending",
-        })
+        get().setStatus(STATUS.FETCHING, true)
+
         try {
             // fetch data from config
             const resp = await fetch(get().dataSet.url)
             const json = (await resp.json()) as unknown as RedditNode[]
-            console.log("json", json)
-            // const data = (await fetch(get().dataSet.url)).json() as unknown as [
-            //     RedditNode,
-            // ]
-            // sub sample data
+
+            // sub sample data to the number rows requested
             const subDataset = json.filter(
-                (_: any, index: number, arr) =>
+                (_: unknown, index: number, arr) =>
                     Math.random() <= get().rows / arr.length,
             )
 
-            console.log("subDataset", subDataset)
+            get().setData(subDataset)
 
             set(
                 (state) => {
-                    state.dataSet.data = subDataset
+                    // const graph = populateG6Graph(subDataset, config)
+                    // state.graphinData = convertG6ToGraphinData(graph)
+                    state.graphinData = pupulateGraphinData(subDataset, config)
                 },
                 false,
-                "fetchData",
+                "setting graphin data",
             )
-            set(
-                (state) => {
-                    state.state = "done"
-                },
-                false,
-                "setDone",
-            )
+
+            get().setStatus(STATUS.DONE, false)
         } catch (error) {
             console.error("Failed to fetch projects", error)
             set((state) => {

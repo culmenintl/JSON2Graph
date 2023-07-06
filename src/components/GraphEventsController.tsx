@@ -1,5 +1,4 @@
 import useInject from "../hooks/useInject"
-import { RootStoreModel } from "../stores/RootStore"
 import useStore from "../stores/_Store"
 import { useRegisterEvents, useSigma } from "@react-sigma/core"
 import { useSnackbar } from "notistack"
@@ -35,12 +34,12 @@ const WEBGL_CONTEXT_LOST_MESSAGE = "Lost WebGL Context for"
 const GraphEventsController: FC<{
     setHoveredNode: (node: string | null) => void
 }> = ({ setHoveredNode, children }) => {
-    const sigma = useSigma()
+    // const sigma = useSigma()
     const registerEvents = useRegisterEvents()
-    const canvases = sigma.getCanvases()
+    // const canvases = sigma.getCanvases()
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-    const { devMode, toggleDevMode } = useStore((state) => state)
+    const { devMode, toggleDevMode } = useStore()
 
     /**
      * Initialize here settings that require to know the graph and/or the sigma
@@ -49,15 +48,15 @@ const GraphEventsController: FC<{
     useEffect(() => {
         canvasProps.forEach((val) => {
             console.log("adding WebGL event listener for", val)
-            canvases[val].addEventListener(
-                WEBGL_CONTEXT_LOST,
-                (e) => {
-                    enqueueSnackbar(`${WEBGL_CONTEXT_LOST_MESSAGE} - ${val}`, {
-                        variant: "error",
-                    })
-                },
-                false,
-            )
+            // canvases[val].addEventListener(
+            //     WEBGL_CONTEXT_LOST,
+            //     (e) => {
+            //         enqueueSnackbar(`${WEBGL_CONTEXT_LOST_MESSAGE} - ${val}`, {
+            //             variant: "error",
+            //         })
+            //     },
+            //     false,
+            // )
         })
         registerEvents({
             clickNode({ node }) {

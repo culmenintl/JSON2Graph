@@ -1,41 +1,33 @@
 import useInject from "../hooks/useInject"
 import { classNames } from "../lib/Utils"
-import { RootStoreModel } from "../stores/RootStore"
 import { STATUS } from "../stores/_AppSlice"
 import useStore from "../stores/_Store"
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline"
-import { useSigma } from "@react-sigma/core"
-import { observer } from "mobx-react-lite"
+// import { useSigma } from "@react-sigma/core"
 import { FC, useEffect } from "react"
 
-const mapStore = ({ graphStore }: RootStoreModel) => ({
-    graphStore,
-})
-
-export const ToggleSimulation: FC<{}> = observer(() => {
-    const { graphStore } = useInject(mapStore)
-
+export const ToggleSimulation: FC<{}> = () => {
     const setStatus = useStore((state) => state.setStatus)
-    const sigma = useSigma()
+    // const sigma = useSigma()
     const toggleSimulation = () => {
-        if (graphStore.isSimulating) {
-            setStatus(STATUS.GRAPH_SIMULATED)
-        } else {
-            setStatus(STATUS.SIMULATING)
-        }
-        graphStore.toggleSimulation()
+        // if (graphStore.isSimulating) {
+        //     setStatus(STATUS.GRAPH_SIMULATED, false)
+        // } else {
+        //     setStatus(STATUS.SIMULATING, true)
+        // }
+        // graphStore.toggleSimulation()
     }
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (graphStore.isSimulating) {
-                sigma.scheduleRefresh()
-            }
-        }, graphStore.refreshInterval)
-        return () => clearInterval(interval)
-    }, [graphStore.isSimulating])
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         if (graphStore.isSimulating) {
+    //             sigma.scheduleRefresh()
+    //         }
+    //     }, graphStore.refreshInterval)
+    //     return () => clearInterval(interval)
+    // }, [graphStore.isSimulating])
     return (
         <>
-            <button
+            {/* <button
                 type="button"
                 className={classNames(
                     graphStore.isSimulating
@@ -50,7 +42,7 @@ export const ToggleSimulation: FC<{}> = observer(() => {
                 ) : (
                     <PlayIcon className="h-5 w-5" aria-hidden="true" />
                 )}
-            </button>
+            </button> */}
         </>
     )
-})
+}
