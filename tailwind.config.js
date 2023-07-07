@@ -1,5 +1,10 @@
 module.exports = {
-    content: ["index.html", "./src/**/*.{js,jsx,ts,tsx,vue,html}"],
+    content: [
+        "index.html",
+        "./src/**/*.{js,jsx,ts,tsx,vue,html}",
+        "node_modules/daisyui/dist/**/*.js",
+        "node_modules/react-daisyui/dist/**/*.js",
+    ],
     theme: {
         extend: {
             animation: {
@@ -7,5 +12,5 @@ module.exports = {
             },
         },
     },
-    plugins: [require("@tailwindcss/forms")],
+    plugins: [require("@tailwindcss/forms"), require("daisyui")],
 }

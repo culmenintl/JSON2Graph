@@ -1,11 +1,9 @@
-import useInject from "../hooks/useInject"
 import useStore from "../stores/_Store"
 import Button from "./Button"
 import DevPanelHeader from "./DevPanelHeader"
 import { GraphInput } from "./GraphInput"
 import { GraphRow } from "./GraphRow"
 import ToggleSwitch from "./Switch"
-import { useSigma } from "@react-sigma/core"
 import { FC } from "react"
 
 const SampleJsonData = (data: Object) => (
@@ -15,7 +13,7 @@ const SampleJsonData = (data: Object) => (
 const GraphStats: FC<{}> = () => {
     // const sigma = useSigma()
 
-    const { rows, setRows, dataSet } = useStore()
+    // const { rows, setRows, dataSet } = useStore()
     return (
         <>
             {/* <DevPanelHeader

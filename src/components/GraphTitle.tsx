@@ -1,4 +1,3 @@
-import { useSigma } from "@react-sigma/core"
 import React, { FC, useEffect, useState } from "react"
 
 import { FiltersState } from "../lib/types"

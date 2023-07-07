@@ -1,5 +1,7 @@
+import Graphin, { GraphinContextType } from "@antv/graphin"
 import { StoreState } from "./_Store"
 import { StateCreator } from "zustand"
+import React from "react"
 
 export enum STATUS {
     DONE = "Done",
@@ -25,6 +27,7 @@ const initialState: State = {
 interface Actions {
     // drop actions
     toggleDevMode: () => void
+    toggleLayout: (ctx: GraphinContextType) => void
     setStatus: (status: STATUS, loading: boolean) => void
 }
 
@@ -34,7 +37,7 @@ const createAppSlice: StateCreator<
     StoreState,
     [["zustand/immer", never], ["zustand/devtools", never]],
     [],
-    State & Actions
+    AppSlice
 > = (set, get) => ({
     ...initialState,
 
@@ -58,6 +61,16 @@ const createAppSlice: StateCreator<
             },
             false,
             "setStatus",
+        ),
+    toggleLayout: (ctx: GraphinContextType) =>
+        set(
+            (state) => {
+                const { layout } = ctx
+                console.log("toggleLayout", layout)
+                // layout.processForce()
+            },
+            false,
+            "toggleLayout",
         ),
 })
 

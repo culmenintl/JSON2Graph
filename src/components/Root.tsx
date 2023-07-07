@@ -1,9 +1,3 @@
-import autoAnimate from "@formkit/auto-animate"
-import {
-    ControlsContainer,
-    SearchControl,
-    SigmaContainer,
-} from "@react-sigma/core"
 import { FC, createRef, useEffect, useRef, useState } from "react"
 import Graphin, {
     Behaviors,
@@ -12,19 +6,16 @@ import Graphin, {
     IUserNode,
     Utils,
 } from "@antv/graphin"
-const { DragCanvas, ZoomCanvas, DragNode, ActivateRelations } = Behaviors
+import "@antv/graphin/dist/index.css" // Don't forget to import CSS
 
-import drawLabel from "../lib/canvas-utils"
+const { DragCanvas, ZoomCanvas, DragNode, ActivateRelations, Hoverable } =
+    Behaviors
+
 import { FiltersState, RedditNode } from "../lib/types"
 import GraphDataController from "./GraphDataController"
-import GraphEventsController from "./GraphEventsController"
-import GraphSettingsController from "./GraphSettingsController"
 
 import LoadingLogo from "./LoadingLogo"
 
-import "@react-sigma/core/lib/react-sigma.min.css"
-
-import useInject from "../hooks/useInject"
 import { DevPanel } from "./DevPanel"
 import StatusDisplay from "./StatusDisplay"
 import { ToggleDev } from "./ToggleDev"
@@ -37,17 +28,20 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 // notistack
 import { useSnackbar } from "notistack"
 import { convertG6ToGraphinData } from "../lib/Utils"
+import { LayoutSelector, Toolbar } from "@antv/graphin-components"
+import React from "react"
+import LayoutToolbar from "./LayoutToolbar"
 
 const Controls: FC<{}> = () => {
     return (
-        <ControlsContainer
+        <div
             className={`!left-0 !bottom-0 !mx-auto !flex max-h-[75vh] !w-full
                 !justify-between !border-0 !border-gray-300 !bg-gray-300/20 !backdrop-blur-lg`}
         >
             <div className="mx-auto flex w-full !max-w-xl flex-col py-3">
                 <div className="flex flex-row items-center justify-between gap-1 px-1 md:gap-2">
                     <ToggleDev />
-                    {/* <ToggleSimulation /> */}
+                    <ToggleSimulation />
                     <StatusDisplay />
                     {/* <LayoutForceAtlas2Control
                         settings={dataStore.graph.layoutSettings}
@@ -69,21 +63,16 @@ const Controls: FC<{}> = () => {
                     />
                 </div>
             </div>
-        </ControlsContainer>
+        </div>
     )
 }
 
 const Root: FC<{}> = () => {
-    const [filtersState, setFiltersState] = useState<FiltersState>({
-        clusters: {},
-        tags: {},
-    })
+    const [layout, setLayout] = React.useState({ name: "force", options: {} })
 
-    const parent = useRef(null)
-
-    useEffect(() => {
-        parent.current && autoAnimate(parent.current)
-    }, [parent])
+    // useEffect(() => {
+    //     parent.current && autoAnimate(parent.current)
+    // }, [parent])
 
     // notistack
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -100,17 +89,17 @@ const Root: FC<{}> = () => {
         dataSet,
         graph,
         graphinData,
-    } = useStore()
+    } = useStore((state) => ({
+        fetchData: state.fetchData,
+        settings: state.settings,
+        devMode: state.devMode,
+        setStatus: state.setStatus,
+        dataSet: state.dataSet,
+        graph: state.graph,
+        graphinData: state.graphinData,
+    }))
 
-    const graphinRef = createRef<Graphin>()
-
-    useEffect(() => {
-        // const {
-        //     graph, // Graph instance of g6
-        //     apis, // API interface provided by Graphin
-        // } = graphinRef.current
-        // console.log("ref", graphinRef, graph, apis)
-    }, [])
+    const localGraphinRef = useRef<Graphin>(null)
 
     // Load data on mount:
     useEffect(() => {
@@ -128,6 +117,10 @@ const Root: FC<{}> = () => {
         }
     }, [])
 
+    // useEffect(() => {
+    //     console.log("localGraphinRef", localGraphinRef)
+    // }, [localGraphinRef])
+
     if (!graphinData) return <LoadingLogo />
 
     return (
@@ -135,24 +128,35 @@ const Root: FC<{}> = () => {
             <div id="graph-container" />
             <Graphin
                 data={graphinData}
-                ref={graphinRef}
-                animate={true}
-                fitView={true}
+                ref={localGraphinRef}
                 layout={{
-                    type: "gForce",
+                    type: "random",
+                    fitCenter: true,
                     onTick: () => {
                         console.log("ticking")
                     },
                     onLayoutEnd: () => {
+                        // setGraphinRef(localGraphinRef)
                         console.log("force layout done")
                     },
                     // workerEnabled: true, // Whether to activate web-worker
                     animate: true,
                     animation: true,
-                    gpuEnabled: true, // Whether to enable the GPU parallel computing, supported by G6 4.0
+                    // gpuEnabled: true, // Whether to enable the GPU parallel computing, supported by G6 4.0
+                    // webworkerEnabled: true,
                 }}
             >
-                <Controls />
+                <ZoomCanvas enableOptimize sensitivity={1} />
+                <Hoverable bindType="node" />
+                <Toolbar
+                    direction="horizontal"
+                    style={{ position: "absolute", right: "250px" }}
+                >
+                    <LayoutToolbar />
+                </Toolbar>
+                <div className="absolute left-0 bottom-0 w-full ">
+                    <Controls />
+                </div>
             </Graphin>
             {/* <SigmaContainer
                 settings={{

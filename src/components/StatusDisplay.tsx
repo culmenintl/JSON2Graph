@@ -1,4 +1,3 @@
-import useInject from "../hooks/useInject"
 import useStore from "../stores/_Store"
 import Loading from "./Loading"
 import { FC } from "react"

@@ -1,5 +1,3 @@
-import { useSigma } from "@react-sigma/core"
-import { Attributes } from "graphology-types"
 import React, {
     ChangeEvent,
     FC,

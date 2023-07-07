@@ -1,5 +1,3 @@
-import Graph from "graphology"
-
 export const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(" ")
 }
@@ -32,99 +30,101 @@ interface ID_CONFIG {
     [key: string]: string | number | undefined
 }
 
-export const populateGraph = (
-    graph: Graph,
-    data: unknown[],
-    config: DatasetConfigs,
-): Graph => {
-    data.forEach((row: unknown) => {
-        // for every row, add a node for each node configuration in config file
-        config.datasets[0].nodes.forEach((config: NodeConfig) => {
-            addNodeToGraph(graph, row, config)
-        })
+// export const populateGraph = (
+//     graph: Graph,
+//     data: unknown[],
+//     config: DatasetConfigs,
+// ): Graph => {
+//     data.forEach((row: unknown) => {
+//         // for every row, add a node for each node configuration in config file
+//         config.datasets[0].nodes.forEach((config: NodeConfig) => {
+//             addNodeToGraph(graph, row, config)
+//         })
 
-        // now create the edges of the graph, given the edge config
-        config.datasets[0].edges.forEach((config: EdgeConfig) => {
-            addEdgesToGraph(graph, row, config)
-        })
-    })
+//         // now create the edges of the graph, given the edge config
+//         config.datasets[0].edges.forEach((config: EdgeConfig) => {
+//             addEdgesToGraph(graph, row, config)
+//         })
+//     })
 
-    return graph
-}
+//     return graph
+// }
 
-export const addNodeToGraph = (
-    graph: Graph,
-    row: any,
-    config: NodeConfig,
-): Graph => {
-    if (!row || !config) {
-        throw new Error("Please include required node params.")
-    }
+// export const addNodeToGraph = (
+//     graph: Graph,
+//     row: any,
+//     config: NodeConfig,
+// ): Graph => {
+//     if (!row || !config) {
+//         throw new Error("Please include required node params.")
+//     }
 
-    if (!row[config.idAttr]) {
-        throw new Error("Unable to find property with id attribute given.")
-    }
+//     if (!row[config.idAttr]) {
+//         throw new Error("Unable to find property with id attribute given.")
+//     }
 
-    if (!graph.hasNode(row[config.idAttr])) {
-        graph.addNode(row[config.idAttr], {
-            ...(config.labelAttr && { label: row[config.labelAttr] }),
-            ...(config.tagAttr && { tag: row[config.tagAttr] }),
-            ...(config.clusterLabel && { clusterLabel: config.clusterLabel }),
-            ...row,
-        })
-    }
+//     if (!graph.hasNode(row[config.idAttr])) {
+//         graph.addNode(row[config.idAttr], {
+//             ...(config.labelAttr && { label: row[config.labelAttr] }),
+//             ...(config.tagAttr && { tag: row[config.tagAttr] }),
+//             ...(config.clusterLabel && { clusterLabel: config.clusterLabel }),
+//             ...row,
+//         })
+//     }
 
-    return graph
-}
+//     return graph
+// }
 
-export const addEdgesToGraph = (
-    graph: Graph,
-    row: any,
-    config: EdgeConfig,
-): Graph => {
-    if (!row || !config) {
-        throw new Error("Please include required edge params.")
-    }
+// export const addEdgesToGraph = (
+//     graph: Graph,
+//     row: any,
+//     config: EdgeConfig,
+// ): Graph => {
+//     if (!row || !config) {
+//         throw new Error("Please include required edge params.")
+//     }
 
-    if (!graph.hasNode(row[config.sourceNodeId])) {
-        throw new Error("Unable to find source node with id given.")
-    }
+//     if (!graph.hasNode(row[config.sourceNodeId])) {
+//         throw new Error("Unable to find source node with id given.")
+//     }
 
-    if (!graph.hasNode(row[config.targetNodeId])) {
-        throw new Error("Unable to find target node with id given.")
-    }
+//     if (!graph.hasNode(row[config.targetNodeId])) {
+//         throw new Error("Unable to find target node with id given.")
+//     }
 
-    graph.addEdge(row[config.sourceNodeId], row[config.targetNodeId])
-    return graph
-}
+//     graph.addEdge(row[config.sourceNodeId], row[config.targetNodeId])
+//     return graph
+// }
 
-export const calculateDegreesAndColor = (graph: Graph) => {
-    const degrees = graph.nodes().map((node) => graph.degree(node))
+export const calculateDegreesAndColor = (graph: G6Graph) => {
+    const degrees = graph
+        .getNodes()
+        .map((node: any) => graph.getNodeDegree(node)) as unknown as number[]
     const minDegree = Math.min(...degrees)
     const maxDegree = Math.max(...degrees)
     const minSize = 2
     const maxSize = 25
-    graph.forEachNode((node, attributes) => {
-        // Add Colors
-        const COLORS: Record<string, string> = {
-            Commented: "#FA5A3D",
-            Subreddit: "#5A75DB",
-            User: "#5A85AB",
-        }
-        graph.setNodeAttribute(
-            node,
-            "color",
-            COLORS[attributes.clusterLabel as string],
-        )
-        const degree = graph.degree(node)
-        graph.setNodeAttribute(
-            node,
-            "size",
-            minSize +
-                ((degree - minDegree) / (maxDegree - minDegree)) *
-                    (maxSize - minSize),
-        )
-    })
+    // graph.forEachNode((node: any, attributes: { clusterLabel: string }) => {
+    //     // Add Colors
+    //     const COLORS: Record<string, string> = {
+    //         Commented: "#FA5A3D",
+    //         Subreddit: "#5A75DB",
+    //         User: "#5A85AB",
+    //     }
+    //     graph.setNodeAttribute(
+    //         node,
+    //         "color",
+    //         COLORS[attributes.clusterLabel as string],
+    //     )
+    //     const degree = graph.degree(node)
+    //     graph.setNodeAttribute(
+    //         node,
+    //         "size",
+    //         minSize +
+    //             ((degree - minDegree) / (maxDegree - minDegree)) *
+    //                 (maxSize - minSize),
+    //     )
+    // })
 }
 
 // Import libraries
