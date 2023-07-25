@@ -1,8 +1,9 @@
 import createAppSlice, { AppSlice } from "./_AppSlice"
 import createDataSlice, { DataSlice } from "./_DataStore"
 import { StoreApi, create } from "zustand"
-import { devtools } from "zustand/middleware"
+import { devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
+import { STORAGE } from "../lib/Constants"
 // import createUserSlice, { UserSlice } from "./user/UserSlice"
 
 // export type StoreState = AppSlice & UserSlice
@@ -13,14 +14,17 @@ export type StoreSlice<T> = (
 ) => T
 
 const useStore = create<StoreState>()(
-    devtools(
-        immer((...a) => {
-            return {
-                ...createAppSlice(...a),
-                ...createDataSlice(...a),
-            }
-        }),
-        { name: "devtools" },
+    persist(
+        devtools(
+            immer((...a) => {
+                return {
+                    ...createAppSlice(...a),
+                    ...createDataSlice(...a),
+                }
+            }),
+            { name: "devtools" },
+        ),
+        { name: STORAGE },
     ),
 )
 

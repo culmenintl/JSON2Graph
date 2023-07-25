@@ -10,7 +10,8 @@ function App() {
             <SnackbarProvider
                 anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
                 classes={{ containerRoot: "pb-16" }}
-                maxSnack={3}
+                maxSnack={5}
+                autoHideDuration={1500}
             >
                 <Root />
             </SnackbarProvider>

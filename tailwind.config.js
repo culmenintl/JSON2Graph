@@ -1,7 +1,7 @@
 module.exports = {
     content: [
         "index.html",
-        "./src/**/*.{js,jsx,ts,tsx,vue,html}",
+        "./src/**/*.{js,jsx,ts,tsx,html}",
         "node_modules/daisyui/dist/**/*.js",
         "node_modules/react-daisyui/dist/**/*.js",
     ],
@@ -12,5 +12,9 @@ module.exports = {
             },
         },
     },
-    plugins: [require("@tailwindcss/forms"), require("daisyui")],
+    plugins: [
+        require("@tailwindcss/forms"),
+        require("@tailwindcss/typography"),
+        require("daisyui"),
+    ],
 }

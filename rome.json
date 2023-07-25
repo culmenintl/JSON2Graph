@@ -6,6 +6,9 @@
         "enabled": true,
         "rules": {
             "recommended": true,
+            "a11y": {
+                "noSvgWithoutTitle": "warn"
+            },
             "suspicious": {
                 "noExplicitAny": "warn"
             }
