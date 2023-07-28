@@ -5,22 +5,9 @@ import { RedditNode } from "../lib/types"
 
 import config from "../../configs/data.mapping.json"
 import { Graph } from "@antv/g6"
-import {
-    populateG6Graph,
-    convertG6ToGraphinData,
-    pupulateGraphinData,
-} from "../lib/Utils"
+import { populateGraphinData } from "../lib/Utils"
 import { GraphinData } from "@antv/graphin"
 import { STATUS } from "./_AppSlice"
-
-interface SigmaSettings {
-    labelDensity: number
-    labelGridCellSize: number
-    labelRenderedSizeThreshold: number
-    zIndex: boolean
-    maxCameraRatio: number
-    minCameraRatio: number
-}
 
 interface Dataset {
     id: string
@@ -30,7 +17,6 @@ interface Dataset {
 }
 
 interface State {
-    settings: SigmaSettings
     dataSet: Dataset
     graph: Graph | undefined
     graphinData: GraphinData | undefined
@@ -39,16 +25,8 @@ interface State {
 }
 
 const initialState: State = {
-    rows: 200,
+    rows: 2000,
     state: "done",
-    settings: {
-        labelDensity: 0.07,
-        labelGridCellSize: 60,
-        labelRenderedSizeThreshold: 15,
-        zIndex: true,
-        maxCameraRatio: 2,
-        minCameraRatio: 0.2,
-    },
     graph: undefined,
     graphinData: undefined,
     dataSet: {
@@ -126,7 +104,7 @@ const createDataSlice: StateCreator<
                 (state) => {
                     // const graph = populateG6Graph(subDataset, config)
                     // state.graphinData = convertG6ToGraphinData(graph)
-                    state.graphinData = pupulateGraphinData(subDataset, config)
+                    state.graphinData = populateGraphinData(subDataset, config)
                 },
                 false,
                 "setting graphin data",

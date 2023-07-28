@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { Dropdown } from "react-daisyui"
-import { Graph } from "@antv/g6" // assuming that you have initialized it
+import { Button, Dropdown, Kbd, Menu } from "react-daisyui"
 import { GraphinContext } from "@antv/graphin"
+import { Cog } from "./icons"
 
 // mock layout data
 const layouts = [
@@ -13,7 +13,13 @@ const layouts = [
         },
     },
     { name: "random", options: {} },
-    { name: "graphin-force", options: {} },
+    {
+        name: "graphin-force",
+        options: {
+            gpuEnabled: true,
+            webworkerEnabled: true,
+        },
+    },
     { name: "layout4", options: {} },
     {
         name: "random",
@@ -33,7 +39,10 @@ const layouts = [
     },
     {
         name: "fruchterman",
-        options: {},
+        options: {
+            gpuEnabled: true,
+            webworkerEnabled: true,
+        },
     },
     {
         name: "force",
@@ -59,21 +68,18 @@ const ToolbarComponent = () => {
 
     const changeGraphLayout = (layout: { name: string; options: object }) => {
         console.log("selecting", layout)
-        // setSelectedLayout(layout)
+        setSelectedLayout(layout.name)
         console.log("selecting", layout)
 
         ctx.graph?.updateLayout({ type: layout.name, ...layout.options })
         // ctx.graph?.positionsAnimate()
-
         // Graph.updateLayout({ type: layout }) // use the Graphin instance method to update the graph layout
     }
 
     return (
-        <div className="toolbar">
-            <Dropdown>
-                <Dropdown.Toggle>
-                    {selectedLayout || "select layout"}
-                </Dropdown.Toggle>
+        <div className="flex-1 flex-col">
+            <Dropdown vertical="top" className="flex-1">
+                <Dropdown.Toggle>{Cog}</Dropdown.Toggle>
                 <Dropdown.Menu>
                     {layouts.map((layout, index) => (
                         <Dropdown.Item

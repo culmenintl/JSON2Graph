@@ -14,18 +14,18 @@ export type StoreSlice<T> = (
 ) => T
 
 const useStore = create<StoreState>()(
-    persist(
-        devtools(
-            immer((...a) => {
-                return {
-                    ...createAppSlice(...a),
-                    ...createDataSlice(...a),
-                }
-            }),
-            { name: "devtools" },
-        ),
-        { name: STORAGE },
+    // persist(
+    devtools(
+        immer((...a) => {
+            return {
+                ...createAppSlice(...a),
+                ...createDataSlice(...a),
+            }
+        }),
+        { name: "devtools" },
     ),
+    // { name: STORAGE },
+    // ),
 )
 
 export default useStore

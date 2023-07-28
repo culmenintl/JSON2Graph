@@ -2,6 +2,7 @@ import Graphin, { GraphinContextType } from "@antv/graphin"
 import { StoreState } from "./_Store"
 import { StateCreator } from "zustand"
 import React from "react"
+import { STORAGE } from "../lib/Constants"
 
 export enum STATUS {
     DONE = "Done",
@@ -29,6 +30,8 @@ interface Actions {
     toggleDevMode: () => void
     toggleLayout: (ctx: GraphinContextType) => void
     setStatus: (status: STATUS, loading: boolean) => void
+    reset: () => void
+    clearLocalStorage: () => void
 }
 
 export type AppSlice = State & Actions
@@ -72,6 +75,11 @@ const createAppSlice: StateCreator<
             false,
             "toggleLayout",
         ),
+    clearLocalStorage: () => {
+        get().reset()
+        window.localStorage.removeItem(STORAGE)
+    },
+    reset: () => set(() => initialState, false, "reset"),
 })
 
 export default createAppSlice
