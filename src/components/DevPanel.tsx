@@ -1,4 +1,4 @@
-import useStore from "../stores/_Store"
+import useBoundStore from "../stores/Store"
 import Button from "./Button"
 import DevPanelHeader from "./DevPanelHeader"
 import { GraphRow } from "./GraphRow"
@@ -39,7 +39,7 @@ const RestoreContext: FC<{}> = () => {
 }
 
 const ReloadGraph: FC<{}> = () => {
-    const fetchData = useStore((state) => state.fetchData)
+    const fetchData = useBoundStore((state) => state.fetchData)
     return (
         <div className="border-1 sticky bottom-0 mx-auto flex w-full justify-center bg-black/10 py-3 backdrop-blur-lg">
             <Button

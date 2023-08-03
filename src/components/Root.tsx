@@ -8,7 +8,6 @@ import Graphin, {
 } from "@antv/graphin"
 import "@antv/graphin/dist/index.css" // Don't forget to import CSS
 
-import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 import CentrifugeText from "/images/centrifuge-text.svg"
 
 const { DragCanvas, ZoomCanvas, DragNode, ActivateRelations, Hoverable } =
@@ -23,8 +22,7 @@ import { DevPanel } from "./DevPanel"
 import StatusDisplay from "./StatusDisplay"
 import { ToggleDev } from "./ToggleDev"
 
-import { STATUS } from "../stores/_AppSlice"
-import useStore from "../stores/_Store"
+import { STATUS } from "../stores/AppStore"
 import { ToggleSimulation } from "./ToggleSimulate"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 // notistack
@@ -35,104 +33,10 @@ import React from "react"
 import LayoutToolbar from "./LayoutToolbar"
 import { Navbar, Button, Form, Dropdown, Input, Theme } from "react-daisyui"
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
+import { FunnelIcon } from "@heroicons/react/24/outline"
 import DeveloperPanel from "./DeveloperPanel"
-
-const Controls: FC<{}> = () => {
-    return (
-        <div className="max-w-4xl mx-auto">
-            <Theme dataTheme="light">
-                <Navbar className="shadow-xl rounded-box">
-                    <div className="flex flex-col w-full">
-                        {/*  statbar section*/}
-                        {/* <div className="flex flex-1 flex-row">
-                            <div className="flex-1 h-12 bg-red-400">test</div>
-                            <div className="flex-1 h-12 bg-red-400">test</div>
-                            <div className="flex-1 h-12 bg-red-400">test</div>
-                        </div> */}
-
-                        {/* rest of the navbar */}
-                        <div className="flex flex-1 flex-row">
-                            <Button
-                                className="text-xl normal-case"
-                                color="ghost"
-                            >
-                                JSON2Graph
-                            </Button>
-                            <div className="flex flex-1">
-                                {/* <ToggleDev /> */}
-                            </div>
-                            <div className="flex flex-1 flex-row gap-2">
-                                <Form>
-                                    <Input
-                                        bordered
-                                        type="text"
-                                        placeholder="Search"
-                                    />
-                                </Form>
-                                <LayoutToolbar />
-                                <Button
-                                    size="md"
-                                    // endIcon={
-                                    //     <ArrowTopRightOnSquareIcon
-                                    //         className="h-5 w-5"
-                                    //         aria-hidden="true"
-                                    //     />
-                                    // }
-                                    onClick={() => alert("Opening Centrifuge")}
-                                >
-                                    <div className="flex-1 flex-col items-center justify-center">
-                                        <img
-                                            src={CentrifugeLogoCentered}
-                                            className={"h-10"}
-                                            alt="Centrifuge"
-                                        />
-                                        {/* <img
-                                            src={CentrifugeText}
-                                            className="h-5 w-10"
-                                            alt="Centrifuge"
-                                        /> */}
-                                    </div>
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </Navbar>
-            </Theme>
-        </div>
-    )
-    // return (
-    //     <div
-    //         className={`!left-0 !bottom-0 !mx-auto !flex max-h-[75vh] !w-full
-    //             !justify-between !border-0 !border-gray-300 !bg-gray-300/20 !backdrop-blur-lg`}
-    //     >
-    //         <div className="mx-auto flex w-full !max-w-xl flex-col py-3">
-    //             <div className="flex flex-row items-center justify-between gap-1 px-1 md:gap-2">
-    //                 <ToggleDev />
-    //                 <ToggleSimulation />
-    //                 <StatusDisplay />
-    //                 {/* <LayoutForceAtlas2Control
-    //                     settings={dataStore.graph.layoutSettings}
-    //                 /> */}
-    //                 {/* <ZoomControl className="!flex !items-center !justify-center !border-b-0 !bg-transparent" /> */}
-    //                 <div className="hidden md:flex">
-    //                     {/* <SearchControl className="!border-b-2 !border-gray-300 !bg-transparent" /> */}
-    //                 </div>
-
-    //                 <Button
-    //                     text="Centrifuge"
-    //                     icon={
-    //                         <ArrowTopRightOnSquareIcon
-    //                             className="h-5 w-5 p-1"
-    //                             aria-hidden="true"
-    //                         />
-    //                     }
-    //                     onClick={() => alert("Opening Centrifuge")}
-    //                 />
-    //             </div>
-    //         </div>
-    //     </div>
-    // )
-}
+import { GraphNavbar } from "./GraphNavbar"
+import { store, actions, useTrackedStore, useStore } from "../stores/Store"
 
 const Root: FC<{}> = () => {
     const [layout, setLayout] = React.useState({ name: "force", options: {} })
@@ -147,23 +51,12 @@ const Root: FC<{}> = () => {
     const [hoveredNode, setHoveredNode] = useState<string | null>(null)
 
     // zustand
-    const { fetchData, devMode, setStatus, dataSet, graph, graphinData } =
-        useStore((state) => ({
-            fetchData: state.fetchData,
-            devMode: state.devMode,
-            setStatus: state.setStatus,
-            dataSet: state.dataSet,
-            graph: state.graph,
-            graphinData: state.graphinData,
-        }))
-
-    const localGraphinRef = useRef<Graphin>(null)
 
     // Load data on mount:
     useEffect(() => {
         const asyncFetch = async () => {
             try {
-                await fetchData()
+                await actions.data.fetchData()
             } catch (e: unknown) {
                 if (e instanceof Error) {
                     enqueueSnackbar(e.message, {
@@ -177,44 +70,51 @@ const Root: FC<{}> = () => {
         asyncFetch()
     }, [])
 
-    // const newGraphinData = Utils.mock(10).circle().graphin()
+    const graphinRef = useRef<Graphin>(null)
 
-    // useEffect(() => {
-    //     console.log("localGraphinRef", localGraphinRef)
-    // }, [localGraphinRef])
+    const getGraphinRef = () => {
+        return new Promise<Graphin | null>((resolve) => {
+            const interval = setInterval(() => {
+                const graphinInstance = graphinRef.current
+                if (graphinInstance) {
+                    clearInterval(interval)
+                    resolve(graphinInstance)
+                }
+            }, 100)
+        })
+    }
 
-    if (!graphinData) return <LoadingLogo />
+    useEffect(() => {
+        const getRef = async () => {
+            const graphinInstance = await getGraphinRef()
+            if (graphinInstance) {
+                const { graph, apis } = graphinInstance
+                // setGraph(graph)
+                console.log("ref", graphinRef, graph, apis)
+                console.log("graphinInstance", graph.getNodes())
+                actions.graph.graphRef(graph)
+            }
+        }
+        getRef()
+    }, [])
+
+    const graphGraphinData = useTrackedStore().data.graphinData()
+    const initialLayout = useTrackedStore().graph.selectedLayout()
+
+    if (!graphGraphinData) return <LoadingLogo />
 
     return (
         <div className="absolute inset-0">
             <div id="graph-container" />
-
             <Graphin
-                data={graphinData}
-                ref={localGraphinRef}
-                animate={true}
-                layout={{
-                    type: "gForce",
-                    preset: {
-                        name: "random",
-                    },
-                    fitCenter: true,
-                    onTick: () => {
-                        console.log("ticking")
-                    },
-                    onLayoutEnd: () => {
-                        // setGraphinRef(localGraphinRef)
-                        console.log("force layout done")
-                        enqueueSnackbar("Force layout done", {
-                            variant: "success",
-                        })
-                        localGraphinRef.current?.graph?.fitCenter()
-                    },
-                    // workerEnabled: true, // Whether to activate web-worker
-                    animate: true,
-                    animation: true,
-                    gpuEnabled: true, // Whether to enable the GPU parallel computing, supported by G6 4.0
-                    // webworkerEnabled: true,
+                data={graphGraphinData}
+                ref={graphinRef}
+                layout={initialLayout}
+                fitCenter={true}
+                fitView={true}
+                groupByTypes={false}
+                defaultCombo={{
+                    type: "circle",
                 }}
             >
                 <ActivateRelations trigger="click" />
@@ -228,7 +128,7 @@ const Root: FC<{}> = () => {
                     {/* <LayoutToolbar /> */}
                 </Toolbar>
                 <div className="absolute bottom-0 w-full pb-5 bg-transparent">
-                    <Controls />
+                    <GraphNavbar />
                 </div>
                 <DeveloperPanel />
             </Graphin>

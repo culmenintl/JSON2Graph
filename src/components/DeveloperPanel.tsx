@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { Button, Card, Table, Theme } from "react-daisyui"
-import useStore from "../stores/_Store"
 
 export const DeveloperPanel: React.FC = () => {
     const [showModal, setShowModal] = useState(false)
     const [lastKeyPressTime, setLastKeyPressTime] = useState(0)
-
-    const clearLocalStorage = useStore((state) => state.clearLocalStorage)
 
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -55,7 +52,11 @@ export const DeveloperPanel: React.FC = () => {
                                             <span>Clear Local Cache</span>
                                             <span className="ml-auto">
                                                 <Button
-                                                    onClick={clearLocalStorage}
+                                                    onClick={() =>
+                                                        console.log(
+                                                            "clearing cache",
+                                                        )
+                                                    }
                                                     color="warning"
                                                     size="sm"
                                                 >

@@ -1,4 +1,4 @@
-import useStore from "../stores/_Store"
+import useBoundStore from "../stores/Store"
 import Button from "./Button"
 import DevPanelHeader from "./DevPanelHeader"
 import { GraphInput } from "./GraphInput"

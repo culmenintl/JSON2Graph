@@ -7,8 +7,8 @@ import { calculateDegreesAndColor } from "../lib/Utils"
 // layout
 
 import config from "../../configs/data.mapping.json"
-import { STATUS } from "../stores/_AppSlice"
-import useStore from "../stores/_Store"
+import { STATUS } from "../stores/AppSlice"
+import useBoundStore from "../stores/Store"
 
 const GraphDataController: FC<{}> = () => {
     // const sigma = useSigma()

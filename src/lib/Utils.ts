@@ -136,7 +136,14 @@ interface ID_CONFIG {
 
 // Import libraries
 // Assuming you have installed @types/node for fs
-import G6, { Graph as G6Graph, IEdge, INode } from "@antv/g6"
+import G6, {
+    ComboConfig,
+    Graph as G6Graph,
+    Graph,
+    GraphData,
+    IEdge,
+    INode,
+} from "@antv/g6"
 import { GraphinData, IUserEdge, IUserNode } from "@antv/graphin"
 
 // Keeping your interfaces and types same, they seem well formed
@@ -188,15 +195,15 @@ import { GraphinData, IUserEdge, IUserNode } from "@antv/graphin"
 //     return graph
 // }
 
-function setSizeBasedOnDegrees(graphData: {
-    nodes: IUserNode[]
-    edges: IUserEdge[]
-}) {
+function setSizeBasedOnDegrees(graphData: GraphData) {
     const maxDegree = Math.max(
-        ...graphData.nodes.map((node) => calculateDegree(graphData, node.id)),
+        // rome-ignore lint/correctness/noUnsafeOptionalChaining: <explanation>
+        ...(graphData.nodes?.map((node) =>
+            calculateDegree(graphData, node.id),
+        ) || []),
     )
 
-    console.log("maxDegree", maxDegree)
+    // console.log("maxDegree", maxDegree)
 
     const COLORS: Record<string, string> = {
         Commented: getRandomColor(),
@@ -210,11 +217,11 @@ function setSizeBasedOnDegrees(graphData: {
         User: "user",
     }
 
-    const minSize = 26
-    const maxSize = maxDegree / 2
+    const minSize = 10
+    const maxSize = maxDegree * 10
 
-    graphData.nodes.forEach((node) => {
-        console.log(node.clusterLabel.length)
+    graphData.nodes?.forEach((node) => {
+        // console.log(node.clusterLabel.length)
         const size =
             minSize +
             (maxSize - minSize) *
@@ -226,7 +233,7 @@ function setSizeBasedOnDegrees(graphData: {
                 fillOpacity: 0.8,
             },
             label: {
-                value: truncateString(node.label.value, 10),
+                value: truncateString(node?.label?.value ?? "", 10),
             },
             icon: {
                 type: "font",
@@ -235,6 +242,7 @@ function setSizeBasedOnDegrees(graphData: {
                 size: size - 15,
                 fill: "#fff",
             },
+
             // badges: [
             //     {
             //         position: "RT",
@@ -246,6 +254,7 @@ function setSizeBasedOnDegrees(graphData: {
             //     },
             // ],
         }
+        // node.comboId = node.clusterLabel
     })
 }
 
@@ -258,6 +267,8 @@ export /**
  * @returns {*}  {string}
  */
 const truncateString = (str: string, maxLength: number): string => {
+    if (!str) return ""
+
     if (str.length <= maxLength) {
         return str
     }
@@ -274,12 +285,9 @@ const truncateString = (str: string, maxLength: number): string => {
  * @param {string} nodeId
  * @returns {*}  {number}
  */
-const calculateDegree = (
-    graphData: { nodes: IUserNode[]; edges: IUserEdge[] },
-    nodeId: string,
-): number => {
+const calculateDegree = (graphData: GraphData, nodeId: string): number => {
     let degree = 0
-    graphData.edges.forEach((edge) => {
+    graphData.edges?.forEach((edge) => {
         if (edge.source === nodeId || edge.target === nodeId) {
             degree++
         }
@@ -290,11 +298,13 @@ const calculateDegree = (
 export const populateGraphinData = (
     data: unknown[],
     config: DatasetConfigs,
-) => {
-    const graphData: { nodes: IUserNode[]; edges: IUserEdge[] } = {
+): GraphData => {
+    const graphData: GraphData = {
         nodes: [],
         edges: [],
+        combos: [],
     }
+
     // populate nodes and edges
     data.forEach((row: unknown) => {
         config.datasets[0].nodes.forEach((nodeConfig) => {
@@ -307,6 +317,7 @@ export const populateGraphinData = (
     })
 
     setSizeBasedOnDegrees(graphData)
+    setCombos(graphData)
 
     // method to calculate graphData degrees and color
     // calculateDegreesAndColor(graphData)
@@ -329,29 +340,36 @@ export const populateGraphinData = (
     return graphData
 }
 
-const lightColors = [
-    "#8FE9FF",
-    "#87EAEF",
-    "#FFC9E3",
-    "#A7C2FF",
-    "#FFA1E3",
-    "#FFE269",
-    "#BFCFEE",
-    "#FFA0C5",
-    "#D5FF86",
-]
+const setCombos = (graphData: GraphData) => {
+    const combos: ComboConfig[] = []
+    const comboCountMap: { [comboId: string]: number } = {}
 
-const darkColors = [
-    "#7DA8FF",
-    "#44E6C1",
-    "#FF68A7",
-    "#7F86FF",
-    "#AE6CFF",
-    "#FF5A34",
-    "#5D7092",
-    "#FF6565",
-    "#6BFFDE",
-]
+    graphData.nodes?.forEach((node) => {
+        const comboId = node.comboId || ""
+        if (!comboCountMap[comboId]) {
+            comboCountMap[comboId] = 0
+        }
+        comboCountMap[comboId]++
+    })
+
+    const sortedComboIds = Object.keys(comboCountMap).sort(
+        (a, b) => comboCountMap[b] - comboCountMap[a],
+    )
+
+    for (let i = 0; i < Math.min(sortedComboIds.length, 5); i++) {
+        const comboId = sortedComboIds[i]
+        combos.push({
+            id: comboId,
+            label: comboId,
+            style: {
+                opacity: 0.3,
+                fill: getRandomColor(),
+            },
+        })
+    }
+
+    graphData.combos = combos
+}
 
 const BLUE_PALLETS = [
     "#e8f6ff",
@@ -396,7 +414,7 @@ const getRandomColor = (): string => {
 // }
 
 export const addNodeToG6Graph = (
-    graphData: { nodes: IUserNode[]; edges: IUserEdge[] },
+    graphData: GraphData,
     row: any,
     nodeConfig: NodeConfig,
 ): void => {
@@ -406,7 +424,7 @@ export const addNodeToG6Graph = (
         throw new Error("Unable to find property with id attribute given.")
     }
 
-    const nodeExists = graphData.nodes.some(
+    const nodeExists = graphData.nodes?.some(
         (node) => node.id === record[nodeConfig.idAttr as string],
     )
 
@@ -443,31 +461,33 @@ export const addNodeToG6Graph = (
                     // ],
                 }),
             },
+
+            comboId: row.subreddit,
         }
-        console.log("node", node)
-        graphData.nodes.push(node)
+        // console.log("node", node)
+        graphData.nodes?.push(node)
     }
 }
 
 export const addEdgesToG6Graph = (
-    graphData: { nodes: any[]; edges: any[] },
+    graphData: GraphData,
     row: unknown,
     edgeConfig: EdgeConfig,
 ): void => {
-    const record = row as Record<string, unknown>
+    const record = row as Record<string, string> // add type assertion here
 
     if (!record[edgeConfig.sourceNodeId] || !record[edgeConfig.targetNodeId]) {
         throw new Error("Required edge params missing.")
     }
 
-    const edgeExists = graphData.edges.some(
+    const edgeExists = graphData.edges?.some(
         (edge) =>
             edge.source === record[edgeConfig.sourceNodeId] &&
             edge.target === record[edgeConfig.targetNodeId],
     )
 
     if (!edgeExists) {
-        graphData.edges.push({
+        graphData.edges?.push({
             id: `${record[edgeConfig.sourceNodeId]}-${
                 record[edgeConfig.targetNodeId]
             }`,

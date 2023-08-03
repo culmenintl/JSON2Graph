@@ -1,11 +1,11 @@
 import { classNames } from "../lib/Utils"
-import useStore from "../stores/_Store"
+import useBoundStore from "../stores/Store"
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
 import { FC } from "react"
 
 export const ToggleDev: FC<{}> = () => {
-    const toggleDevMode = useStore((state) => state.toggleDevMode)
-    const devMode = useStore((state) => state.devMode)
+    const toggleDevMode = useBoundStore((state) => state.toggleDevMode)
+    const devMode = useBoundStore((state) => state.devMode)
     const toggleDev = () => toggleDevMode()
     return (
         <>

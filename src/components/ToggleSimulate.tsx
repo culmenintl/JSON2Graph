@@ -1,7 +1,7 @@
 import { GraphinContext } from "@antv/graphin"
 import { classNames } from "../lib/Utils"
-import { STATUS } from "../stores/_AppSlice"
-import useStore from "../stores/_Store"
+import { STATUS } from "../stores/AppSlice"
+import useBoundStore from "../stores/Store"
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline"
 // import { useSigma } from "@react-sigma/core"
 import React, { FC, useEffect } from "react"
@@ -11,9 +11,9 @@ export const ToggleSimulation: FC<{}> = () => {
     const { handleZoomIn, handleZoomOut } = apis
     const ctx = React.useContext(GraphinContext)
 
-    const setStatus = useStore((state) => state.setStatus)
-    const status = useStore((state) => state.status)
-    const toggleLayout = useStore((state) => state.toggleLayout)
+    const setStatus = useBoundStore((state) => state.setStatus)
+    const status = useBoundStore((state) => state.status)
+    const toggleLayout = useBoundStore((state) => state.toggleLayout)
     // const sigma = useSigma()
     const toggleSimulation = () => {
         if (status === STATUS.SIMULATING) {
