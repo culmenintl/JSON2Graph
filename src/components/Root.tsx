@@ -34,70 +34,57 @@ import { LayoutSelector, Toolbar } from "@antv/graphin-components"
 import React from "react"
 import LayoutToolbar from "./LayoutToolbar"
 import { Navbar, Button, Form, Dropdown, Input, Theme } from "react-daisyui"
-import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
 import DeveloperPanel from "./DeveloperPanel"
+import { NodeToolTip } from "./NodeToolTip"
 
 const Controls: FC<{}> = () => {
     return (
         <div className="max-w-4xl mx-auto">
-            <Theme dataTheme="light">
-                <Navbar className="shadow-xl rounded-box">
-                    <div className="flex flex-col w-full">
-                        {/*  statbar section*/}
-                        {/* <div className="flex flex-1 flex-row">
+            <Navbar className="shadow-xl rounded-box">
+                <div className="flex flex-col w-full">
+                    {/*  statbar section*/}
+                    {/* <div className="flex flex-1 flex-row">
                             <div className="flex-1 h-12 bg-red-400">test</div>
                             <div className="flex-1 h-12 bg-red-400">test</div>
                             <div className="flex-1 h-12 bg-red-400">test</div>
                         </div> */}
 
-                        {/* rest of the navbar */}
-                        <div className="flex flex-1 flex-row">
+                    {/* rest of the navbar */}
+                    <div className="flex flex-1 flex-row">
+                        <Button className="text-xl normal-case" color="ghost">
+                            JSON2Graph
+                        </Button>
+                        <div className="flex flex-1">{/* <ToggleDev /> */}</div>
+                        <div className="flex flex-1 flex-row gap-2">
+                            <Form>
+                                <Input
+                                    bordered
+                                    type="text"
+                                    placeholder="Search"
+                                />
+                            </Form>
+                            {/* Dev Button */}
+                            <LayoutToolbar />
+                            {/* Open Centrifuge Button */}
                             <Button
-                                className="text-xl normal-case"
-                                color="ghost"
+                                size="md"
+                                onClick={() => alert("Opening Centrifuge")}
                             >
-                                JSON2Graph
-                            </Button>
-                            <div className="flex flex-1">
-                                {/* <ToggleDev /> */}
-                            </div>
-                            <div className="flex flex-1 flex-row gap-2">
-                                <Form>
-                                    <Input
-                                        bordered
-                                        type="text"
-                                        placeholder="Search"
+                                <div className="flex-1 flex-col items-center justify-center w-10 px-1">
+                                    <img
+                                        src={CentrifugeLogoCentered}
+                                        alt="Centrifuge"
                                     />
-                                </Form>
-                                <LayoutToolbar />
-                                <Button
-                                    size="md"
-                                    // endIcon={
-                                    //     <ArrowTopRightOnSquareIcon
-                                    //         className="h-5 w-5"
-                                    //         aria-hidden="true"
-                                    //     />
-                                    // }
-                                    onClick={() => alert("Opening Centrifuge")}
-                                >
-                                    <div className="flex-1 flex-col items-center justify-center">
-                                        <img
-                                            src={CentrifugeLogoCentered}
-                                            className={"h-10"}
-                                            alt="Centrifuge"
-                                        />
-                                        {/* <img
-                                            src={CentrifugeText}
-                                            className="h-5 w-10"
-                                            alt="Centrifuge"
-                                        /> */}
-                                    </div>
-                                </Button>
-                            </div>
+                                    <img
+                                        src={CentrifugeText}
+                                        alt="Centrifuge"
+                                    />
+                                </div>
+                            </Button>
                         </div>
                     </div>
-                </Navbar>
-            </Theme>
+                </div>
+            </Navbar>
         </div>
     )
     // return (
@@ -187,8 +174,6 @@ const Root: FC<{}> = () => {
 
     return (
         <div className="absolute inset-0">
-            <div id="graph-container" />
-
             <Graphin
                 data={graphinData}
                 ref={localGraphinRef}
@@ -217,6 +202,7 @@ const Root: FC<{}> = () => {
                     // webworkerEnabled: true,
                 }}
             >
+                <NodeToolTip />
                 <ActivateRelations trigger="click" />
                 <DragCanvas enableOptimize />
                 <ZoomCanvas enableOptimize sensitivity={1} />
@@ -232,24 +218,6 @@ const Root: FC<{}> = () => {
                 </div>
                 <DeveloperPanel />
             </Graphin>
-            {/* <SigmaContainer
-                settings={{
-                    labelRenderer: drawLabel,
-                    ...settings,
-                }}
-            >
-                <div ref={parent}>{devMode && <DevPanel />}</div>
-                {!graphStore.firstSim && <LoadingLogo />}
-                <GraphSettingsController hoveredNode={hoveredNode} />
-                <GraphEventsController setHoveredNode={setHoveredNode} />
-                <GraphDataController filters={filtersState} />
-
-                <span className="absolute left-0 top-0 p-3 text-sm text-gray-400">
-                    Centrifuge Widget Demo - v{APP_VERSION}
-                </span>
-
-                <Controls />
-            </SigmaContainer> */}
         </div>
     )
 }
