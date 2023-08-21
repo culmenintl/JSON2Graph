@@ -354,7 +354,7 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
     })
 }
 
-export /**
+/**
  * @description Truncate a string to a given length
  * @author Logan Hendershot
  * @date 07/25/2023
@@ -369,7 +369,7 @@ const truncateString = (str: string, maxLength: number): string => {
         return str
     }
 
-    const truncatedString = str.substring(0, maxLength)
+    const truncatedString = str?.substring(0, maxLength)
     return `${truncatedString}...`
 }
 
@@ -394,20 +394,20 @@ const calculateDegree = (graphData: GraphData, nodeId: string): number => {
 export const populateGraphinData = (
     data: unknown[],
     config: DatasetConfigs,
-): GraphData => {
-    const graphData: GraphData = {
-        nodes: [],
-        edges: [],
-        combos: [],
+): { nodes: ExtendedNode[]; edges: IUserEdge[]; combos: ComboConfig[] } => {
+    const graphData = {
+        nodes: [] as ExtendedNode[],
+        edges: [] as IUserEdge[],
+        combos: [] as ComboConfig[],
     }
 
     // populate nodes and edges
     data.forEach((row: unknown) => {
-        config.datasets[0].nodes.forEach((nodeConfig) => {
+        config.datasets[0].nodes?.forEach((nodeConfig) => {
             addNodeToG6Graph(graphData, row, nodeConfig)
         })
 
-        config.datasets[0].edges.forEach((edgeConfig) => {
+        config.datasets[0].edges?.forEach((edgeConfig) => {
             addEdgesToG6Graph(graphData, row, edgeConfig)
         })
     })
@@ -509,8 +509,20 @@ const getRandomColor = (): string => {
 //     return { nodes, edges }
 // }
 
+// create a type that extends IUserNode and includes other properties
+// the other properties will be a key value pair of the data from the original data set
+export type ExtendedNode = IUserNode & {
+    _metadata: {
+        _data?: Record<string, unknown>
+        _type?: string
+        _title?: string
+        _subtitle?: string
+        _body?: string
+    }
+}
+
 export const addNodeToG6Graph = (
-    graphData: GraphData,
+    graphData: { nodes: ExtendedNode[]; edges: IUserEdge[] },
     row: any,
     nodeConfig: NodeConfig,
 ): void => {
@@ -520,12 +532,12 @@ export const addNodeToG6Graph = (
         throw new Error("Unable to find property with id attribute given.")
     }
 
-    const nodeExists = graphData.nodes?.some(
+    const nodeExists = graphData.nodes.some(
         (node) => node.id === record[nodeConfig.idAttr as string],
     )
 
     if (!nodeExists) {
-        const node: IUserNode = {
+        const node: ExtendedNode = {
             id: record[nodeConfig.idAttr as string],
             ...(nodeConfig.tagAttr && { tag: row[nodeConfig.tagAttr] }),
             ...(nodeConfig.clusterLabel && {
@@ -533,13 +545,13 @@ export const addNodeToG6Graph = (
             }),
             ...(nodeConfig.labelAttr && {
                 label: {
-                    value: row[nodeConfig.labelAttr as string],
+                    value: row[nodeConfig.labelAttr],
                 },
             }),
             style: {
                 ...(nodeConfig.labelAttr && {
                     label: {
-                        value: row[nodeConfig.labelAttr as string],
+                        value: row[nodeConfig.labelAttr],
                     },
                 }),
                 ...(nodeConfig.tagAttr && { tag: row[nodeConfig.tagAttr] }),
@@ -558,19 +570,44 @@ export const addNodeToG6Graph = (
                 }),
             },
 
+            // comboId for cluster combo layout
             comboId: row.subreddit,
+
+            // _metadata values used throughout the app
+            _metadata: {
+                _data: row,
+                // _type
+                ...(nodeConfig.clusterLabel && {
+                    _type: nodeConfig.clusterLabel,
+                }),
+
+                // _title
+                ...(nodeConfig.labelAttr && {
+                    _title: row[nodeConfig.labelAttr],
+                }),
+
+                // _title
+                ...(nodeConfig.labelAttr && {
+                    _body: row[nodeConfig.labelAttr],
+                }),
+
+                // _subtitle
+                ...(nodeConfig.tagAttr && {
+                    _subtitle: row[nodeConfig.tagAttr],
+                }),
+            },
         }
-        // console.log("node", node)
-        graphData.nodes?.push(node)
+        // console.log("node", node);
+        graphData.nodes.push(node)
     }
 }
 
 export const addEdgesToG6Graph = (
-    graphData: GraphData,
+    graphData: { nodes: any[]; edges: any[] },
     row: unknown,
     edgeConfig: EdgeConfig,
 ): void => {
-    const record = row as Record<string, string> // add type assertion here
+    const record = row as Record<string, unknown>
 
     if (!record[edgeConfig.sourceNodeId] || !record[edgeConfig.targetNodeId]) {
         throw new Error("Required edge params missing.")

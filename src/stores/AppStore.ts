@@ -3,6 +3,87 @@ import daisyuiColors from "daisyui/src/theming/themes"
 
 import { DEFAULT_THEMES } from "react-daisyui/dist/defaultThemes"
 // console.log("daisyuiColors", daisyuiColors)
+
+// method to strip out everything before the equals sign and the ]
+function stripAndCamelCase(obj: { [index: string]: any }) {
+    return Object.entries(obj).reduce((result: any, [key, value]) => {
+        let cleanedKey = key.replace(/^\[data-theme=(.+)\]$/, "$1") // Stripping out the non-useful bits of the keys
+        // Manually transforming kebab-case to camelCase
+        cleanedKey = cleanedKey.includes("-")
+            ? cleanedKey
+                  .toLowerCase()
+                  .split("-")
+                  .map((word, idx) =>
+                      idx !== 0
+                          ? word.charAt(0).toUpperCase() + word.slice(1)
+                          : word,
+                  )
+                  .join("")
+            : cleanedKey
+        if (value && typeof value === "object") {
+            result[cleanedKey] = stripAndCamelCase(value) // Recursion to handle nested objects
+        } else {
+            result[cleanedKey] = value
+        }
+        return result
+    }, {})
+}
+
+export enum STATUS {
+    DONE = "Done",
+    FETCHING = "Fetching Data",
+    SHAPING = "Creating Graph",
+    SIMULATING = "Simulating...",
+    GRAPH_SIMULATED = "Graph Simulated",
+}
+
+interface State {
+    devMode: boolean
+    status: STATUS
+    loading: boolean
+    theme: string
+    colors: ThemeColors
+}
+
+interface ThemeColors {
+    primary: string
+    primaryContent: string
+    secondary: string
+    secondaryContent: string
+    accent: string
+    accentContent: string
+    neutral: string
+    neutralFocus: string
+    neutralContent: string
+    base100: string
+    base200: string
+    base300: string
+    baseContent: string
+    info: string
+    success: string
+    warning: string
+    error: string
+    colorScheme: "light" | "dark"
+}
+
+const initTheme = "light"
+
+const initialState: State = {
+    // app state
+    loading: false,
+    devMode: false,
+    status: STATUS.FETCHING,
+    theme: initTheme,
+    colors: stripAndCamelCase(daisyuiColors)[`${initTheme}`],
+}
+
+export const AppStore = createStore("App")(
+    { ...initialState },
+    {
+        devtools: { enabled: true },
+    },
+)
+
 // [
 //     ({
 //         main: "#F20D0D",
@@ -556,83 +637,3 @@ import { DEFAULT_THEMES } from "react-daisyui/dist/defaultThemes"
 //         "error": "#E58B8B"
 //     }
 // }
-
-// method to strip out everything before the equals sign and the ]
-function stripAndCamelCase(obj: { [index: string]: any }) {
-    return Object.entries(obj).reduce((result: any, [key, value]) => {
-        let cleanedKey = key.replace(/^\[data-theme=(.+)\]$/, "$1") // Stripping out the non-useful bits of the keys
-        // Manually transforming kebab-case to camelCase
-        cleanedKey = cleanedKey.includes("-")
-            ? cleanedKey
-                  .toLowerCase()
-                  .split("-")
-                  .map((word, idx) =>
-                      idx !== 0
-                          ? word.charAt(0).toUpperCase() + word.slice(1)
-                          : word,
-                  )
-                  .join("")
-            : cleanedKey
-        if (value && typeof value === "object") {
-            result[cleanedKey] = stripAndCamelCase(value) // Recursion to handle nested objects
-        } else {
-            result[cleanedKey] = value
-        }
-        return result
-    }, {})
-}
-
-export enum STATUS {
-    DONE = "Done",
-    FETCHING = "Fetching Data",
-    SHAPING = "Creating Graph",
-    SIMULATING = "Simulating...",
-    GRAPH_SIMULATED = "Graph Simulated",
-}
-
-interface State {
-    devMode: boolean
-    status: STATUS
-    loading: boolean
-    theme: string
-    colors: ThemeColors
-}
-
-interface ThemeColors {
-    primary: string
-    primaryContent: string
-    secondary: string
-    secondaryContent: string
-    accent: string
-    accentContent: string
-    neutral: string
-    neutralFocus: string
-    neutralContent: string
-    base100: string
-    base200: string
-    base300: string
-    baseContent: string
-    info: string
-    success: string
-    warning: string
-    error: string
-    colorScheme: "light" | "dark"
-}
-
-const initTheme = "light"
-
-const initialState: State = {
-    // app state
-    loading: false,
-    devMode: false,
-    status: STATUS.FETCHING,
-    theme: initTheme,
-    colors: stripAndCamelCase(daisyuiColors)[`${initTheme}`],
-}
-
-export const AppStore = createStore("App")(
-    { ...initialState },
-    {
-        devtools: { enabled: true },
-    },
-)

@@ -37,6 +37,7 @@ import { FunnelIcon } from "@heroicons/react/24/outline"
 import DeveloperPanel from "./DeveloperPanel"
 import { GraphNavbar } from "./GraphNavbar"
 import { store, actions, useTrackedStore, useStore } from "../stores/Store"
+import { NodeToolTip } from "./NodeToolTip"
 
 const Root: FC<{}> = () => {
     const [layout, setLayout] = React.useState({ name: "force", options: {} })
@@ -122,6 +123,7 @@ const Root: FC<{}> = () => {
                 }}
             >
                 <Theme dataTheme={theme}>
+                    <NodeToolTip />
                     <ActivateRelations trigger="click" />
                     <DragCanvas enableOptimize />
                     <ZoomCanvas enableOptimize sensitivity={1} />
@@ -138,24 +140,6 @@ const Root: FC<{}> = () => {
                     <DeveloperPanel />
                 </Theme>
             </Graphin>
-            {/* <SigmaContainer
-                settings={{
-                    labelRenderer: drawLabel,
-                    ...settings,
-                }}
-            >
-                <div ref={parent}>{devMode && <DevPanel />}</div>
-                {!graphStore.firstSim && <LoadingLogo />}
-                <GraphSettingsController hoveredNode={hoveredNode} />
-                <GraphEventsController setHoveredNode={setHoveredNode} />
-                <GraphDataController filters={filtersState} />
-
-                <span className="absolute left-0 top-0 p-3 text-sm text-gray-400">
-                    Centrifuge Widget Demo - v{APP_VERSION}
-                </span>
-
-                <Controls />
-            </SigmaContainer> */}
         </div>
     )
 }
