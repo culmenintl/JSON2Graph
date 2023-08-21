@@ -31,7 +31,7 @@ import { useSnackbar } from "notistack"
 import { LayoutSelector, Toolbar } from "@antv/graphin-components"
 import React from "react"
 import LayoutToolbar from "./LayoutToolbar"
-import { Navbar, Button, Form, Dropdown, Input, Theme } from "react-daisyui"
+import { Theme, useTheme } from "react-daisyui"
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
 import { FunnelIcon } from "@heroicons/react/24/outline"
 import DeveloperPanel from "./DeveloperPanel"
@@ -40,6 +40,7 @@ import { store, actions, useTrackedStore, useStore } from "../stores/Store"
 
 const Root: FC<{}> = () => {
     const [layout, setLayout] = React.useState({ name: "force", options: {} })
+    const { theme, setTheme } = useTheme(useTrackedStore().app.theme())
 
     // useEffect(() => {
     //     parent.current && autoAnimate(parent.current)
@@ -100,12 +101,12 @@ const Root: FC<{}> = () => {
 
     const graphGraphinData = useTrackedStore().data.graphinData()
     const initialLayout = useTrackedStore().graph.selectedLayout()
+    const themeMode = useTrackedStore().app.colors().colorScheme
 
     if (!graphGraphinData) return <LoadingLogo />
 
     return (
         <div className="absolute inset-0">
-            <div id="graph-container" />
             <Graphin
                 data={graphGraphinData}
                 ref={graphinRef}
@@ -113,24 +114,29 @@ const Root: FC<{}> = () => {
                 fitCenter={true}
                 fitView={true}
                 groupByTypes={false}
+                theme={{
+                    mode: themeMode,
+                }}
                 defaultCombo={{
                     type: "circle",
                 }}
             >
-                <ActivateRelations trigger="click" />
-                <DragCanvas enableOptimize />
-                <ZoomCanvas enableOptimize sensitivity={1} />
-                {/* <Hoverable bindType="node" /> */}
-                <Toolbar
-                    direction="horizontal"
-                    style={{ position: "absolute", right: "250px" }}
-                >
-                    {/* <LayoutToolbar /> */}
-                </Toolbar>
-                <div className="absolute bottom-0 w-full pb-5 bg-transparent">
-                    <GraphNavbar />
-                </div>
-                <DeveloperPanel />
+                <Theme dataTheme={theme}>
+                    <ActivateRelations trigger="click" />
+                    <DragCanvas enableOptimize />
+                    <ZoomCanvas enableOptimize sensitivity={1} />
+                    {/* <Hoverable bindType="node" /> */}
+                    <Toolbar
+                        direction="horizontal"
+                        style={{ position: "absolute", right: "250px" }}
+                    >
+                        {/* <LayoutToolbar /> */}
+                    </Toolbar>
+                    <div className="absolute bottom-0 w-full pb-5">
+                        <GraphNavbar />
+                    </div>
+                    <DeveloperPanel />
+                </Theme>
             </Graphin>
             {/* <SigmaContainer
                 settings={{

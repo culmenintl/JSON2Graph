@@ -1,7 +1,15 @@
 import IconLoader from "@antv/graphin-icons"
 import Graphin from "@antv/graphin"
+
+// CSS from Graphin
 import "@antv/graphin-icons/dist/index.css"
+
+// Icons from Graphin
 const icons = Graphin.registerFontFamily(IconLoader)
+
+// Colors to Generate Pallette From
+import Color from "color"
+
 export const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(" ")
 }
@@ -145,6 +153,7 @@ import G6, {
     INode,
 } from "@antv/g6"
 import { GraphinData, IUserEdge, IUserNode } from "@antv/graphin"
+import { store } from "../stores/Store"
 
 // Keeping your interfaces and types same, they seem well formed
 
@@ -195,6 +204,90 @@ import { GraphinData, IUserEdge, IUserNode } from "@antv/graphin"
 //     return graph
 // }
 
+const createColors = (
+    numColors: number,
+    numComplementColors: number,
+): { [main: string]: string; complement: string }[] => {
+    const colorPalette = []
+    for (let i = 0; i < numColors; i++) {
+        const mainColorHue = Math.ceil((360 / numColors) * i)
+        const mainColor = Color.hsl(mainColorHue, 90, 50).hex()
+        let complementColor = Color.hsl(mainColorHue, 60, 60).rotate(180).hex()
+
+        if (i < numComplementColors) {
+            const complementColorHue = (mainColorHue + 180) % 360
+            complementColor = Color.hsl(complementColorHue, 60, 60).hex()
+        }
+        colorPalette.push({
+            main: mainColor,
+            complement: complementColor,
+        })
+    }
+    return colorPalette
+}
+
+export interface ThemeColors {
+    primary: string
+    primaryFocus: string
+    primaryContent: string
+    secondary: string
+    secondaryFocus: string
+    secondaryContent: string
+    accent: string
+    accentFocus: string
+    accentContent: string
+    neutral: string
+    neutralFocus: string
+    neutralContent: string
+    base100: string
+    base200: string
+    base300: string
+    baseContent: string
+    info: string
+    infoContent: string
+    success: string
+    successContent: string
+    warning: string
+    warningContent: string
+    error: string
+    errorContent: string
+}
+
+// export function extractThemeColorsFromDOM(): ThemeColors {
+//     // rome-ignore lint/style/noNonNullAssertion: <explanation>
+//     const computedStyles = getComputedStyle(document.querySelector(":root")!)
+//     return {
+//         primary: `hsl(${computedStyles.getPropertyValue("--p")}`,
+//         primaryFocus: `hsl(${computedStyles.getPropertyValue("--pf")}`,
+//         primaryContent: `hsl(${computedStyles.getPropertyValue("--pc")}`,
+//         secondary: `hsl(${computedStyles.getPropertyValue("--s")}`,
+//         secondaryFocus: `hsl(${computedStyles.getPropertyValue("--sf")}`,
+//         secondaryContent: `hsl(${computedStyles.getPropertyValue("--sc")}`,
+//         accent: `hsl(${computedStyles.getPropertyValue("--a")}`,
+//         accentFocus: `hsl(${computedStyles.getPropertyValue("--af")}`,
+//         accentContent: `hsl(${computedStyles.getPropertyValue("--ac")}`,
+//         neutral: `hsl(${computedStyles.getPropertyValue("--n")}`,
+//         neutralFocus: `hsl(${computedStyles.getPropertyValue("--nf")}`,
+//         neutralContent: `hsl(${computedStyles.getPropertyValue("--nc")}`,
+//         base100: `hsl(${computedStyles.getPropertyValue("--b1")}`,
+//         base200: `hsl(${computedStyles.getPropertyValue("--b2")}`,
+//         base300: `hsl(${computedStyles.getPropertyValue("--b3")}`,
+//         baseContent: `hsl(${computedStyles.getPropertyValue("--bc")}`,
+//         info: `hsl(${computedStyles.getPropertyValue("--in")}`,
+//         infoContent: `hsl(${computedStyles.getPropertyValue("--inc")}`,
+//         success: `hsl(${computedStyles.getPropertyValue("--su")}`,
+//         successContent: `hsl(${computedStyles.getPropertyValue("--suc")}`,
+//         warning: `hsl(${computedStyles.getPropertyValue("--wa")}`,
+//         warningContent: `hsl(${computedStyles.getPropertyValue("--wac")}`,
+//         error: `hsl(${computedStyles.getPropertyValue("--er")}`,
+//         errorContent: `hsl(${computedStyles.getPropertyValue("--erc")}`,
+//     }
+// }
+
+// console.log(extractThemeColorsFromDOM())
+
+console.log(createColors(7, 7))
+
 function setSizeBasedOnDegrees(graphData: GraphData) {
     const maxDegree = Math.max(
         // rome-ignore lint/correctness/noUnsafeOptionalChaining: <explanation>
@@ -206,9 +299,9 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
     // console.log("maxDegree", maxDegree)
 
     const COLORS: Record<string, string> = {
-        Commented: getRandomColor(),
-        Subreddit: getRandomColor(),
-        User: getRandomColor(),
+        Commented: store.app.colors().primary,
+        Subreddit: store.app.colors().secondary,
+        User: store.app.colors().accent,
     }
 
     const ICON: Record<string, string> = {
@@ -227,6 +320,8 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
             (maxSize - minSize) *
                 (calculateDegree(graphData, node.id) / maxDegree)
         node.style = {
+            ...node.style,
+            keepVisualSize: true,
             keyshape: {
                 size,
                 fill: COLORS[node.clusterLabel as string],
@@ -239,8 +334,9 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
                 type: "font",
                 fontFamily: "graphin",
                 value: icons[ICON[node.clusterLabel as string]],
-                size: size - 15,
-                fill: "#fff",
+                size: size * 0.7,
+                fill: store.app.colors().primaryContent,
+                // fill: "#fff",
             },
 
             // badges: [
