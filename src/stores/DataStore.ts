@@ -19,6 +19,7 @@ interface State {
     graphinData: GraphinData | undefined
     rows: number
     state: "pending" | "done" | "error"
+    JsonSample: Object | undefined
     nodesCount: number
     edgesCount: number
     totalRows: number
@@ -30,7 +31,7 @@ const initialState: State = {
     state: "done",
     graph: undefined,
     graphinData: undefined,
-
+    JsonSample: undefined,
     dataSet: {
         id: config.datasets[0].id,
         url: config.datasets[0].url,
@@ -58,8 +59,6 @@ export const DataStore = createStore("Data")(
                 const resp = await fetch(get.dataSet().url)
                 const json = (await resp.json()) as unknown as RedditNode[]
 
-                // set the total rows
-
                 // sub sample data to the number rows requested
                 const subDataset = json.filter(
                     (_: unknown, index: number, arr) =>
@@ -73,6 +72,7 @@ export const DataStore = createStore("Data")(
                 set.graphinData(graphinData as GraphinData)
                 set.totalRows(json.length)
                 set.sampledRows(subDataset.length)
+                set.JsonSample(subDataset[0])
                 // const graph = populateG6Graph(subDataset, config)
                 // state.graphinData = convertG6ToGraphinData(graph)
 

@@ -1,4 +1,4 @@
-import { LayoutConfig } from "@antv/g6"
+import G6, { LayoutConfig } from "@antv/g6"
 import { createStore } from "@udecode/zustood"
 
 export enum LayoutTypes {
@@ -267,25 +267,37 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.comboForce]: {
         type: "comboForce",
-        preset: {
-            type: "comboForce",
-            preventOverlap: true,
-            linkDistance: 100,
-            nodeStrength: -30,
-            edgeStrength: 0.1,
+        linkDistance: 50, // Edge length
+        nodeStrength: 30,
+        edgeStrength: 0.1,
+        preventOverlap: true,
+        maxIteration: 2000,
+        // preset: {
+        // type: "comboForce",
+        // linkDistance: 100,
+        // nodeStrength: -30,
+        // edgeStrength: 0.1,
 
-            nodeSize: 30,
-            nodeSpacing: 5,
-            nodePadding: 5,
+        // nodeSize: 30,
+        // nodeSpacing: 5,
+        // nodePadding: 5,
 
-            nodeDraggable: true,
-            nodeMovable: true,
-            edgeMovable: true,
-            edgeDraggable: true,
-        },
+        // nodeDraggable: true,
+        // nodeMovable: true,
+        // edgeMovable: true,
+        // edgeDraggable: true,
+        // },
         gpuEnabled: false,
         workerEnabled: false,
         workerScriptURL: "",
+        outerLayout: new G6.Layout["forceAtlas2"]({
+            maxIteration: 1000,
+            gravity: 10,
+            speed: 5,
+            clustering: true,
+            clusterGravity: 10,
+            kr: 10,
+        }),
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("comboForce layout end")
@@ -294,22 +306,32 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.comboCombined]: {
         type: "comboCombined",
-        preset: {
-            type: "comboCombined",
-            preventOverlap: true,
-            linkDistance: 100,
-            nodeStrength: -30,
-            edgeStrength: 0.1,
+        // preset: {
+        //     type: "comboCombined",
+        maxIteration: 2000,
+        preventOverlap: true,
+        spacking: 50,
+        innerLayout: new G6.Layout["forceAtlas2"]({
+            kr: 10,
+            onTick: () => {},
+            onLayoutEnd: () => {
+                console.log("comboCombined inner layout end")
+            },
+        }),
 
-            nodeSize: 30,
-            nodeSpacing: 5,
-            nodePadding: 5,
+        // linkDistance: 100,
+        // nodeStrength: -30,
+        // edgeStrength: 0.1,
 
-            nodeDraggable: true,
-            nodeMovable: true,
-            edgeMovable: true,
-            edgeDraggable: true,
-        },
+        // nodeSize: 30,
+        // nodeSpacing: 5,
+        // nodePadding: 5,
+
+        // nodeDraggable: true,
+        // nodeMovable: true,
+        // edgeMovable: true,
+        // edgeDraggable: true,
+        // },
 
         gpuEnabled: false,
         workerEnabled: false,
@@ -325,14 +347,16 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
 interface State {
     layouts: LayoutConfig[]
     selectedLayout: LayoutConfig | undefined
-    comboEnabled: boolean
+    clusteringEnabled: boolean
+    clusteringLimit: number
     graphRef: any
 }
 
 const initialState: State = {
     layouts: Object.values(LayoutsMap),
-    selectedLayout: LayoutsMap[Layouts.force2],
-    comboEnabled: false,
+    selectedLayout: LayoutsMap[Layouts.comboCombined],
+    clusteringEnabled: true,
+    clusteringLimit: 5,
     graphRef: undefined,
 }
 

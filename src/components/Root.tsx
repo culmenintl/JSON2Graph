@@ -121,6 +121,7 @@ const Root: FC<{}> = () => {
                 defaultCombo={{
                     type: "circle",
                 }}
+                animate={true}
             >
                 <Theme dataTheme={theme}>
                     <NodeToolTip />

@@ -290,7 +290,6 @@ console.log(createColors(7, 7))
 
 function setSizeBasedOnDegrees(graphData: GraphData) {
     const maxDegree = Math.max(
-        // rome-ignore lint/correctness/noUnsafeOptionalChaining: <explanation>
         ...(graphData.nodes?.map((node) =>
             calculateDegree(graphData, node.id),
         ) || []),
@@ -350,6 +349,7 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
             //     },
             // ],
         }
+        node.size = size
         // node.comboId = node.clusterLabel
     })
 }
@@ -362,7 +362,7 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
  * @param {number} maxLength
  * @returns {*}  {string}
  */
-const truncateString = (str: string, maxLength: number): string => {
+export const truncateString = (str: string, maxLength: number): string => {
     if (!str) return ""
 
     if (str.length <= maxLength) {
@@ -413,33 +413,31 @@ export const populateGraphinData = (
     })
 
     setSizeBasedOnDegrees(graphData)
-    setCombos(graphData)
 
-    // method to calculate graphData degrees and color
-    // calculateDegreesAndColor(graphData)
-
-    // Create a graph instance
-    // const graph = new G6.Graph({
-    //     container: "graph-container", // container id
-    //     layout: {
-    //         type: "random",
-    //     }, // using a random layout
-    //     defaultNode: { size: 5 },
-    // })
-
-    // // Load data into the graph
-    // graph.data(graphData)
-    // // Render the graph
-    // graph.render()
+    // add combos if enabled
+    if (store.graph.clusteringEnabled()) {
+        setCombos(graphData)
+    }
 
     // return graph
     return graphData
 }
 
+/**
+ * @description Sets the combos for the graph based on the clustering limit and the number of nodes in each cluster
+ * @author Logan Hendershot
+ * @date 08/22/2023
+ * @param {GraphData} graphData
+ */
 const setCombos = (graphData: GraphData) => {
     const combos: ComboConfig[] = []
+    // create a map to count the number of nodes in each cluster
     const comboCountMap: { [comboId: string]: number } = {}
 
+    // get the clustering limit from state
+    const clusterLimit = store.graph.clusteringLimit()
+
+    // count and sort the number of nodes in each cluster
     graphData.nodes?.forEach((node) => {
         const comboId = node.comboId || ""
         if (!comboCountMap[comboId]) {
@@ -452,13 +450,22 @@ const setCombos = (graphData: GraphData) => {
         (a, b) => comboCountMap[b] - comboCountMap[a],
     )
 
-    for (let i = 0; i < Math.min(sortedComboIds.length, 5); i++) {
+    // create a combo for each cluster, up to the clustering limit
+    // with a label and a color
+    for (let i = 0; i < Math.min(sortedComboIds.length, clusterLimit); i++) {
         const comboId = sortedComboIds[i]
         combos.push({
             id: comboId,
             label: comboId,
+            labelCfg: {
+                position: "top",
+                refY: 10,
+                style: {
+                    fontSize: 35,
+                },
+            },
             style: {
-                opacity: 0.3,
+                opacity: 0.4,
                 fill: getRandomColor(),
             },
         })
