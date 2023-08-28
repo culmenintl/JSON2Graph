@@ -39,7 +39,7 @@ const ToolTipCard: React.FC<ToolTipCardProps> = (model: ToolTipCardProps) => {
                         </div>
                     </div>
                     <span className="pl-5">
-                        {truncateString(node._metadata?._title, 50)}
+                        {truncateString(node._metadata?._title || "", 50)}
                     </span>
                 </div>
             </Card.Title>

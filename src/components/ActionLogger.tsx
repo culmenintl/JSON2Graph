@@ -35,7 +35,7 @@ const ActionLogger: React.FC = () => {
                 ref={parent}
                 className="max-w-md mx-auto overflow-hidden bg-white rounded-xl shadow-md space-y-2 p-4"
             >
-                {transitions.map(({ item, props, key }) => (
+                {/* {transitions.map(({ item, props, key }) => (
                     <animated.div
                         key={key}
                         style={props}
@@ -49,7 +49,7 @@ const ActionLogger: React.FC = () => {
                             Undo
                         </Button>
                     </animated.div>
-                ))}
+                ))} */}
             </div>
         </div>
     )

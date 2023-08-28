@@ -1,7 +1,7 @@
 import { GraphinContext } from "@antv/graphin"
 import { classNames } from "../lib/Utils"
-import { STATUS } from "../stores/AppSlice"
-import useBoundStore from "../stores/Store"
+// import { STATUS } from "../stores/AppSlice"
+// import useBoundStore from "../stores/Store"
 import { PlayIcon, StopIcon } from "@heroicons/react/24/outline"
 // import { useSigma } from "@react-sigma/core"
 import React, { FC, useEffect } from "react"
@@ -11,19 +11,19 @@ export const ToggleSimulation: FC<{}> = () => {
     const { handleZoomIn, handleZoomOut } = apis
     const ctx = React.useContext(GraphinContext)
 
-    const setStatus = useBoundStore((state) => state.setStatus)
-    const status = useBoundStore((state) => state.status)
-    const toggleLayout = useBoundStore((state) => state.toggleLayout)
-    // const sigma = useSigma()
-    const toggleSimulation = () => {
-        if (status === STATUS.SIMULATING) {
-            setStatus(STATUS.GRAPH_SIMULATED, false)
-            toggleLayout(ctx)
-        } else {
-            setStatus(STATUS.SIMULATING, true)
-            toggleLayout(ctx)
-        }
-    }
+    // const setStatus = useBoundStore((state) => state.setStatus)
+    // const status = useBoundStore((state) => state.status)
+    // const toggleLayout = useBoundStore((state) => state.toggleLayout)
+    // // const sigma = useSigma()
+    // const toggleSimulation = () => {
+    //     if (status === STATUS.SIMULATING) {
+    //         setStatus(STATUS.GRAPH_SIMULATED, false)
+    //         toggleLayout(ctx)
+    //     } else {
+    //         setStatus(STATUS.SIMULATING, true)
+    //         toggleLayout(ctx)
+    //     }
+    // }
     // useEffect(() => {
     //     const interval = setInterval(() => {
     //         if (graphStore.isSimulating) {
@@ -34,7 +34,7 @@ export const ToggleSimulation: FC<{}> = () => {
     // }, [graphStore.isSimulating])
     return (
         <>
-            <button
+            {/* <button
                 type="button"
                 className={classNames(
                     status === STATUS.SIMULATING
@@ -49,7 +49,7 @@ export const ToggleSimulation: FC<{}> = () => {
                 ) : (
                     <PlayIcon className="h-5 w-5" aria-hidden="true" />
                 )}
-            </button>
+            </button> */}
         </>
     )
 }

@@ -327,7 +327,7 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
                 fillOpacity: 0.8,
             },
             label: {
-                value: truncateString(node?.label?.value ?? "", 10),
+                value: truncateString(node?.label?.toString() ?? "", 10),
             },
             icon: {
                 type: "font",

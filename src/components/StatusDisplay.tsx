@@ -1,9 +1,7 @@
-import useBoundStore from "../stores/Store"
 import Loading from "./Loading"
 import { FC } from "react"
 
 const StatusDisplay: FC<{}> = () => {
-    const { loading, status } = useBoundStore((state) => state)
     return (
         <div className="flex flex-grow gap-1">
             {/* <div className="my-auto w-5 items-center justify-center">

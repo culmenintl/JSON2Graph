@@ -1,7 +1,9 @@
 import { createStore } from "@udecode/zustood"
+// @ts-ignore
 import daisyuiColors from "daisyui/src/theming/themes"
 
-import { DEFAULT_THEMES } from "react-daisyui/dist/defaultThemes"
+// import daisyuiColors from "react-daisyui/dist/defaultThemes"
+
 // console.log("daisyuiColors", daisyuiColors)
 
 // method to strip out everything before the equals sign and the ]

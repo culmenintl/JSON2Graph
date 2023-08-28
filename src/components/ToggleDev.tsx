@@ -1,15 +1,15 @@
 import { classNames } from "../lib/Utils"
-import useBoundStore from "../stores/Store"
+// import useBoundStore from "../stores/Store"
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
 import { FC } from "react"
 
 export const ToggleDev: FC<{}> = () => {
-    const toggleDevMode = useBoundStore((state) => state.toggleDevMode)
-    const devMode = useBoundStore((state) => state.devMode)
-    const toggleDev = () => toggleDevMode()
+    // const toggleDevMode = useBoundStore((state) => state.toggleDevMode)
+    // const devMode = useBoundStore((state) => state.devMode)
+    // const toggleDev = () => toggleDevMode()
     return (
         <>
-            <button
+            {/* <button
                 type="button"
                 className={classNames(
                     devMode
@@ -20,7 +20,7 @@ export const ToggleDev: FC<{}> = () => {
                 onClick={toggleDev}
             >
                 <WrenchScrewdriverIcon className="h-5 w-5" aria-hidden="true" />
-            </button>
+            </button> */}
         </>
     )
 }

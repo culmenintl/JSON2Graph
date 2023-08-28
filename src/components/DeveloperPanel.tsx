@@ -174,13 +174,14 @@ export const DeveloperPanel: React.FC = () => {
                                     </Table.Row>
                                     <Table.Row className="max-w-2xl overflow-x-hidden w-full">
                                         <span>Example Json</span>
-                                        <span className="ml-auto ">
+                                        <span>Test</span>
+                                        {/* <span className="ml-auto ">
                                             {SampleJsonData(
                                                 JsonSample
                                                     ? (JsonSample as Object)
                                                     : {},
                                             )}
-                                        </span>
+                                        </span> */}
                                     </Table.Row>
                                 </Table.Body>
                             </Table>
