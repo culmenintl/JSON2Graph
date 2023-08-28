@@ -3,7 +3,7 @@ name: surge-web CI/CD
 on:
   push:
     branches:
-      - main
+      - g6-research
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
