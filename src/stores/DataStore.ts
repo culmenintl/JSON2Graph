@@ -56,11 +56,11 @@ export const DataStore = createStore("Data")(
         fetchData: async () => {
             try {
                 // fetch data from config
-                const resp = await fetch(get.dataSet().url, {
-                    headers: {
-                        "Access-Control-Request-Private-Network": "true",
-                    },
-                })
+                const resp = await fetch(
+                    `${`${import.meta.env.VITE_PUBLIC_URL}/${
+                        get.dataSet().url
+                    }`}`,
+                )
                 const json = (await resp.json()) as unknown as RedditNode[]
 
                 // sub sample data to the number rows requested
