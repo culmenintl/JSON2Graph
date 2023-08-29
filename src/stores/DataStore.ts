@@ -56,12 +56,16 @@ export const DataStore = createStore("Data")(
         fetchData: async () => {
             try {
                 // fetch data from config
-                const resp = await fetch(get.dataSet().url)
+                const resp = await fetch(get.dataSet().url, {
+                    headers: {
+                        "Access-Control-Request-Private-Network": "true",
+                    },
+                })
                 const json = (await resp.json()) as unknown as RedditNode[]
 
                 // sub sample data to the number rows requested
                 const subDataset = json.filter(
-                    (_: unknown, index: number, arr) =>
+                    (_: unknown, index: number, arr: unknown[]) =>
                         Math.random() <= get.rows() / arr.length,
                 )
 
