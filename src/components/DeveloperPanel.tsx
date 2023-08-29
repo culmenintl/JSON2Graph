@@ -10,6 +10,8 @@ import {
 } from "react-daisyui"
 import { actions, useStore, useTrackedStore } from "../stores/Store"
 
+import { useHotkeys } from "react-hotkeys-hook"
+
 const SampleJsonData = (data: Object) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
 )
@@ -23,6 +25,7 @@ export const DeveloperPanel: React.FC = () => {
     const userTheme = useTrackedStore().app.theme()
     const clusteringLimit = useTrackedStore().graph.clusteringLimit()
     const clusteringEnabled = useTrackedStore().graph.clusteringEnabled()
+    const hoverMode = useTrackedStore().graph.hoverMode()
     const JsonSample = useStore().data.JsonSample()
 
     const nodesCount = useStore()
@@ -35,23 +38,26 @@ export const DeveloperPanel: React.FC = () => {
         ?.getEdges()
         .length.toLocaleString()
 
-    useEffect(() => {
-        const handleKeyPress = (event: KeyboardEvent) => {
-            const currentTime = new Date().getTime()
-            if (event.key === "d" && currentTime - lastKeyPressTime < 250) {
-                console.log("d was pressed twice quickly")
-                if (showModal) setShowModal(false)
-                else setShowModal(true)
-            }
-            setLastKeyPressTime(currentTime)
-        }
+    useHotkeys("mod+i", () => {
+        if (showModal) setShowModal(false)
+        else setShowModal(true)
+    })
 
-        window.addEventListener("keydown", handleKeyPress)
+    // useEffect(() => {
+    //     const handleKeyPress = (event: KeyboardEvent) => {
+    //         const currentTime = new Date().getTime()
+    //         if (event.key === "d" && currentTime - lastKeyPressTime < 250) {
+    //             console.log("d was pressed twice quickly")
+    //         }
+    //         setLastKeyPressTime(currentTime)
+    //     }
 
-        return () => {
-            window.removeEventListener("keydown", handleKeyPress)
-        }
-    }, [lastKeyPressTime])
+    //     window.addEventListener("keydown", handleKeyPress)
+
+    //     return () => {
+    //         window.removeEventListener("keydown", handleKeyPress)
+    //     }
+    // }, [lastKeyPressTime])
 
     // method to toggle the theme
     const toggleTheme = () => {
@@ -98,6 +104,7 @@ export const DeveloperPanel: React.FC = () => {
                                             }}
                                         />
                                     </Table.Row>
+
                                     <Table.Row>
                                         <div className="flex flex-1 flex-col prose">
                                             <span className="">
@@ -126,6 +133,19 @@ export const DeveloperPanel: React.FC = () => {
                                                     val.target.value,
                                                 )
                                                 actions.data.fetchData()
+                                            }}
+                                        />
+                                    </Table.Row>
+
+                                    <Table.Row>
+                                        <span>Hover Mode</span>
+                                        <Toggle
+                                            checked={hoverMode}
+                                            onChange={() => {
+                                                actions.graph.hoverMode(
+                                                    !hoverMode,
+                                                )
+                                                // actions.data.fetchData()
                                             }}
                                         />
                                     </Table.Row>

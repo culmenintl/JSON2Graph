@@ -42,7 +42,7 @@ export const GraphNavbar: FC<{}> = () => {
         actions.data.filterGraphByDegree(2)
     }
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-xl mx-auto">
             <Navbar className="rounded-box shadow-xl bg-base-100">
                 <div className="flex flex-col w-full">
                     {/*  statbar section*/}
@@ -59,47 +59,38 @@ export const GraphNavbar: FC<{}> = () => {
                     </div>
 
                     {/* rest of the navbar */}
-                    <div className="flex flex-1 flex-row">
-                        <Button className="text-xl normal-case" color="ghost">
-                            JSON2Graph
-                        </Button>
-                        <Button onClick={() => filterGraph()}>
+                    <div className="flex flex-1 flex-row w-full justify-center gap-2">
+                        <Button size="md" onClick={() => filterGraph()}>
                             {<FunnelIcon className="w-5 h-5" />}
                         </Button>
-                        <div className="flex flex-1">{/* <ToggleDev /> */}</div>
-                        <div className="flex flex-1 flex-row gap-2">
-                            <Form>
-                                <Input
-                                    bordered
-                                    type="text"
-                                    placeholder="Search"
-                                />
-                            </Form>
-                            <LayoutToolbar />
-                            <Button
+                        {/* <div className="flex flex-1"><ToggleDev /></div> */}
+                        <Form>
+                            <Input
+                                className="flex flex-1"
                                 size="md"
-                                // endIcon={
-                                //     <ArrowTopRightOnSquareIcon
-                                //         className="h-5 w-5"
-                                //         aria-hidden="true"
-                                //     />
-                                // }
-                                onClick={() => alert("Opening Centrifuge")}
-                            >
-                                <div className="flex-1 flex-col items-center justify-center">
-                                    <img
-                                        src={CentrifugeLogoCentered}
-                                        className={"h-10"}
-                                        alt="Centrifuge"
-                                    />
-                                    {/* <img
+                                bordered
+                                type="text"
+                                placeholder="Search"
+                            />
+                        </Form>
+                        <div>
+                            <LayoutToolbar />
+                        </div>
+                        <Button
+                            size="md"
+                            onClick={() => alert("Opening Centrifuge")}
+                        >
+                            <img
+                                src={CentrifugeLogoCentered}
+                                className={"h-10"}
+                                alt="Centrifuge"
+                            />
+                            {/* <img
                                             src={CentrifugeText}
                                             className="h-5 w-10"
                                             alt="Centrifuge"
                                         /> */}
-                                </div>
-                            </Button>
-                        </div>
+                        </Button>
                     </div>
                 </div>
             </Navbar>

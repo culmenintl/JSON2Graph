@@ -3,6 +3,7 @@ import { Components, TooltipValue } from "@antv/graphin"
 import { Avatar, Badge, Card } from "react-daisyui"
 import { ExtendedNode, truncateString } from "../lib/Utils"
 import { UserIcon } from "@heroicons/react/24/outline"
+import { useTrackedStore } from "../stores/Store"
 
 const { Tooltip } = Components
 
@@ -61,10 +62,11 @@ const style = {}
 // https://graphin.antv.vision/en/packages/graphin-components#tooltip
 // which contains the tooltip card content above
 export const NodeToolTip: React.FC<{}> = () => {
+    const hoverMode = useTrackedStore().graph.hoverMode()
     return (
         <Tooltip bindType="node" placement={placement} hasArrow={hasArrow}>
             {(value: TooltipValue) => {
-                if (value.model) {
+                if (value.model && hoverMode) {
                     const { model } = value
                     return <ToolTipCard model={model} />
                 }

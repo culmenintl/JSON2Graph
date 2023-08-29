@@ -349,6 +349,7 @@ interface State {
     selectedLayout: LayoutConfig | undefined
     clusteringEnabled: boolean
     clusteringLimit: number
+    hoverMode: boolean
     graphRef: any
 }
 
@@ -358,6 +359,7 @@ const initialState: State = {
     clusteringEnabled: true,
     clusteringLimit: 5,
     graphRef: undefined,
+    hoverMode: false,
 }
 
 interface GraphLayoutCfg extends LayoutConfig {
