@@ -1,3 +1,48 @@
+#### 0.0.5 (2023-08-30)
+
+##### Build System / Dependencies
+
+* **cd/cd:**  update for GH build command (666e166c)
+
+##### Chores
+
+* **lint:**
+  *  ran rome linter over files, sorted imports (a4e7b936)
+  *  ran rome linter over files (de7c81ac)
+
+##### New Features
+
+* **ui:**
+  *  added config for hover node functionality (96d27c8d)
+  *  update for allowing light and dark mode (906847e1)
+* **clustering:**  impl of clustering via max degrees, made configurable (338d22bc)
+* **tooltip:**  impl of the tooltip feature (c7492015)
+* **state:**
+  *  updated to zustood, working through clustering (df1cb2aa)
+  *  further refined app to populate from config file on load (04416e06)
+  *  updated graph creation code to read from config file and populate graph (c80ab5cd)
+* **data:**  added local storage cache (6c8e9032)
+
+##### Bug Fixes
+
+* **build:**
+  *  updates for fixing data fetch on prd (82bbbda4)
+  *  updates for fixing deployment build (49e453ce)
+* **data:**  updated access control headers for data request (bdc804fa)
+* **ui:**  small fixes (68bc748a)
+
+##### Other Changes
+
+*  @Azure opensource@microsoft.com (9d969102)
+* **ui:**  added testing library, removed sigma references, added layout switching (7c130cf4)
+
+##### Refactors
+
+* **state:**
+  *  removed mobx ref, using zustand (0b61c2a8)
+  *  updated app/data to use Zustand (6f94f296)
+  *  removed eslint, prettier, using rome (d4fe6ebf)
+
 #### 0.0.4 (2022-10-26)
 
 ##### Bug Fixes

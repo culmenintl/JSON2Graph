@@ -362,16 +362,6 @@ const initialState: State = {
     hoverMode: false,
 }
 
-interface GraphLayoutCfg extends LayoutConfig {
-    type?: string
-    gpuEnabled?: boolean
-    workerEnabled?: boolean
-    workerScriptURL?: string
-    onTick?: () => void
-    onLayoutEnd?: () => void
-    animate?: boolean
-}
-
 export const GraphStore = createStore("Graph")(
     { ...initialState },
     {
