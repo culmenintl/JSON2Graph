@@ -59,7 +59,7 @@ export const GraphNavbar: FC<{}> = () => {
                     </div>
 
                     {/* rest of the navbar */}
-                    <div className="flex flex-1 flex-row w-full justify-center gap-2">
+                    <div className="flex flex-1 flex-row w-full justify-center gap-0 md:gap-2">
                         <Button size="md" onClick={() => filterGraph()}>
                             {<FunnelIcon className="w-5 h-5" />}
                         </Button>
