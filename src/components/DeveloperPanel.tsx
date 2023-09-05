@@ -28,12 +28,12 @@ export const DeveloperPanel: React.FC = () => {
     const hoverMode = useTrackedStore().graph.hoverMode()
     const JsonSample = useStore().data.JsonSample()
 
-    const nodesCount = useStore()
+    const nodesCount = useTrackedStore()
         .graph.graphRef()
         ?.getNodes()
         .length.toLocaleString()
 
-    const edgesCount = useStore()
+    const edgesCount = useTrackedStore()
         .graph.graphRef()
         ?.getEdges()
         .length.toLocaleString()
@@ -42,22 +42,6 @@ export const DeveloperPanel: React.FC = () => {
         if (showModal) setShowModal(false)
         else setShowModal(true)
     })
-
-    // useEffect(() => {
-    //     const handleKeyPress = (event: KeyboardEvent) => {
-    //         const currentTime = new Date().getTime()
-    //         if (event.key === "d" && currentTime - lastKeyPressTime < 250) {
-    //             console.log("d was pressed twice quickly")
-    //         }
-    //         setLastKeyPressTime(currentTime)
-    //     }
-
-    //     window.addEventListener("keydown", handleKeyPress)
-
-    //     return () => {
-    //         window.removeEventListener("keydown", handleKeyPress)
-    //     }
-    // }, [lastKeyPressTime])
 
     // method to toggle the theme
     const toggleTheme = () => {
@@ -92,6 +76,21 @@ export const DeveloperPanel: React.FC = () => {
                             </div>
                             <Table>
                                 <Table.Body className="prose">
+                                    <Table.Row>
+                                        <span>
+                                            Theme:
+                                            <span className="text-lg ml-3">
+                                                {userTheme === "light"
+                                                    ? "☀️"
+                                                    : "🌙"}
+                                            </span>
+                                        </span>
+                                        <Toggle
+                                            checked={userTheme === "dark"}
+                                            // checked={userTheme === "dark"}
+                                            onChange={() => toggleTheme()}
+                                        />
+                                    </Table.Row>
                                     <Table.Row>
                                         <span>Clustering</span>
                                         <Toggle
@@ -162,20 +161,6 @@ export const DeveloperPanel: React.FC = () => {
                                         </span>
                                     </Table.Row>
 
-                                    <Table.Row>
-                                        <span>
-                                            Theme:
-                                            <span className="text-lg ml-3">
-                                                {userTheme === "light"
-                                                    ? "☀️"
-                                                    : "🌙"}
-                                            </span>
-                                        </span>
-                                        <Toggle
-                                            checked={userTheme === "dark"}
-                                            onChange={() => toggleTheme()}
-                                        />
-                                    </Table.Row>
                                     <Table.Row>
                                         <span>Clear Local Cache</span>
                                         <span className="ml-auto">

@@ -2,7 +2,7 @@ import { RedditNode } from "../lib/types"
 import config from "../../configs/data.mapping.json"
 import { Graph, GraphData } from "@antv/g6"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphinData } from "@antv/graphin"
+import { GraphinData, Utils } from "@antv/graphin"
 
 import { createStore } from "@udecode/zustood"
 
@@ -17,7 +17,7 @@ interface State {
     dataSet: Dataset
     graph: Graph | undefined
     graphinData: GraphinData | undefined
-    rows: number
+    rowsToSample: number | undefined
     state: "pending" | "done" | "error"
     JsonSample: Object | undefined
     nodesCount: number
@@ -27,10 +27,12 @@ interface State {
 }
 
 const initialState: State = {
-    rows: 200,
     state: "done",
     graph: undefined,
-    graphinData: undefined,
+    graphinData: {
+        nodes: Utils.mock(25).random().nodes,
+        edges: Utils.mock(25).random().edges,
+    },
     JsonSample: undefined,
     dataSet: {
         id: config.datasets[0].id,
@@ -40,6 +42,7 @@ const initialState: State = {
             ? config.datasets[0].description
             : "No Description.",
     },
+    rowsToSample: undefined,
     totalRows: 0,
     sampledRows: 0,
     nodesCount: 0,
@@ -62,24 +65,27 @@ export const DataStore = createStore("Data")(
                     }`}`,
                 )
                 const json = (await resp.json()) as unknown as RedditNode[]
+                const rows = get.rowsToSample()
+                    ? get.rowsToSample()
+                    : json.length
 
+                console.log(json.length)
+                if (!rows) {
+                    return
+                }
                 // sub sample data to the number rows requested
                 const subDataset = json.filter(
                     (_: unknown, index: number, arr: unknown[]) =>
-                        Math.random() <= get.rows() / arr.length,
+                        Math.random() <= rows / arr.length,
                 )
-
                 // get().setData(subDataset)
-
                 const graphinData = populateGraphinData(subDataset, config)
-
                 set.graphinData(graphinData as GraphinData)
                 set.totalRows(json.length)
                 set.sampledRows(subDataset.length)
                 set.JsonSample(subDataset[0])
                 // const graph = populateG6Graph(subDataset, config)
                 // state.graphinData = convertG6ToGraphinData(graph)
-
                 // get().setStatus(STATUS.DONE, false)
             } catch (error) {
                 console.error("Failed to fetch projects", error)

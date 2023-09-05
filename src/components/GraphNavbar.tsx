@@ -17,7 +17,7 @@ import LayoutToolbar from "./LayoutToolbar"
 import { actions, store, useStore, useTrackedStore } from "../stores/Store"
 
 export const GraphNavbar: FC<{}> = () => {
-    const sampledRows = useStore().data.rows()
+    let sampledRows = useTrackedStore().data.rowsToSample()
     const totalRows = useStore().data.totalRows()
     const { theme, setTheme } = useTheme()
 
@@ -32,6 +32,10 @@ export const GraphNavbar: FC<{}> = () => {
         .length.toLocaleString()
 
     // converts 1234 to 1.2k
+
+    if (!sampledRows) {
+        sampledRows = totalRows
+    }
     const formattedSampleRows =
         totalRows >= 1000
             ? `${Math.floor(totalRows / 1000)}k`

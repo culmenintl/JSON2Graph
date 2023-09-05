@@ -11,7 +11,7 @@ export enum LayoutTypes {
 }
 
 export enum Layouts {
-    GraphinForce = "graphin-force",
+    graphinForce = "graphin-force",
     force2 = "force2",
     random = "random",
     concentric = "concentric",
@@ -30,7 +30,7 @@ export enum Layouts {
 }
 
 const LayoutsMap: { [key: string]: LayoutConfig } = {
-    [Layouts.GraphinForce]: {
+    [Layouts.graphinForce]: {
         type: "graphin-force",
         preset: {
             type: "concentric",
@@ -48,7 +48,7 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
             type: "random",
         },
         gpuEnabled: false,
-        workerEnabled: true,
+        workerEnabled: false,
         // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
@@ -195,23 +195,8 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
         type: "gForce",
         preset: {
             type: "gForce",
-            maxIteration: 1000,
-            gravity: 10,
-            clustering: true,
-            clusterGravity: 10,
-            speed: 5,
-            linkDistance: 100,
-            nodeStrength: -30,
-            edgeStrength: 0.1,
-            nodeSize: 30,
-            nodeSpacing: 5,
-            nodePadding: 5,
-            nodeDraggable: true,
-            nodeMovable: true,
-            edgeMovable: true,
-            edgeDraggable: true,
         },
-        gpuEnabled: false,
+        gpuEnabled: true,
         workerEnabled: false,
         workerScriptURL: "",
         onTick: () => {},
@@ -355,8 +340,8 @@ interface State {
 
 const initialState: State = {
     layouts: Object.values(LayoutsMap),
-    selectedLayout: LayoutsMap[Layouts.comboCombined],
-    clusteringEnabled: true,
+    selectedLayout: LayoutsMap[Layouts.gForce],
+    clusteringEnabled: false,
     clusteringLimit: 5,
     graphRef: undefined,
     hoverMode: false,

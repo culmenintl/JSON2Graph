@@ -112,8 +112,8 @@ const Root: FC<{}> = () => {
                 data={graphGraphinData}
                 ref={graphinRef}
                 layout={initialLayout}
-                fitCenter={true}
-                fitView={true}
+                // fitCenter={true}
+                // fitView={true}
                 groupByTypes={false}
                 theme={{
                     mode: themeMode,
