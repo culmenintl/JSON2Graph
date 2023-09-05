@@ -2,7 +2,7 @@
     "datasets": [
         {
             "id": "reddit",
-            "url": "reddit.comments.dataset.json",
+            "url": "reddit.comments.1k.json",
             "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits",
             "nodes": [
                 {
