@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react"
-import {
-    Button,
-    Card,
-    Range,
-    Table,
-    Theme,
-    Toggle,
-    useTheme,
-} from "react-daisyui"
+import { Button, Card, Range, Table, Toggle, useTheme } from "react-daisyui"
 import { actions, useStore, useTrackedStore } from "../stores/Store"
 
 import { useHotkeys } from "react-hotkeys-hook"
@@ -17,14 +9,20 @@ const SampleJsonData = (data: Object) => (
 )
 
 export const DeveloperPanel: React.FC = () => {
-    const [showModal, setShowModal] = useState(false)
-    const [lastKeyPressTime, setLastKeyPressTime] = useState(0)
-
     const { theme, setTheme } = useTheme()
 
     const userTheme = useTrackedStore().app.theme()
+
+    // handles the opening and closing of the menu
+    const menuOpen = useTrackedStore().app.menuOpen()
+
     const clusteringLimit = useTrackedStore().graph.clusteringLimit()
     const clusteringEnabled = useTrackedStore().graph.clusteringEnabled()
+
+    // filter nodes by degree
+    const filterGraphByDegree = useTrackedStore().graph.filterGraphByDegree()
+    const filteringLimit = useTrackedStore().graph.filteringLimit()
+
     const hoverMode = useTrackedStore().graph.hoverMode()
     const JsonSample = useStore().data.JsonSample()
 
@@ -39,8 +37,8 @@ export const DeveloperPanel: React.FC = () => {
         .length.toLocaleString()
 
     useHotkeys("mod+i", () => {
-        if (showModal) setShowModal(false)
-        else setShowModal(true)
+        if (menuOpen) actions.app.menuOpen(false)
+        else actions.app.menuOpen(true)
     })
 
     // method to toggle the theme
@@ -63,7 +61,7 @@ export const DeveloperPanel: React.FC = () => {
 
     return (
         <>
-            {showModal && (
+            {menuOpen && (
                 <div className="absolute left-10 top-0 w-full max-w-2xl overflow-hidden">
                     <Card
                         normal
@@ -79,7 +77,7 @@ export const DeveloperPanel: React.FC = () => {
                                     <Table.Row>
                                         <span>
                                             Theme:
-                                            <span className="text-lg ml-3">
+                                            <span className="text-2xl ml-3">
                                                 {userTheme === "light"
                                                     ? "☀️"
                                                     : "🌙"}
@@ -187,6 +185,43 @@ export const DeveloperPanel: React.FC = () => {
                                                     : {},
                                             )}
                                         </span> */}
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <div className="flex flex-1 flex-col prose">
+                                            <span className="">
+                                                Filter by degree:{" "}
+                                                {filteringLimit}
+                                            </span>
+                                            <small className="font-medium text-slate-400">
+                                                Filter the visible nodes by the
+                                                number of degrees
+                                            </small>
+                                        </div>
+                                        <Range
+                                            disabled={!filterGraphByDegree}
+                                            min={0}
+                                            max={10}
+                                            value={filteringLimit}
+                                            onChange={(val: any) => {
+                                                console.log(
+                                                    "changing filter limit",
+                                                    val.target.value,
+                                                )
+                                                actions.graph.filteringLimit(
+                                                    val.target.value,
+                                                )
+                                            }}
+                                            onBlur={(val: any) => {
+                                                console.log(
+                                                    "onblur",
+                                                    val.target.value,
+                                                )
+                                                actions.graph.filterGraphByDegree(
+                                                    val.target.value,
+                                                )
+                                                // actions.data.fetchData()
+                                            }}
+                                        />
                                     </Table.Row>
                                 </Table.Body>
                             </Table>

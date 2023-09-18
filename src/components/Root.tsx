@@ -6,16 +6,13 @@ import Graphin, {
     IUserNode,
     Utils,
 } from "@antv/graphin"
+
+// graphin CSS
 import "@antv/graphin/dist/index.css" // Don't forget to import CSS
+import "@antv/graphin-icons/dist/index.css"
 
-import CentrifugeText from "/images/centrifuge-text.svg"
-
-const { DragCanvas, ZoomCanvas, DragNode, ActivateRelations, Hoverable } =
+const { DragCanvas, ZoomCanvas, DragNode, ActivateRelations, DragCombo } =
     Behaviors
-
-import { FiltersState, RedditNode } from "../lib/types"
-import GraphDataController from "./GraphDataController"
-
 import LoadingLogo from "./LoadingLogo"
 
 import { DevPanel } from "./DevPanel"
@@ -35,26 +32,25 @@ import { Theme, useTheme } from "react-daisyui"
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline"
 import { FunnelIcon } from "@heroicons/react/24/outline"
 import DeveloperPanel from "./DeveloperPanel"
-import { GraphNavbar } from "./GraphNavbar"
+import { GraphNavbar } from "./navigation/GraphNavbar"
 import { store, actions, useTrackedStore, useStore } from "../stores/Store"
 import { NodeToolTip } from "./NodeToolTip"
 
 const Root: FC<{}> = () => {
-    const [layout, setLayout] = React.useState({ name: "force", options: {} })
+    //
     const { theme, setTheme } = useTheme(useTrackedStore().app.theme())
-
-    // useEffect(() => {
-    //     parent.current && autoAnimate(parent.current)
-    // }, [parent])
 
     // notistack
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-    const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+    // graph ref to be used later
+    const graphinRef = useRef<Graphin>(null)
 
-    // zustand
+    const graphGraphinData = useTrackedStore().data.graphinData()
+    const initialLayout = useTrackedStore().graph.selectedLayout()
+    const themeMode = useTrackedStore().app.colors().colorScheme
 
-    // Load data on mount:
+    // Load data on mount asynchronously
     useEffect(() => {
         const asyncFetch = async () => {
             try {
@@ -72,8 +68,7 @@ const Root: FC<{}> = () => {
         asyncFetch()
     }, [])
 
-    const graphinRef = useRef<Graphin>(null)
-
+    // async get graphin instance
     const getGraphinRef = () => {
         return new Promise<Graphin | null>((resolve) => {
             const interval = setInterval(() => {
@@ -85,24 +80,21 @@ const Root: FC<{}> = () => {
             }, 100)
         })
     }
-
+    // side effect to get graphin instance once it's ready
     useEffect(() => {
         const getRef = async () => {
             const graphinInstance = await getGraphinRef()
             if (graphinInstance) {
                 const { graph, apis } = graphinInstance
                 // setGraph(graph)
-                console.log("ref", graphinRef, graph, apis)
-                console.log("graphinInstance", graph.getNodes())
+                // console.log("ref", graphinRef, graph, apis)
+                // console.log("graphinInstance", graph.getNodes())
                 actions.graph.graphRef(graph)
+                actions.graph.graphinApis(apis)
             }
         }
         getRef()
     }, [])
-
-    const graphGraphinData = useTrackedStore().data.graphinData()
-    const initialLayout = useTrackedStore().graph.selectedLayout()
-    const themeMode = useTrackedStore().app.colors().colorScheme
 
     if (!graphGraphinData) return <LoadingLogo />
 
@@ -112,9 +104,10 @@ const Root: FC<{}> = () => {
                 data={graphGraphinData}
                 ref={graphinRef}
                 layout={initialLayout}
-                // fitCenter={true}
-                // fitView={true}
+                fitCenter={true}
+                fitView={true}
                 groupByTypes={false}
+                dragCombo={true}
                 theme={{
                     mode: themeMode,
                 }}
@@ -127,14 +120,8 @@ const Root: FC<{}> = () => {
                     <NodeToolTip />
                     <ActivateRelations trigger="click" />
                     <DragCanvas enableOptimize />
+                    <DragCombo />
                     <ZoomCanvas enableOptimize sensitivity={1} />
-                    {/* <Hoverable bindType="node" /> */}
-                    <Toolbar
-                        direction="horizontal"
-                        style={{ position: "absolute", right: "250px" }}
-                    >
-                        {/* <LayoutToolbar /> */}
-                    </Toolbar>
                     <div className="absolute bottom-0 w-full pb-5">
                         <GraphNavbar />
                     </div>

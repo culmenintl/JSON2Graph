@@ -1,9 +1,6 @@
 import IconLoader from "@antv/graphin-icons"
 import Graphin from "@antv/graphin"
 
-// CSS from Graphin
-import "@antv/graphin-icons/dist/index.css"
-
 // Icons from Graphin
 const icons = Graphin.registerFontFamily(IconLoader)
 
@@ -286,8 +283,6 @@ export interface ThemeColors {
 
 // console.log(extractThemeColorsFromDOM())
 
-console.log(createColors(7, 7))
-
 function setSizeBasedOnDegrees(graphData: GraphData) {
     const maxDegree = Math.max(
         ...(graphData.nodes?.map((node) =>
@@ -327,7 +322,8 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
                 fillOpacity: 0.8,
             },
             label: {
-                value: truncateString(node?.label?.toString() ?? "", 10),
+                // @ts-ignore
+                value: truncateString(node?.label?.value ?? "", 10),
             },
             icon: {
                 type: "font",
@@ -429,7 +425,7 @@ export const populateGraphinData = (
  * @date 08/22/2023
  * @param {GraphData} graphData
  */
-const setCombos = (graphData: GraphData) => {
+export const setCombos = (graphData: GraphData) => {
     const combos: ComboConfig[] = []
     // create a map to count the number of nodes in each cluster
     const comboCountMap: { [comboId: string]: number } = {}
@@ -457,6 +453,7 @@ const setCombos = (graphData: GraphData) => {
         combos.push({
             id: comboId,
             label: comboId,
+            collapsed: false,
             labelCfg: {
                 position: "top",
                 refY: 10,
@@ -525,6 +522,11 @@ export type ExtendedNode = IUserNode & {
         _title?: string
         _subtitle?: string
         _body?: string
+        _clusterLabel?: string
+        _clusterId?: string
+        _clusterCount?: number
+        _clusterColor?: string
+        _clusterOpacity?: number
     }
 }
 
@@ -602,6 +604,12 @@ export const addNodeToG6Graph = (
                 ...(nodeConfig.tagAttr && {
                     _subtitle: row[nodeConfig.tagAttr],
                 }),
+                // _clusterLabel
+                ...(nodeConfig.clusterLabel && {
+                    _clusterLabel: nodeConfig.clusterLabel,
+                }),
+                // _clusterId
+                _clusterId: row.subreddit,
             },
         }
         // console.log("node", node);

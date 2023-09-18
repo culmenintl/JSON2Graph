@@ -77,20 +77,21 @@ const ToolbarComponent = () => {
     }
 
     return (
-        <Dropdown vertical="top" className="flex-1">
-            <Dropdown.Toggle>{Cog}</Dropdown.Toggle>
-            <Dropdown.Menu>
-                {layouts.map((layout, index) => (
-                    <Dropdown.Item
-                        // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                        key={index}
-                        onClick={() => changeGraphLayout(layout)}
-                    >
-                        {layout.name}
-                    </Dropdown.Item>
-                ))}
-            </Dropdown.Menu>
-        </Dropdown>
+        <></>
+        // <Dropdown vertical="top" className="flex-1">
+        //     <Dropdown.Toggle>{Cog}</Dropdown.Toggle>
+        //     <Dropdown.Menu>
+        //         {layouts.map((layout, index) => (
+        //             <Dropdown.Item
+        //                 // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+        //                 key={index}
+        //                 onClick={() => changeGraphLayout(layout)}
+        //             >
+        //                 {layout.name}
+        //             </Dropdown.Item>
+        //         ))}
+        //     </Dropdown.Menu>
+        // </Dropdown>
     )
 }
 

@@ -1,5 +1,6 @@
-import G6, { LayoutConfig } from "@antv/g6"
+import G6, { Graph, GraphData, LayoutConfig } from "@antv/g6"
 import { createStore } from "@udecode/zustood"
+import { setCombos } from "../lib/Utils"
 
 export enum LayoutTypes {
     static = "static",
@@ -204,6 +205,7 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
             console.log("gForce layout end")
         },
         animate: true,
+        maxIteration: 2000,
     },
     [Layouts.mds]: {
         type: "mds",
@@ -295,7 +297,7 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
         //     type: "comboCombined",
         maxIteration: 2000,
         preventOverlap: true,
-        spacking: 50,
+        spacing: 50,
         innerLayout: new G6.Layout["forceAtlas2"]({
             kr: 10,
             onTick: () => {},
@@ -318,9 +320,9 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
         // edgeDraggable: true,
         // },
 
-        gpuEnabled: false,
+        gpuEnabled: true,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("comboCombined layout end")
@@ -332,18 +334,37 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
 interface State {
     layouts: LayoutConfig[]
     selectedLayout: LayoutConfig | undefined
+
+    // clustering / combos
     clusteringEnabled: boolean
     clusteringLimit: number
+
+    // filtering / sampling
+    filterGraphByDegree: boolean
+    filteringLimit: number
+
+    // interaction modes
     hoverMode: boolean
+
+    // graph ref for Graphin
     graphRef: any
+
+    // Graphin apis
+    graphinApis: any
 }
 
 const initialState: State = {
     layouts: Object.values(LayoutsMap),
-    selectedLayout: LayoutsMap[Layouts.gForce],
+    selectedLayout: LayoutsMap[Layouts.comboCombined],
+
     clusteringEnabled: false,
     clusteringLimit: 5,
+
+    filterGraphByDegree: true,
+    filteringLimit: 2,
+
     graphRef: undefined,
+    graphinApis: undefined,
     hoverMode: false,
 }
 
@@ -352,4 +373,120 @@ export const GraphStore = createStore("Graph")(
     {
         devtools: { enabled: true },
     },
-)
+).extendActions((set, get, api) => ({
+    filterGraphByDegree: (minimumDegree: number) => {
+        const graph = get.graphRef()
+        console.log("graph", graph)
+        if (graph) {
+            filterGraphByDegree(graph, minimumDegree)
+        }
+    },
+}))
+export const filterGraphByDegree = (
+    inputGraph: Graph,
+    minimumDegree: number,
+): void => {
+    console.log("filterGraphByDegree", minimumDegree)
+    const graphData: GraphData = inputGraph.save() as GraphData
+
+    inputGraph.getCombos().forEach((combo) => {
+        console.log("uncombo", combo.getID())
+        inputGraph.uncombo(combo.getID())
+    })
+
+    resetVisibility(inputGraph)
+
+    if (!graphData) {
+        console.log("returning because graphData is null")
+        return
+    }
+
+    // remove nodes with less than X degree
+    // const removedNodes: string[] = []
+    // graphData.nodes = graphData.nodes?.filter((node) => {
+    //     const degree = inputGraph.getNodeDegree(node.id, "total") as number
+    //     console.log("degree", degree, node.id)
+    //     // count both incoming and outgoing neighbor nodes
+    //     if (degree < minimumDegree) {
+    //         inputGraph.removeItem(node.id)
+    //         removedNodes.push(node.id)
+    //         return false
+    //     }
+    //     return true
+    // })
+
+    inputGraph.getNodes().forEach((node) => {
+        const degree = inputGraph.getNodeDegree(node.getID(), "total") as number
+        console.log("degree", degree, node.getID())
+        if (degree < minimumDegree) {
+            inputGraph.updateItem(node.getID(), {
+                visible: false,
+            })
+            inputGraph.getEdges().forEach((edge) => {
+                if (
+                    edge.getSource().getID() === node.getID() ||
+                    edge.getTarget().getID() === node.getID()
+                ) {
+                    inputGraph.updateItem(edge.getID(), {
+                        visible: false,
+                    })
+                }
+            })
+        }
+    })
+
+    // graphData.nodes?.map((node) => {
+    //     const degree = inputGraph.getNodeDegree(node.id, "total") as number
+    //     console.log("degree", degree, node.id)
+    //     // count both incoming and outgoing neighbor nodes
+    //     if (degree < minimumDegree) {
+    //         inputGraph.updateItem(node.id, {
+    //             visible: false,
+    //         })
+    //         inputGraph.getNode
+
+    //         // inputGraph.getNeighbors(node.id).forEach((neighbor) => {
+    //         //     inputGraph.updateItem(neighbor.getID(), {
+    //         //         visible: false,
+    //         //     })
+    //         // })
+    //     }
+    // })
+
+    // remove edges associated with removed nodes
+    // graphData.edges?.map((edge) => {
+    //     if (removedNodes.includes(edge.sourceNode?.getID() as string)) {
+    //         inputGraph.updateItem(edge.id)
+    //         return false
+    //     }
+    //     if (removedNodes.includes(edge.targetNode?.getID() as string)) {
+    //         return false
+    //     }
+    //     return true
+    // })
+
+    // console.log("removedNodes", removedNodes)
+    // console.log("removed", removedNodes.length, "nodes")
+    // console.log("removed", graphData.edges?.length, "edges")
+
+    // recalculate combos
+    // setCombos(graphData)
+    // graphData.combos = []
+
+    // inputGraph.changeData(graphData)
+    // inputGraph.refresh()
+    // inputGraph.refreshPositions()
+}
+
+export const resetVisibility = (inputGraph: Graph): void => {
+    inputGraph.getNodes().forEach((node) => {
+        inputGraph.updateItem(node.getID(), {
+            visible: true,
+        })
+    })
+    inputGraph.getEdges().forEach((edge) => {
+        inputGraph.updateItem(edge.getID(), {
+            visible: true,
+        })
+    })
+}

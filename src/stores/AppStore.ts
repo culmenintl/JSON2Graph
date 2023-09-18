@@ -39,14 +39,6 @@ export enum STATUS {
     GRAPH_SIMULATED = "Graph Simulated",
 }
 
-interface State {
-    devMode: boolean
-    status: STATUS
-    loading: boolean
-    theme: string
-    colors: ThemeColors
-}
-
 interface ThemeColors {
     primary: string
     primaryContent: string
@@ -70,10 +62,20 @@ interface ThemeColors {
 
 const initTheme = "light"
 
+interface State {
+    devMode: boolean
+    status: STATUS
+    loading: boolean
+    theme: string
+    menuOpen: boolean
+    colors: ThemeColors
+}
+
 const initialState: State = {
     // app state
     loading: false,
     devMode: false,
+    menuOpen: false,
     status: STATUS.FETCHING,
     theme: initTheme,
     colors: stripAndCamelCase(daisyuiColors)[`${initTheme}`],
