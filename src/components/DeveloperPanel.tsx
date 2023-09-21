@@ -3,6 +3,7 @@ import { Button, Card, Range, Table, Toggle, useTheme } from "react-daisyui"
 import { actions, useStore, useTrackedStore } from "../stores/Store"
 
 import { useHotkeys } from "react-hotkeys-hook"
+import { ChangelogModal } from "./ChangelogModal"
 
 const SampleJsonData = (data: Object) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
@@ -68,9 +69,9 @@ export const DeveloperPanel: React.FC = () => {
                         className="rounded-box bg-base-100 max-h-screen overflow-y-auto"
                     >
                         <Card.Body>
-                            <div className="prose lg:prose-lg mb-10 ">
-                                <h2>Developer Panel</h2>
-                                <p>{APP_VERSION}</p>
+                            <div className="prose prose-lg">
+                                <h2 className="ml-4">Developer Panel</h2>
+                                <ChangelogModal />
                             </div>
                             <Table>
                                 <Table.Body className="prose">
