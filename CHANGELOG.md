@@ -1,3 +1,20 @@
+#### 0.0.6 (2023-09-21)
+
+##### New Features
+
+* **graph:**  added ability to filter by node degree (e6dea693)
+
+##### Bug Fixes
+
+* **build:**
+  *  daisyUI added back to dev deps (e8a7755a)
+  *  updates for package and smaller sample sizes (cd40c84f)
+* **data:**  updated sampled rows and created smaller sample sets (15f616c6)
+
+##### Other Changes
+
+*  moved graph ref to own store for devtools (be34dd52)
+
 #### 0.0.5 (2023-08-30)
 
 ##### Build System / Dependencies
