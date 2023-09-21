@@ -89,8 +89,8 @@ const Root: FC<{}> = () => {
                 // setGraph(graph)
                 // console.log("ref", graphinRef, graph, apis)
                 // console.log("graphinInstance", graph.getNodes())
-                actions.graph.graphRef(graph)
-                actions.graph.graphinApis(apis)
+                actions.graphinRef.graphRef(graph)
+                actions.graphinRef.graphinApis(apis)
             }
         }
         getRef()

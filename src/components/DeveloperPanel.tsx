@@ -27,12 +27,12 @@ export const DeveloperPanel: React.FC = () => {
     const JsonSample = useStore().data.JsonSample()
 
     const nodesCount = useTrackedStore()
-        .graph.graphRef()
+        .graphinRef.graphRef()
         ?.getNodes()
         .length.toLocaleString()
 
     const edgesCount = useTrackedStore()
-        .graph.graphRef()
+        .graphinRef.graphRef()
         ?.getEdges()
         .length.toLocaleString()
 

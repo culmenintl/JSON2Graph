@@ -7,12 +7,12 @@ export const GraphStatsBar: FC<{}> = () => {
     const totalRows = useStore().data.totalRows()
 
     const nodesCount = useStore()
-        .graph.graphRef()
+        .graphinRef.graphRef()
         ?.getNodes()
         .length.toLocaleString()
 
     const edgesCount = useStore()
-        .graph.graphRef()
+        .graphinRef.graphRef()
         ?.getEdges()
         .length.toLocaleString()
 
