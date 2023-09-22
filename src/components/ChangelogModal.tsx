@@ -1,11 +1,20 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useRef, useState } from "react"
 import { Button, Modal } from "react-daisyui"
 
 import { marked } from "marked"
+import { Dialog } from "@headlessui/react"
 
 export const ChangelogModal: FC<{}> = () => {
-    const { Dialog, handleShow, handleHide } = Modal.useDialog()
     const [changelog, setChangelog] = useState<string>("")
+
+    const ref = useRef<HTMLDialogElement>(null)
+    const handleShow = useCallback(() => {
+        ref.current?.showModal()
+    }, [ref])
+
+    const handleHide = useCallback(() => {
+        ref.current?.close()
+    }, [ref])
 
     useEffect(() => {
         fetch("CHANGELOG.md")
@@ -18,7 +27,7 @@ export const ChangelogModal: FC<{}> = () => {
             <Button variant="link" onClick={handleShow} className="text-lg">
                 {APP_VERSION}
             </Button>
-            <Dialog className="prose prose-sm">
+            <Modal ref={ref}>
                 <Modal.Header className="font-bold">Changelog</Modal.Header>
                 <Modal.Body
                     // rome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
@@ -27,7 +36,7 @@ export const ChangelogModal: FC<{}> = () => {
                 <Modal.Actions className="sticky">
                     <Button onClick={handleHide}>Close</Button>
                 </Modal.Actions>
-            </Dialog>
+            </Modal>
         </>
     )
 }

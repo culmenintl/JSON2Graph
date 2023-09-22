@@ -1,9 +1,8 @@
 import { RedditNode } from "../lib/types"
 import config from "../../configs/data.mapping.json"
-import { Graph, GraphData } from "@antv/g6"
 import { populateGraphinData } from "../lib/Utils"
 import { GraphinData, Utils } from "@antv/graphin"
-
+import SearchApi, { INDEX_MODES } from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 
 interface Dataset {
@@ -19,15 +18,17 @@ interface State {
     rowsToSample: number | undefined
     state: "pending" | "done" | "error"
     JsonSample: Object | undefined
-    nodesCount: number
-    edgesCount: number
     totalRows: number
     sampledRows: number
+    nodesCount: number
+    edgesCount: number
+    searchApi: SearchApi
 }
 
 const initialState: State = {
     state: "done",
     graphinData: undefined,
+    //   graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
     JsonSample: undefined,
     dataSet: {
         id: config.datasets[0].id,
@@ -42,6 +43,7 @@ const initialState: State = {
     sampledRows: 0,
     nodesCount: 0,
     edgesCount: 0,
+    searchApi: new SearchApi(),
 }
 
 export const DataStore = createStore("Data")(
@@ -71,6 +73,7 @@ export const DataStore = createStore("Data")(
             // get().setData(subDataset)
             const graphinData = populateGraphinData(subDataset, config)
             set.graphinData(graphinData as GraphinData)
+            indexData(get.searchApi(), graphinData as GraphinData)
             set.totalRows(json.length)
             set.sampledRows(subDataset.length)
             set.JsonSample(subDataset[0])
@@ -83,5 +86,20 @@ export const DataStore = createStore("Data")(
             throw error
         }
     },
-    // other actions
 }))
+
+export const indexData = (searchApi: SearchApi, graphinData: GraphinData) => {
+    console.log("indexing data")
+    graphinData.nodes.forEach((node) => {
+        node._metadata?._type &&
+            searchApi.indexDocument(node.id, node._metadata?._type)
+        node._metadata?._title &&
+            searchApi.indexDocument(node.id, node._metadata?._title)
+        node._metadata?._subtitle &&
+            searchApi.indexDocument(node.id, node._metadata?._subtitle)
+        node._metadata?._body &&
+            searchApi.indexDocument(node.id, node._metadata?._body)
+        node._metadata?._clusterId &&
+            searchApi.indexDocument(node.id, node._metadata?._clusterId)
+    })
+}

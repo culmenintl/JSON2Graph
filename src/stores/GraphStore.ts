@@ -200,7 +200,7 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     gpuEnabled: true,
     workerEnabled: false,
-    workerScriptURL: "",
+    // workerScriptURL: "",
     onTick: () => {},
     onLayoutEnd: () => {
       console.log("gForce layout end");
@@ -350,7 +350,7 @@ interface State {
 
 const initialState: State = {
   layouts: Object.values(LayoutsMap),
-  selectedLayout: LayoutsMap[Layouts.comboCombined],
+  selectedLayout: LayoutsMap[Layouts.gForce],
 
   clusteringEnabled: false,
   clusteringLimit: 5,
