@@ -1,15 +1,13 @@
 import { FC } from "react"
-import { Form, Input } from "react-daisyui"
-import { useStore } from "../../stores/Store"
+import { Input } from "react-daisyui"
+import { actions } from "../../stores/Store"
 
 import { debounce } from "lodash"
 
 export const SearchBar: FC<{}> = () => {
-    const searchApi = useStore().data.searchApi()
     const debouncedSearch = debounce(async (value: string) => {
         console.log("searching for", value)
-        const results = await searchApi.search(value)
-        console.log(results)
+        await actions.data.searchNodesApi(value)
     }, 500)
 
     return (

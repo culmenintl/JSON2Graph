@@ -20,6 +20,7 @@ import LayoutToolbar from "../LayoutToolbar"
 import { actions, store, useStore, useTrackedStore } from "../../stores/Store"
 import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
+import { SearchResults } from "./SearchResults"
 
 export const GraphNavbar: FC<{}> = () => {
     const menuOpen = useTrackedStore().app.menuOpen()
@@ -30,6 +31,10 @@ export const GraphNavbar: FC<{}> = () => {
                     {/*  statbar section top section*/}
                     <div>
                         <GraphStatsBar />
+                    </div>
+                    {/* search results below stat bar */}
+                    <div className="w-full">
+                        <SearchResults />
                     </div>
                     {/* rest of the navbar */}
                     <div className="flex flex-1 flex-row w-full justify-center gap-0 md:gap-2">

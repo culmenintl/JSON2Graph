@@ -1,7 +1,7 @@
 import { RedditNode } from "../lib/types"
 import config from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphinData, Utils } from "@antv/graphin"
+import { GraphinData, IUserNode, Utils } from "@antv/graphin"
 import SearchApi, { INDEX_MODES } from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 
@@ -23,6 +23,7 @@ interface State {
     nodesCount: number
     edgesCount: number
     searchApi: SearchApi
+    searchResults: Map<string, IUserNode[]> | undefined
 }
 
 const initialState: State = {
@@ -44,6 +45,7 @@ const initialState: State = {
     nodesCount: 0,
     edgesCount: 0,
     searchApi: new SearchApi(),
+    searchResults: undefined,
 }
 
 export const DataStore = createStore("Data")(
@@ -86,8 +88,32 @@ export const DataStore = createStore("Data")(
             throw error
         }
     },
+
+    searchNodesApi: async (searchTerm: string) => {
+        if (!searchTerm) {
+            set.searchResults(new Map<string, IUserNode[]>())
+            return
+        }
+        const searchResults = await get.searchApi().search(searchTerm)
+
+        const data = get.graphinData()
+        const foundNodes =
+            data?.nodes.filter((node) => searchResults.includes(node.id)) || []
+
+        console.log("found", foundNodes)
+
+        const groupedResults = groupNodesByType(foundNodes)
+
+        console.log("grouped", groupedResults)
+        set.searchResults(groupedResults)
+    },
 }))
 
+/**
+ * Indexes the graphinData nodes using the provided searchApi.
+ * @param searchApi - The search API to use for indexing.
+ * @param graphinData - The GraphinData object containing the nodes to index.
+ */
 export const indexData = (searchApi: SearchApi, graphinData: GraphinData) => {
     console.log("indexing data")
     graphinData.nodes.forEach((node) => {
@@ -102,4 +128,25 @@ export const indexData = (searchApi: SearchApi, graphinData: GraphinData) => {
         node._metadata?._clusterId &&
             searchApi.indexDocument(node.id, node._metadata?._clusterId)
     })
+}
+
+/**
+ * Groups an array of user nodes by their type metadata.
+ * @param nodes - The array of user nodes to group.
+ * @returns A Map object where the keys are the node types and the values are arrays of nodes of that type.
+ */
+export const groupNodesByType = (nodes: IUserNode[]) => {
+    const groupedResults = new Map<string, IUserNode[]>()
+    nodes.forEach((node) => {
+        const type = node._metadata?._type
+        if (type) {
+            const existing = groupedResults.get(type)
+            if (existing) {
+                existing.push(node)
+            } else {
+                groupedResults.set(type, [node])
+            }
+        }
+    })
+    return groupedResults
 }
