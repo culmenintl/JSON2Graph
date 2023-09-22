@@ -1,3 +1,16 @@
+#### 0.0.9 (2023-09-22)
+
+##### Build System / Dependencies
+
+* **env:**  prod url update (fa4eaca8)
+
+##### New Features
+
+* **ui:**
+  *  Search results box implementation (73e69103)
+  *  added changelog modal (c670fdc5)
+* **search:**  search implemented stateside (84a80f62)
+
 #### 0.0.7 (2023-09-22)
 
 ##### Build System / Dependencies
