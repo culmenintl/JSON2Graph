@@ -22,7 +22,10 @@ interface State {
     sampledRows: number
     nodesCount: number
     edgesCount: number
+
+    //search
     searchApi: SearchApi
+    searchTerm: string | undefined
     searchResults: Map<string, IUserNode[]> | undefined
 }
 
@@ -44,7 +47,10 @@ const initialState: State = {
     sampledRows: 0,
     nodesCount: 0,
     edgesCount: 0,
+
+    // search
     searchApi: new SearchApi(),
+    searchTerm: undefined,
     searchResults: undefined,
 }
 
@@ -92,8 +98,10 @@ export const DataStore = createStore("Data")(
     searchNodesApi: async (searchTerm: string) => {
         if (!searchTerm) {
             set.searchResults(new Map<string, IUserNode[]>())
+            set.searchTerm(undefined)
             return
         }
+        set.searchTerm(searchTerm)
         const searchResults = await get.searchApi().search(searchTerm)
 
         const data = get.graphinData()

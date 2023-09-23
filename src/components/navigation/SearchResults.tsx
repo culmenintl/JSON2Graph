@@ -10,12 +10,22 @@ import {
 
 export const SearchResults: FC<{}> = () => {
     const searchResults = useStore().data.searchResults()
+    const searchValue = useStore().data.searchTerm()
     const truncateLength = 15
 
-    console.log(searchResults)
+    // method to cound the sum of all values in the searchResults map
+    const count = Array.from(searchResults?.values() ?? []).reduce(
+        (acc: number, nodes: IUserNode[]) => {
+            return acc + nodes.length
+        },
+        0,
+    )
 
     return (
-        <>
+        <div className="container max-w-xl max-h-96 overflow-y-auto px-4">
+            <span className="text-sm text-slate-400">
+                {searchValue && `"${searchValue}" has ${count} results`}
+            </span>
             {Array.from(searchResults?.values() ?? []).map(
                 (nodes: IUserNode[]) => {
                     return (
@@ -28,40 +38,42 @@ export const SearchResults: FC<{}> = () => {
                                     <span>Cluster</span>
                                     <span>Body</span>
                                 </Table.Head>
-                                {nodes.map((node: IUserNode) => (
-                                    <Table.Row key={generateId()}>
-                                        <span>
-                                            {truncate(
-                                                node._metadata?._title,
-                                                truncateLength,
-                                            )}
-                                        </span>
-                                        <span>
-                                            {truncate(
-                                                node._metadata?._subtitle,
-                                                truncateLength,
-                                            )}
-                                        </span>
-                                        <span>
-                                            {truncate(
-                                                node._metadata?._clusterId,
-                                                truncateLength,
-                                            )}
-                                        </span>
-                                        <span>
-                                            {truncate(
-                                                node._metadata?._body,
-                                                truncateLength,
-                                            )}
-                                        </span>
-                                    </Table.Row>
-                                ))}
+                                <Table.Body>
+                                    {nodes.map((node: IUserNode) => (
+                                        <Table.Row key={generateId()}>
+                                            <span>
+                                                {truncate(
+                                                    node._metadata?._title,
+                                                    truncateLength,
+                                                )}
+                                            </span>
+                                            <span>
+                                                {truncate(
+                                                    node._metadata?._subtitle,
+                                                    truncateLength,
+                                                )}
+                                            </span>
+                                            <span>
+                                                {truncate(
+                                                    node._metadata?._clusterId,
+                                                    truncateLength,
+                                                )}
+                                            </span>
+                                            <span>
+                                                {truncate(
+                                                    node._metadata?._body,
+                                                    truncateLength,
+                                                )}
+                                            </span>
+                                        </Table.Row>
+                                    ))}
+                                </Table.Body>
                             </Table>
                         </div>
                     )
                 },
             )}
-        </>
+        </div>
     )
 }
 
