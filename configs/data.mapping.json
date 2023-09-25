@@ -6,72 +6,34 @@
             "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits",
             "nodes": [
                 {
-                    "name": "comment",
-                    "idAttr": "id",
-                    "labelAttr": "body",
-                    "tagAttr": "author",
-                    "clusterLabel": "Commented"
+                    "id_data_property": "id",
+                    "content_data_property": "body",
+                    "label": "Commented",
+                    "icon": "comment"
                 },
                 {
-                    "name": "subreddit",
-                    "idAttr": "subreddit_id",
-                    "labelAttr": "subreddit",
-                    "clusterLabel": "Subreddit"
+                    "id_data_property": "subreddit_id",
+                    "content_data_property": "subreddit",
+                    "label": "Subreddit",
+                    "icon": "book"
                 },
                 {
-                    "name": "author",
-                    "idAttr": "author",
-                    "labelAttr": "author",
-                    "clusterLabel": "User"
+                    "id_data_property": "author",
+                    "content_data_property": "author",
+                    "label": "User",
+                    "icon": "user"
                 }
             ],
             "edges": [
                 {
-                    "sourceNodeId": "author",
-                    "targetNodeId": "id",
-                    "edgeLabel": "commented"
+                    "source_node_id": "author",
+                    "target_node_id": "id",
+                    "label": "commented"
                 },
                 {
-                    "sourceNodeId": "id",
-                    "targetNodeId": "subreddit_id",
-                    "edgeLabel": "commented in"
-                }
-            ]
-        },
-        {
-            "id": "reddit",
-            "url": "reddit.comments.dataset.json",
-            "nodes": [
-                {
-                    "name": "comment",
-                    "idAttr": "id",
-                    "labelAttr": "body",
-                    "tagAttr": "author",
-                    "clusterLabel": "Commented"
-                },
-                {
-                    "name": "subreddit",
-                    "idAttr": "subreddit_id",
-                    "labelAttr": "subreddit",
-                    "clusterLabel": "Subreddit"
-                },
-                {
-                    "name": "author",
-                    "idAttr": "author",
-                    "labelAttr": "author",
-                    "clusterLabel": "User"
-                }
-            ],
-            "edges": [
-                {
-                    "sourceNodeId": "author",
-                    "targetNodeId": "id",
-                    "edgeLabel": "commented"
-                },
-                {
-                    "sourceNodeId": "id",
-                    "targetNodeId": "subreddit_id",
-                    "edgeLabel": "commented in"
+                    "source_node_id": "id",
+                    "target_node_id": "subreddit_id",
+                    "label": "commented in"
                 }
             ]
         }

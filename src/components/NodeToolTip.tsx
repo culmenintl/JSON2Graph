@@ -1,9 +1,10 @@
 import { ModelConfig } from "@antv/g6"
 import { Components, TooltipValue } from "@antv/graphin"
-import { Avatar, Badge, Card } from "react-daisyui"
-import { ExtendedNode, truncateString } from "../lib/Utils"
+import { Badge, Card } from "react-daisyui"
+import { truncateString } from "../lib/Utils"
 import { UserIcon } from "@heroicons/react/24/outline"
 import { useTrackedStore } from "../stores/Store"
+import { ExtendedNode } from "../lib/AppTypes"
 
 const { Tooltip } = Components
 
@@ -21,7 +22,6 @@ const ToolTipCard: React.FC<ToolTipCardProps> = (model: ToolTipCardProps) => {
 
     // cast to ExtendedNode type, which has metadata on the node model
     const node = model.model as unknown as ExtendedNode
-    console.log("node", node)
     return (
         <Card bordered={false} className="max-w-md w-screen p-5 bg-slate-50">
             <Card.Title>
@@ -54,14 +54,13 @@ const ToolTipCard: React.FC<ToolTipCardProps> = (model: ToolTipCardProps) => {
     )
 }
 
-const placement = "auto"
-const hasArrow = false
-const style = {}
-
 // NodeToolTip component, which is a wrapper around the Graphin Tooltip component
 // https://graphin.antv.vision/en/packages/graphin-components#tooltip
 // which contains the tooltip card content above
 export const NodeToolTip: React.FC<{}> = () => {
+    const placement = "auto"
+    const hasArrow = false
+    const style = {}
     const hoverMode = useTrackedStore().graph.hoverMode()
     return (
         <Tooltip bindType="node" placement={placement} hasArrow={hasArrow}>

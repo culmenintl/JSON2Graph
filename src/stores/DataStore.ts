@@ -1,20 +1,14 @@
-import { RedditNode } from "../lib/types"
+import { DataToGraphConfig, RedditNode } from "../lib/AppTypes"
 import config from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphinData, IUserNode, Utils } from "@antv/graphin"
-import SearchApi, { INDEX_MODES } from "js-worker-search"
+import { GraphinData, IUserNode } from "@antv/graphin"
+import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 
-interface Dataset {
-    id: string
-    url: string
-    data: unknown[] | undefined
-    description: string
-}
-
 interface State {
-    dataSet: Dataset
+    dataSet: DataToGraphConfig
     graphinData: GraphinData | undefined
+
     rowsToSample: number | undefined
     state: "pending" | "done" | "error"
     JsonSample: Object | undefined
@@ -41,6 +35,8 @@ const initialState: State = {
         description: config.datasets[0].description
             ? config.datasets[0].description
             : "No Description.",
+        nodeConfigs: config.datasets[0].nodes,
+        edgeConfigs: config.datasets[0].edges,
     },
     rowsToSample: 200,
     totalRows: 0,
@@ -70,16 +66,19 @@ export const DataStore = createStore("Data")(
             const rows = get.rowsToSample() ? get.rowsToSample() : json.length
 
             console.log(json.length)
-            if (!rows) {
-                return
-            }
             // sub sample data to the number rows requested
             const subDataset = json.filter(
                 (_: unknown, index: number, arr: unknown[]) =>
-                    Math.random() <= rows / arr.length,
+                    Math.random() <= (rows ?? arr.length) / arr.length,
             )
-            // get().setData(subDataset)
-            const graphinData = populateGraphinData(subDataset, config)
+
+            set.dataSet({ ...get.dataSet(), data: subDataset })
+
+            const graphinData = populateGraphinData(
+                get.dataSet().data,
+                get.dataSet(),
+            )
+
             set.graphinData(graphinData as GraphinData)
             indexData(get.searchApi(), graphinData as GraphinData)
             set.totalRows(json.length)

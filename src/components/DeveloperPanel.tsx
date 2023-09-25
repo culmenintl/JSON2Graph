@@ -22,6 +22,8 @@ export const DeveloperPanel: React.FC = () => {
 
     const userTheme = useTrackedStore().app.theme()
 
+    const rowsToSample = useTrackedStore().data.rowsToSample()
+
     // handles the opening and closing of the menu
     const menuOpen = useTrackedStore().app.menuOpen()
 
@@ -79,7 +81,6 @@ export const DeveloperPanel: React.FC = () => {
 
     return (
         <Modal id="developer-panel" ref={dialogRef}>
-            {/* <div className="absolute left-10 top-0 w-full max-w-2xl overflow-hidden"> */}
             <Card
                 bordered={false}
                 normal
@@ -87,7 +88,6 @@ export const DeveloperPanel: React.FC = () => {
                 className="rounded-box bg-base-100 max-h-screen overflow-y-auto"
             >
                 <div>
-                    {/* <Card.Body className="p-0 m-0 border-0"> */}
                     <div className="prose prose-lg">
                         <h2 className="ml-4">Graph Settings</h2>
                         <ChangelogModal />
@@ -181,17 +181,6 @@ export const DeveloperPanel: React.FC = () => {
                                     </Button>
                                 </span>
                             </Table.Row>
-                            <Table.Row className="max-w-2xl overflow-x-hidden w-full">
-                                <span>Example Json</span>
-                                <span>Test</span>
-                                {/* <span className="ml-auto ">
-                                            {SampleJsonData(
-                                                JsonSample
-                                                    ? (JsonSample as Object)
-                                                    : {},
-                                            )}
-                                        </span> */}
-                            </Table.Row>
                             <Table.Row>
                                 <div className="flex flex-1 flex-col prose">
                                     <span className="">
@@ -225,12 +214,32 @@ export const DeveloperPanel: React.FC = () => {
                                     }}
                                 />
                             </Table.Row>
+                            <Table.Row>
+                                <span>Sample Rows</span>
+                                <Toggle
+                                    checked={rowsToSample !== 0}
+                                    onChange={() =>
+                                        actions.data.rowsToSample(
+                                            rowsToSample === 0 ? 200 : 0,
+                                        )
+                                    }
+                                />
+                            </Table.Row>
+                            <Table.Row className="max-w-2xl overflow-x-hidden w-full">
+                                <span>Example Json</span>
+                                <span>Test</span>
+                                {/* <span className="ml-auto ">
+                                            {SampleJsonData(
+                                                JsonSample
+                                                    ? (JsonSample as Object)
+                                                    : {},
+                                            )}
+                                        </span> */}
+                            </Table.Row>
                         </Table.Body>
                     </Table>
-                    {/* </Card.Body> */}
                 </div>
             </Card>
-            {/* </div> */}
         </Modal>
     )
 }
