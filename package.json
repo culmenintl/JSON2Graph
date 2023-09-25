@@ -3,11 +3,12 @@
     "version": "0.1.1",
     "scripts": {
         "dev": "vite",
+        "swa": "vite build --mode development && swa start dist --api-location api",
         "build": "tsc && vite build",
         "preview": "vite preview",
         "test": "vitest",
         "clean": "rm -rf dist node_modules",
-        "roll": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --patch && git push --follow-tags"
+        "roll": "changelog -p -f 'public/CHANGELOG.md' && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && yarn version --patch && git push --follow-tags"
     },
     "license": "MIT",
     "dependencies": {
@@ -20,7 +21,6 @@
         "@heroicons/react": "^2.0.11",
         "@tailwindcss/forms": "^0.5.3",
         "@udecode/zustood": "^2.0.0",
-        "color": "^4.2.3",
         "immer": "10.0.2",
         "js-worker-search": "^2.0.0",
         "lodash": "^4.17.21",
