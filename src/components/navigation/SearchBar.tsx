@@ -2,7 +2,7 @@ import { FC } from "react"
 import { Input } from "react-daisyui"
 import { actions } from "../../stores/Store"
 
-import { debounce } from "lodash"
+import debounce from "lodash/debounce"
 
 export const SearchBar: FC<{}> = () => {
     const debouncedSearch = debounce(async (value: string) => {

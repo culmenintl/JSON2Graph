@@ -1,6 +1,5 @@
 import { FC, useEffect } from "react"
 
-import { Dataset, FiltersState, NodeData } from "../lib/types"
 import { useSnackbar } from "notistack"
 
 // import { calculateDegreesAndColor } from "../lib/Utils"
