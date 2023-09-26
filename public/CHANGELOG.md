@@ -1,3 +1,29 @@
+#### 0.1.2 (2023-09-26)
+
+##### New Features
+
+* **ai:**  Added az func static web app endpoint, calling AI for configuration (d99c23c5)
+* **api:**  Added serverless api endpoint (194fd0d9)
+* **ui:**  updated mapping / UI to map node/icon colors to theme (eab85afb)
+
+##### Bug Fixes
+
+* **build:**  updated gh actions script to use new branch and az func swa (e5da42d6)
+* **ui:**  search results handles large values (4671689f)
+
+#### 0.1.2 (2023-09-26)
+
+##### New Features
+
+* **ai:**  Added az func static web app endpoint, calling AI for configuration (d99c23c5)
+* **api:**  Added serverless api endpoint (194fd0d9)
+* **ui:**  updated mapping / UI to map node/icon colors to theme (eab85afb)
+
+##### Bug Fixes
+
+* **build:**  updated gh actions script to use new branch and az func swa (e5da42d6)
+* **ui:**  search results handles large values (4671689f)
+
 #### 0.1.1 (2023-09-22)
 
 ##### Build System / Dependencies
