@@ -1,3 +1,9 @@
+#### 0.1.4 (2023-09-26)
+
+##### Bug Fixes
+
+* **build:**  removed unused deps (d8ecd740)
+
 #### 0.1.3 (2023-09-26)
 
 ##### Bug Fixes
