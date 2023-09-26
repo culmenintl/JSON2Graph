@@ -1,3 +1,9 @@
+#### 0.1.3 (2023-09-26)
+
+##### Bug Fixes
+
+* **build:**  removed large yelp dataset (d0cbba45)
+
 #### 0.1.2 (2023-09-26)
 
 ##### New Features
