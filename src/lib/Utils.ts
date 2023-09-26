@@ -34,7 +34,7 @@ export const getColorFromNodeConfig = (
     content = false,
 ) => {
     // find index of the nodeConfig in the list of nodeConfigs
-    const index = store.data.dataSet().nodeConfigs.indexOf(nodeConfig)
+    const index = store.data.dataSet().nodes?.indexOf(nodeConfig)
 
     // get the color palette
     const themeColors = store.app.colors()
@@ -42,10 +42,13 @@ export const getColorFromNodeConfig = (
     const source = content ? CONTENT_COLORS : NODE_COLORS
 
     // get the color from the palette for the nodeConfig index
-    const value = Object.values(source)[index]
+    const value =
+        index !== undefined ? Object.values(source)[index as number] : undefined
 
     // return the color
-    return themeColors[value as keyof ThemeColors]
+    return value !== undefined
+        ? themeColors[value as keyof ThemeColors]
+        : undefined
 }
 
 export const setNodeColor = (node: IUserNode, nodeConfig: _NodeConfig) => {
@@ -116,6 +119,11 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
 export const truncateString = (str: string, maxLength: number): string => {
     if (!str) return ""
 
+    // if not a string, return the original value
+    if (typeof str !== "string") {
+        return str
+    }
+
     if (str.length <= maxLength) {
         return str
     }
@@ -152,15 +160,17 @@ export const populateGraphinData = (
         combos: [] as ComboConfig[],
     }
 
+    console.log("configs", config)
+
     // populate nodes and edges
     data.forEach((row: unknown) => {
         console.log("row", row)
-        config.nodeConfigs?.forEach((nodeConfig) => {
+        config.nodes?.forEach((nodeConfig) => {
             console.log("nodeConfig", nodeConfig)
             addNodeToG6Graph(graphData, row, nodeConfig)
         })
 
-        config.edgeConfigs?.forEach((edgeConfig) => {
+        config.edges?.forEach((edgeConfig) => {
             console.log("edgeConfig", edgeConfig)
             addEdgesToG6Graph(graphData, row, edgeConfig)
         })
@@ -258,8 +268,10 @@ export const addNodeToG6Graph = (
 ): void => {
     const record = row as Record<string, string>
 
-    if (!record[nodeConfig.id_data_property as string]) {
-        throw new Error("Unable to find property with id attribute given.")
+    if (!record[nodeConfig.id_data_property]) {
+        console.log("unable to add node", nodeConfig.id_data_property)
+        return
+        // throw new Error("Unable to find property with id attribute given.")
     }
 
     const nodeExists = graphData.nodes.some(
@@ -345,7 +357,13 @@ export const addEdgesToG6Graph = (
         !record[edgeConfig.source_node_id] ||
         !record[edgeConfig.target_node_id]
     ) {
-        throw new Error("Required edge params missing.")
+        console.log(
+            "unable to add edge",
+            edgeConfig.source_node_id,
+            edgeConfig.target_node_id,
+        )
+        return
+        // throw new Error("Required edge params missing.")
     }
 
     const edgeExists = graphData.edges?.some(

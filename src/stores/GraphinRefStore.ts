@@ -1,22 +1,22 @@
-import G6, { Graph, GraphData, LayoutConfig } from "@antv/g6";
-import { createStore } from "@udecode/zustood";
+import G6, { Graph, GraphData, LayoutConfig } from "@antv/g6"
+import { createStore } from "@udecode/zustood"
 
 interface State {
-  // graph ref for Graphin
-  graphRef: any;
+    // graph ref for Graphin
+    graphRef: Graph | undefined
 
-  // Graphin apis
-  graphinApis: any;
+    // Graphin apis
+    graphinApis: any
 }
 
 const initialState: State = {
-  graphRef: undefined,
-  graphinApis: undefined,
-};
+    graphRef: undefined,
+    graphinApis: undefined,
+}
 
 export const GraphinRefStore = createStore("GraphinRef")(
-  { ...initialState },
-  {
-    devtools: { enabled: false },
-  }
-);
+    { ...initialState },
+    {
+        devtools: { enabled: false },
+    },
+)

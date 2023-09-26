@@ -78,12 +78,10 @@ export interface _EdgeConfig extends ID_CONFIG {
 }
 
 export type DataToGraphConfig = {
-    id: string
-    url: string
     description?: string
     data?: any
-    nodeConfigs: _NodeConfig[]
-    edgeConfigs: _EdgeConfig[]
+    nodes: _NodeConfig[] | undefined
+    edges: _EdgeConfig[] | undefined
 }
 
 export type _GraphData = {
@@ -96,7 +94,7 @@ export enum STATUS {
     DONE = "Done",
     FETCHING = "Fetching Data",
     SHAPING = "Creating Graph",
-    SIMULATING = "Simulating...",
+    AI = "Analyzing Data",
     GRAPH_SIMULATED = "Graph Simulated",
 }
 

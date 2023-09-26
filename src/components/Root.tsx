@@ -19,7 +19,6 @@ import { DevPanel } from "./DevPanel"
 import StatusDisplay from "./StatusDisplay"
 import { ToggleDev } from "./ToggleDev"
 
-import { STATUS } from "../stores/AppStore"
 import { ToggleSimulation } from "./ToggleSimulate"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 // notistack
@@ -94,7 +93,7 @@ const Root: FC<{}> = () => {
             }
         }
         getRef()
-    }, [])
+    }, [graphGraphinData])
 
     if (!graphGraphinData) return <LoadingLogo />
 

@@ -7,6 +7,8 @@ import {
     Toggle,
     useTheme,
     Modal,
+    Input,
+    Loading,
 } from "react-daisyui"
 import { actions, useStore, useTrackedStore } from "../stores/Store"
 
@@ -79,6 +81,15 @@ export const DeveloperPanel: React.FC = () => {
         }
     }, [menuOpen])
 
+    const handleKeyDown = async (
+        event: React.KeyboardEvent<HTMLInputElement>,
+    ) => {
+        if (event.key === "Enter") {
+            event.preventDefault()
+            await actions.data.fetchData()
+        }
+    }
+
     return (
         <Modal id="developer-panel" ref={dialogRef}>
             <Card
@@ -88,9 +99,33 @@ export const DeveloperPanel: React.FC = () => {
                 className="rounded-box bg-base-100 max-h-screen overflow-y-auto"
             >
                 <div>
-                    <div className="prose prose-lg">
-                        <h2 className="ml-4">Graph Settings</h2>
+                    <div className="ml-4">
+                        <h2 className="font-semibold text-2xl">
+                            Graph Settings
+                        </h2>
                         <ChangelogModal />
+                        <Input
+                            className="flex flex-1 w-full"
+                            size="md"
+                            bordered
+                            type="text"
+                            placeholder={"Enter a data url"}
+                            disabled={useTrackedStore().app.loading()}
+                            onChange={(e) => {
+                                actions.data.dataUrl(e.target.value)
+                            }}
+                            onKeyDown={handleKeyDown}
+                            value={useTrackedStore().data.dataUrl()}
+                        />
+                        <div className="prose">
+                            <h4>Description</h4>
+                            {useTrackedStore().app.loading() && (
+                                <Loading variant="spinner" />
+                            )}
+                            <p className="">
+                                {useTrackedStore().data.dataSet().description}
+                            </p>
+                        </div>
                     </div>
                     <Table>
                         <Table.Body className="prose">

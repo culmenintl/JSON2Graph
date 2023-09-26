@@ -24,7 +24,7 @@ export const ChangelogModal: FC<{}> = () => {
 
     return (
         <>
-            <Button variant="link" onClick={handleShow} className="text-lg">
+            <Button variant="link" onClick={handleShow} size="xs">
                 {APP_VERSION}
             </Button>
             <Modal ref={ref}>

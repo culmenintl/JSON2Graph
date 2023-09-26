@@ -17,13 +17,27 @@ import {
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 import LayoutToolbar from "../LayoutToolbar"
 
-import { actions, store, useStore, useTrackedStore } from "../../stores/Store"
+import { actions, useTrackedStore } from "../../stores/Store"
 import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
 export const GraphNavbar: FC<{}> = () => {
     const menuOpen = useTrackedStore().app.menuOpen()
+
+    const onButtonClick = () => {
+        // call messages endpoint
+        fetch("/api/map")
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+            })
+            .catch((error) => {
+                console.error("Error:", error)
+            })
+        // alert("Opening Centrifuge")
+    }
+
     return (
         <div className="max-w-xl mx-auto">
             <Navbar className="rounded-box shadow-xl bg-base-100 glass">
@@ -56,10 +70,7 @@ export const GraphNavbar: FC<{}> = () => {
 
                         {/* <LayoutToolbar /> */}
                         <div>
-                            <Button
-                                size="md"
-                                onClick={() => alert("Opening Centrifuge")}
-                            >
+                            <Button size="md" onClick={onButtonClick}>
                                 <img
                                     src={CentrifugeLogoCentered}
                                     className={"h-10"}

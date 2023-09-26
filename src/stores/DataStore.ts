@@ -1,17 +1,18 @@
-import { DataToGraphConfig, RedditNode } from "../lib/AppTypes"
-import config from "../../configs/data.mapping.json"
+import { DataToGraphConfig, RedditNode, STATUS } from "../lib/AppTypes"
+// import config from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphinData, IUserNode } from "@antv/graphin"
+import { GraphData, GraphinData, IUserNode } from "@antv/graphin"
 import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
+import { actions, store } from "./Store"
 
 interface State {
     dataSet: DataToGraphConfig
     graphinData: GraphinData | undefined
-
     rowsToSample: number | undefined
     state: "pending" | "done" | "error"
     JsonSample: Object | undefined
+    dataUrl: string | undefined
     totalRows: number
     sampledRows: number
     nodesCount: number
@@ -28,15 +29,11 @@ const initialState: State = {
     graphinData: undefined,
     //   graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
     JsonSample: undefined,
+    dataUrl: `${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.1k.json`,
     dataSet: {
-        id: config.datasets[0].id,
-        url: config.datasets[0].url,
         data: undefined,
-        description: config.datasets[0].description
-            ? config.datasets[0].description
-            : "No Description.",
-        nodeConfigs: config.datasets[0].nodes,
-        edgeConfigs: config.datasets[0].edges,
+        nodes: undefined,
+        edges: undefined,
     },
     rowsToSample: 200,
     totalRows: 0,
@@ -57,41 +54,88 @@ export const DataStore = createStore("Data")(
     },
 ).extendActions((set, get, api) => ({
     fetchData: async () => {
+        actions.app.loading(true)
+        actions.app.status(STATUS.FETCHING)
+
+        // clear out the configs and data
+        set.dataSet({ ...initialState.dataSet })
+        set.graphinData(undefined)
+        store.graphinRef.graphRef()?.clear()
+
         try {
             // fetch data from config
-            const resp = await fetch(
-                `${`${import.meta.env.VITE_PUBLIC_URL}/${get.dataSet().url}`}`,
-            )
-            const json = (await resp.json()) as unknown as RedditNode[]
-            const rows = get.rowsToSample() ? get.rowsToSample() : json.length
+            // const resp = await fetch(
+            //     `${import.meta.env.VITE_PUBLIC_URL}/${get.dataSet().url}`,
+            // )
 
-            console.log(json.length)
+            // const resp = await fetch("https://swapi.dev/api/people")
+            const resp = await fetch(get.dataUrl() as string)
+            const json = await resp.json()
+
+            actions.app.status(STATUS.AI)
+
+            // if the response is an of json objects, then we can use it as is
+            let data
+            if (!Array.isArray(json)) {
+                const likelyDataProperty = getLargestArrayProperty(json)
+
+                data = json[likelyDataProperty as string]
+            } else {
+                data = json
+            }
+
+            const rows = get.rowsToSample() ? get.rowsToSample() : data.length
+
             // sub sample data to the number rows requested
-            const subDataset = json.filter(
+            const subDataset = data.filter(
                 (_: unknown, index: number, arr: unknown[]) =>
                     Math.random() <= (rows ?? arr.length) / arr.length,
             )
 
-            set.dataSet({ ...get.dataSet(), data: subDataset })
+            // get the first 5 rows if they exist
+            const sample = subDataset.slice(0, 5)
+
+            const bodyReq = {
+                example: JSON.stringify(sample),
+            }
+
+            const options = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(bodyReq),
+            }
+
+            const mapReq = await fetch("/api/map", options)
+
+            const mapResp = await mapReq.json()
+
+            console.log("mapResp", JSON.parse(mapResp))
+
+            actions.app.status(STATUS.SHAPING)
+
+            const config = JSON.parse(mapResp)
+
+            set.dataSet({ ...config, data: subDataset })
 
             const graphinData = populateGraphinData(
                 get.dataSet().data,
                 get.dataSet(),
             )
 
+            // figure out if there is an existing graph, and if so, just change the data
             set.graphinData(graphinData as GraphinData)
+
             indexData(get.searchApi(), graphinData as GraphinData)
-            set.totalRows(json.length)
+            set.totalRows(data.length)
             set.sampledRows(subDataset.length)
-            set.JsonSample(subDataset[0])
-            // const graph = populateG6Graph(subDataset, config)
-            // state.graphinData = convertG6ToGraphinData(graph)
-            // get().setStatus(STATUS.DONE, false)
         } catch (error) {
-            console.error("Failed to fetch projects", error)
+            console.error("Failed to fetch.", error)
             set.state("error")
             throw error
         }
+        actions.app.loading(false)
     },
 
     searchNodesApi: async (searchTerm: string) => {
@@ -116,13 +160,50 @@ export const DataStore = createStore("Data")(
     },
 }))
 
+interface ResponseData {
+    [key: string]: any
+}
+
+function getLargestArrayProperty(response: ResponseData): string | null {
+    let largestArrayProperty: string | null = null
+    let largestArrayLength = 0
+
+    // Loop through the keys in the response object
+    for (const key in response) {
+        // rome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+        if (response.hasOwnProperty(key)) {
+            const value = response[key]
+
+            // Check if the value is an array
+            if (Array.isArray(value)) {
+                // If the value is an array, check if it has more rows than the current largest array
+                if (value.length > largestArrayLength) {
+                    largestArrayProperty = key
+                    largestArrayLength = value.length
+                }
+            } else if (typeof value === "object") {
+                // If the value is an object, recursively call this function
+                const subArrayProperty = getLargestArrayProperty(value)
+                if (
+                    subArrayProperty !== null &&
+                    response[subArrayProperty].length > largestArrayLength
+                ) {
+                    largestArrayProperty = subArrayProperty
+                    largestArrayLength = response[subArrayProperty].length
+                }
+            }
+        }
+    }
+
+    return largestArrayProperty
+}
+
 /**
  * Indexes the graphinData nodes using the provided searchApi.
  * @param searchApi - The search API to use for indexing.
  * @param graphinData - The GraphinData object containing the nodes to index.
  */
 export const indexData = (searchApi: SearchApi, graphinData: GraphinData) => {
-    console.log("indexing data")
     graphinData.nodes.forEach((node) => {
         node._metadata?._type &&
             searchApi.indexDocument(node.id, node._metadata?._type)

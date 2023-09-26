@@ -3,7 +3,8 @@
     "version": "0.1.1",
     "scripts": {
         "dev": "vite",
-        "swa": "vite build --mode development && swa start dist --api-location api",
+        "api:build": "tsc --project api",
+        "swa": "vite build --mode development && yarn api:build && swa start dist --api-location api",
         "build": "tsc && vite build",
         "preview": "vite preview",
         "test": "vitest",
@@ -16,6 +17,7 @@
         "@antv/graphin": "^2.7.19",
         "@antv/graphin-components": "^2.4.1",
         "@antv/graphin-icons": "^1.0.0",
+        "@azure/openai": "^1.0.0-beta.6",
         "@formkit/auto-animate": "^0.7.0",
         "@headlessui/react": "^1.7.2",
         "@heroicons/react": "^2.0.11",

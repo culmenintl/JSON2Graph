@@ -7,6 +7,8 @@ type Props = {
 
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 import CentrifugeText from "/images/centrifuge-text.svg"
+import { useTrackedStore } from "../stores/Store"
+import { Loading } from "react-daisyui"
 
 // Basic fullscreen loading animation w/ centrifuge logo
 const LoadingLogo: FC<Props> = () => {
@@ -25,7 +27,10 @@ const LoadingLogo: FC<Props> = () => {
                 />
                 {/* rome-ignore lint/a11y/useAltText: <explanation> */}
                 <img src={CentrifugeText} className="mt-3 w-40" />
-                <span className="sr-only">Loading...</span>
+                <span className="font-semibold text-md flex flex-1 flex-row items-end">
+                    {useTrackedStore().app.status()}
+                    <Loading variant="dots" className="ml-2" />
+                </span>
             </div>
         </>
     )
