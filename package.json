@@ -5,7 +5,7 @@
         "dev": "vite",
         "api:build": "tsc --project api",
         "swa": "vite build --mode development && yarn api:build && swa start dist --api-location api",
-        "build": "tsc && vite build",
+        "build": "yarn tsc && vite build && yarn api:build",
         "preview": "vite preview",
         "test": "vitest",
         "clean": "rm -rf dist node_modules",
@@ -34,8 +34,7 @@
         "zustand": "^4.4.0"
     },
     "engines": {
-        "yarn": "~1.22.19",
-        "node": ">=18.0.0"
+        "yarn": "~1.22.19"
     },
     "engineStrict": true,
     "devDependencies": {
