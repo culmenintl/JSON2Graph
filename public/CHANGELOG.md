@@ -1,3 +1,14 @@
+#### 0.1.8 (2023-09-27)
+
+##### Bug Fixes
+
+* **build:**  updated roll scrips (04c19d3d)
+
+##### Other Changes
+
+* //github.com/lgn-lvx3/surge-v2 into ai-config (3ad5f299)
+*  @Azure opensource@microsoft.com (1c355baa)
+
 #### 0.1.7 (2023-09-27)
 
 ##### Bug Fixes
