@@ -1,0 +1,9 @@
+{
+    "navigationFallback": {
+        "rewrite": "index.html",
+        "exclude": ["*.{png,jpg,gif,svg}", "*.css"]
+    },
+    "platform": {
+        "apiRuntime": "node:18"
+    }
+}
