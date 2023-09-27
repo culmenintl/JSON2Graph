@@ -5,7 +5,7 @@
         "dev": "vite",
         "api:build": "tsc --project api",
         "swa": "vite build --mode development && yarn api:build && swa start dist --api-location api",
-        "build": "yarn tsc && vite build && yarn api:build",
+        "build": "yarn tsc && vite build && cd api && yarn && yarn build && cd ..",
         "preview": "vite preview",
         "test": "vitest",
         "clean": "rm -rf dist node_modules",
