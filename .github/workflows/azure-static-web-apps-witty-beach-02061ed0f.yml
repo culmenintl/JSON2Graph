@@ -32,6 +32,8 @@ jobs:
           output_location: "dist" # Built app content directory - optional
           app_build_command: 'yarn build'
           skip_api_build: true # Skip building api code. Optional, By default its false.
+        env:
+          VERBOSE: true
 
           ###### End of Repository/Build Configurations ######
 
