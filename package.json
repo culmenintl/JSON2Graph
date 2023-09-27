@@ -34,7 +34,8 @@
         "zustand": "^4.4.0"
     },
     "engines": {
-        "yarn": "~1.22.19"
+        "yarn": "~1.22.19",
+        "node": ">=18"
     },
     "engineStrict": true,
     "devDependencies": {
