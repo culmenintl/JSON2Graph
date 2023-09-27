@@ -1,7 +1,7 @@
 import { DataToGraphConfig, RedditNode, STATUS } from "../lib/AppTypes"
 // import config from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphData, GraphinData, IUserNode } from "@antv/graphin"
+import { GraphinData, IUserNode } from "@antv/graphin"
 import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 import { actions, store } from "./Store"
@@ -29,7 +29,7 @@ const initialState: State = {
     graphinData: undefined,
     //   graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
     JsonSample: undefined,
-    dataUrl: `${import.meta.env.VITE_PUBLIC_URL}/reddit.comments.1k.json`,
+    dataUrl: "/reddit.comments.1k.json",
     dataSet: {
         data: undefined,
         nodes: undefined,
