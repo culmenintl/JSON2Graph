@@ -279,7 +279,7 @@ export async function map(
 }
 
 app.http("map", {
-    methods: ["GET", "POST"],
+    methods: ["POST"],
     authLevel: "anonymous",
     handler: map,
 })

@@ -2,7 +2,6 @@ import { FC, useCallback, useEffect, useRef, useState } from "react"
 import { Button, Modal } from "react-daisyui"
 
 import { marked } from "marked"
-import { Dialog } from "@headlessui/react"
 
 export const ChangelogModal: FC<{}> = () => {
     const [changelog, setChangelog] = useState<string>("")
@@ -17,7 +16,7 @@ export const ChangelogModal: FC<{}> = () => {
     }, [ref])
 
     useEffect(() => {
-        fetch("CHANGELOG.md")
+        fetch("/CHANGELOG.md")
             .then((response) => response.text())
             .then((text) => setChangelog(text))
     })

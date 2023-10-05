@@ -56,7 +56,7 @@ export const DeveloperPanel: React.FC = () => {
 
     // method to toggle the theme
     const toggleTheme = () => {
-        console.log("toggling theme", theme)
+        // console.log("toggling theme", theme)
         if (theme === "light") {
             document
                 .getElementsByTagName("html")[0]
@@ -174,7 +174,7 @@ export const DeveloperPanel: React.FC = () => {
                                             val.target.value === clusteringLimit
                                         )
                                             return
-                                        console.log("changing cluster limit")
+                                        // console.log("changing cluster limit")
                                         actions.graph.clusteringLimit(
                                             val.target.value,
                                         )
@@ -232,16 +232,16 @@ export const DeveloperPanel: React.FC = () => {
                                     max={10}
                                     value={filteringLimit}
                                     onChange={(val: any) => {
-                                        console.log(
-                                            "changing filter limit",
-                                            val.target.value,
-                                        )
+                                        // console.log(
+                                        //     "changing filter limit",
+                                        //     val.target.value,
+                                        // )
                                         actions.graph.filteringLimit(
                                             val.target.value,
                                         )
                                     }}
                                     onBlur={(val: any) => {
-                                        console.log("onblur", val.target.value)
+                                        // console.log("onblur", val.target.value)
                                         actions.graph.filterGraphByDegree(
                                             val.target.value,
                                         )

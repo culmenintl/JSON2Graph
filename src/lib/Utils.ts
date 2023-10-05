@@ -124,7 +124,7 @@ export const truncateString = (str: string, maxLength: number): string => {
         return str
     }
 
-    if (str.length <= maxLength) {
+    if (str?.length <= maxLength) {
         return str
     }
 
@@ -160,18 +160,19 @@ export const populateGraphinData = (
         combos: [] as ComboConfig[],
     }
 
-    console.log("configs", config)
+    // console.log("configs", config)
 
     // populate nodes and edges
     data.forEach((row: unknown) => {
-        console.log("row", row)
+        // console.log("row", row)
+        // console.log("nodes", config.nodes)
         config.nodes?.forEach((nodeConfig) => {
             console.log("nodeConfig", nodeConfig)
             addNodeToG6Graph(graphData, row, nodeConfig)
         })
 
         config.edges?.forEach((edgeConfig) => {
-            console.log("edgeConfig", edgeConfig)
+            // console.log("edgeConfig", edgeConfig)
             addEdgesToG6Graph(graphData, row, edgeConfig)
         })
     })
@@ -269,7 +270,7 @@ export const addNodeToG6Graph = (
     const record = row as Record<string, string>
 
     if (!record[nodeConfig.id_data_property]) {
-        console.log("unable to add node", nodeConfig.id_data_property)
+        // console.log("unable to add node", nodeConfig.id_data_property)
         return
         // throw new Error("Unable to find property with id attribute given.")
     }
@@ -357,11 +358,11 @@ export const addEdgesToG6Graph = (
         !record[edgeConfig.source_node_id] ||
         !record[edgeConfig.target_node_id]
     ) {
-        console.log(
-            "unable to add edge",
-            edgeConfig.source_node_id,
-            edgeConfig.target_node_id,
-        )
+        // console.log(
+        //     "unable to add edge",
+        //     edgeConfig.source_node_id,
+        //     edgeConfig.target_node_id,
+        // )
         return
         // throw new Error("Required edge params missing.")
     }

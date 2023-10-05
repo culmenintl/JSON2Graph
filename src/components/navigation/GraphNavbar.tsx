@@ -25,8 +25,7 @@ import { SearchResults } from "./SearchResults"
 export const GraphNavbar: FC<{}> = () => {
     const menuOpen = useTrackedStore().app.menuOpen()
 
-    const onButtonClick = () => {
-        // call messages endpoint
+    const onButtonClick = async () => {
         fetch("/api/map")
             .then((response) => response.json())
             .then((data) => {

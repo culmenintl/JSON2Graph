@@ -1,16 +1,22 @@
 {
-    "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
-    "configurations": {
-        "json2-graph": {
-            "appLocation": ".",
-            "apiLocation": "api",
-            "outputLocation": "dist",
-            "apiLanguage": "node",
-            "apiVersion": "18",
-            "appBuildCommand": "yarn build",
-            "apiBuildCommand": "yarn build",
-            "run": "npm run dev",
-            "appDevserverUrl": "http://localhost:5173"
-        }
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "json2-graph": {
+      "appLocation": "./",
+      "apiLocation": "api",
+      "outputLocation": "dist",
+      "appBuildCommand": "yarn build",
+      "apiBuildCommand": "yarn build",
+      "apiLanguage": "node",
+      "apiVersion": "18",
+      "appName": "json2-graph",
+      "resourceGroup": "json2-graph-rg",
+      "start": {
+        "outputLocation": "dist"
+      },
+      "deploy": {
+        "outputLocation": "dist"
+      }
     }
+  }
 }

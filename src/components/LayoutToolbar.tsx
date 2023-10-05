@@ -67,9 +67,9 @@ const ToolbarComponent = () => {
     const ctx = React.useContext(GraphinContext)
 
     const changeGraphLayout = (layout: { name: string; options: object }) => {
-        console.log("selecting", layout)
+        // console.log("selecting", layout)
         setSelectedLayout(layout.name)
-        console.log("selecting", layout)
+        // console.log("selecting", layout)
 
         ctx.graph?.updateLayout({ type: layout.name, ...layout.options })
         // ctx.graph?.positionsAnimate()

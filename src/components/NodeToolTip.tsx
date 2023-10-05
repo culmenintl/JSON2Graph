@@ -45,7 +45,7 @@ const ToolTipCard: React.FC<ToolTipCardProps> = (model: ToolTipCardProps) => {
                 </div>
             </Card.Title>
 
-            {node?._metadata?._title && node._metadata._title.length > 50 && (
+            {node?._metadata?._title && node._metadata._title?.length > 50 && (
                 <Card.Body className="prose lg:prose-lg">
                     <p>{node._metadata?._body}</p>
                 </Card.Body>

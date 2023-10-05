@@ -1,10 +1,11 @@
 import { DataToGraphConfig, RedditNode, STATUS } from "../lib/AppTypes"
-// import config from "../../configs/data.mapping.json"
+import fileConfig from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
 import { GraphinData, IUserNode } from "@antv/graphin"
 import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 import { actions, store } from "./Store"
+import { enqueueSnackbar } from "notistack"
 
 interface State {
     dataSet: DataToGraphConfig
@@ -29,7 +30,7 @@ const initialState: State = {
     graphinData: undefined,
     //   graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
     JsonSample: undefined,
-    dataUrl: "/reddit.comments.1k.json",
+    dataUrl: "/reddit.comments.10k.json",
     dataSet: {
         data: undefined,
         nodes: undefined,
@@ -60,6 +61,7 @@ export const DataStore = createStore("Data")(
         // clear out the configs and data
         set.dataSet({ ...initialState.dataSet })
         set.graphinData(undefined)
+        set.searchApi(new SearchApi())
         store.graphinRef.graphRef()?.clear()
 
         try {
@@ -107,17 +109,30 @@ export const DataStore = createStore("Data")(
                 body: JSON.stringify(bodyReq),
             }
 
-            const mapReq = await fetch("/api/map", options)
+            try {
+                const mapReq = await fetch("/api/map", options)
 
-            const mapResp = await mapReq.json()
+                const mapResp = await mapReq.json()
 
-            console.log("mapResp", JSON.parse(mapResp))
+                console.log("mapResp", JSON.parse(mapResp))
 
-            actions.app.status(STATUS.SHAPING)
+                actions.app.status(STATUS.SHAPING)
 
-            const config = JSON.parse(mapResp)
+                const config = JSON.parse(mapResp)
 
-            set.dataSet({ ...config, data: subDataset })
+                set.dataSet({ ...config, data: subDataset })
+            } catch (error) {
+                // console.error("Failed to fetch.", error)
+                const parsedConfig = JSON.parse(JSON.stringify(fileConfig))
+                const config = parsedConfig.datasets[0]
+                set.dataSet({ ...config, data: subDataset })
+                enqueueSnackbar(
+                    "Unable to call API. Using file configuration.",
+                    {
+                        variant: "error",
+                    },
+                )
+            }
 
             const graphinData = populateGraphinData(
                 get.dataSet().data,

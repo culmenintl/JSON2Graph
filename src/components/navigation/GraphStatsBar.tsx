@@ -9,12 +9,12 @@ export const GraphStatsBar: FC<{}> = () => {
     const nodesCount = useStore()
         .graphinRef?.graphRef()
         ?.getNodes()
-        ?.length.toLocaleString()
+        ?.length?.toLocaleString()
 
     const edgesCount = useStore()
         .graphinRef?.graphRef()
         ?.getEdges()
-        ?.length.toLocaleString()
+        ?.length?.toLocaleString()
 
     if (!sampledRows) {
         sampledRows = totalRows

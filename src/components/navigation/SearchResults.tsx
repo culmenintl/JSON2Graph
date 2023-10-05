@@ -16,7 +16,7 @@ export const SearchResults: FC<{}> = () => {
     // method to cound the sum of all values in the searchResults map
     const count = Array.from(searchResults?.values() ?? []).reduce(
         (acc: number, nodes: IUserNode[]) => {
-            return acc + nodes.length
+            return acc + nodes?.length
         },
         0,
     )
