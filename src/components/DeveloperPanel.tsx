@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import {
     Button,
     Card,
     Range,
     Table,
     Toggle,
-    useTheme,
     Modal,
     Input,
     Loading,
@@ -161,7 +160,6 @@ export const DeveloperPanel: React.FC = () => {
                                             val.target.value === clusteringLimit
                                         )
                                             return
-                                        // console.log("changing cluster limit")
                                         actions.graph.clusteringLimit(
                                             val.target.value,
                                         )
@@ -176,7 +174,6 @@ export const DeveloperPanel: React.FC = () => {
                                     checked={hoverMode}
                                     onChange={() => {
                                         actions.pref.hoverMode(!hoverMode)
-                                        // actions.data.fetchData()
                                     }}
                                 />
                             </Table.Row>
@@ -265,5 +262,3 @@ export const DeveloperPanel: React.FC = () => {
         </Modal>
     )
 }
-
-export default DeveloperPanel

@@ -24,7 +24,7 @@ const initialState: State = {
 export const PreferencesStore = createStore("Preferences")(
     { ...initialState },
     {
-        devtools: { enabled: false },
+        devtools: { enabled: true },
         persist: {
             enabled: true,
             name: "Pref",

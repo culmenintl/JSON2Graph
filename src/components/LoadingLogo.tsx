@@ -1,17 +1,16 @@
 import { FC } from "react"
 
-type Props = {
-    size?: number
-    iconOnly?: boolean
-}
-
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 import CentrifugeText from "/images/centrifuge-text.svg"
 import { useTrackedStore } from "../stores/Store"
 import { Loading } from "react-daisyui"
 
+type Props = {
+    size?: number
+    iconOnly?: boolean
+}
 // Basic fullscreen loading animation w/ centrifuge logo
-const LoadingLogo: FC<Props> = () => {
+export const LoadingLogo: FC<Props> = () => {
     return (
         <>
             <div
@@ -35,5 +34,3 @@ const LoadingLogo: FC<Props> = () => {
         </>
     )
 }
-
-export default LoadingLogo
