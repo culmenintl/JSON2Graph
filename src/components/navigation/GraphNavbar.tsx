@@ -1,15 +1,15 @@
 import { Cog8ToothIcon as CogOutline } from "@heroicons/react/24/outline"
-import { Cog8ToothIcon as CogSolid } from "@heroicons/react/24/solid"
-import { FC, useEffect, useRef, useState } from "react"
-import { Navbar, Button, Swap } from "react-daisyui"
+import { FC, useCallback, useEffect, useRef } from "react"
+import { Navbar, Button, Swap, Modal } from "react-daisyui"
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 
-import { actions, useTrackedStore } from "../../stores/Store"
+import { useTrackedStore } from "../../stores/Store"
 import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
 import autoAnimate from "@formkit/auto-animate"
+import { DeveloperPanel } from "../DeveloperPanel"
 
 // GraphNavbar component, which is the main navbar for the graph view
 // contains the search bar, search results, and stats bar
@@ -34,8 +34,17 @@ export const GraphNavbar: FC = () => {
         // alert("Opening Centrifuge")
     }
 
+    const dialogRef = useRef<HTMLDialogElement>(null)
+    const handleOpen = useCallback(() => {
+        console.log("handleOpen")
+        dialogRef.current?.showModal()
+    }, [dialogRef])
+
     return (
         <div className="container max-w-xl mx-auto">
+            <Modal ref={dialogRef} backdrop>
+                <DeveloperPanel />
+            </Modal>
             <Navbar className="rounded-box shadow-xl bg-base-100 glass">
                 <div ref={parent} className="flex flex-col w-full">
                     {/*  statbar section top section*/}
@@ -56,10 +65,8 @@ export const GraphNavbar: FC = () => {
                                 className="btn btn-md"
                                 active={menuOpen === true}
                                 rotate={true}
-                                onChange={(e) => {
-                                    actions.app.menuOpen(!menuOpen)
-                                }}
-                                onElement={<CogSolid className="w-8 h-8" />}
+                                onChange={handleOpen}
+                                onElement={<CogOutline className="w-8 h-8" />}
                                 offElement={<CogOutline className="w-8 h-8" />}
                             />
                         </div>

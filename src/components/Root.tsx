@@ -109,7 +109,6 @@ export const Root: FC<{}> = () => {
             <div className="absolute bottom-0 w-full pb-5">
                 <GraphNavbar />
             </div>
-            <DeveloperPanel />
         </div>
     )
 }
