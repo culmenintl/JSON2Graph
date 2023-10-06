@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { Divider, useTheme } from "react-daisyui"
+import { Divider } from "react-daisyui"
 import { useStore, useTrackedStore } from "../../stores/Store"
 
 export const GraphStatsBar: FC<{}> = () => {

@@ -3,7 +3,6 @@ import React from "react"
 interface AppVersionProps {
     version: string
 }
-
 const AppVersion: React.FC<AppVersionProps> = ({ version }) => {
     return (
         <div>

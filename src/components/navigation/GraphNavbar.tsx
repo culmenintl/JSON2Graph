@@ -1,28 +1,17 @@
-import { FunnelIcon } from "@heroicons/react/24/outline"
 import { Cog8ToothIcon as CogOutline } from "@heroicons/react/24/outline"
 import { Cog8ToothIcon as CogSolid } from "@heroicons/react/24/solid"
 import { FC } from "react"
-import { GraphinContext } from "@antv/graphin"
-import React from "react"
-import {
-    Navbar,
-    Button,
-    Form,
-    Input,
-    Divider,
-    Theme,
-    useTheme,
-    Swap,
-} from "react-daisyui"
+import { Navbar, Button, Swap } from "react-daisyui"
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
-import LayoutToolbar from "../LayoutToolbar"
 
 import { actions, useTrackedStore } from "../../stores/Store"
 import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
-export const GraphNavbar: FC<{}> = () => {
+// GraphNavbar component, which is the main navbar for the graph view
+// contains the search bar, search results, and stats bar
+export const GraphNavbar: FC = () => {
     const menuOpen = useTrackedStore().app.menuOpen()
 
     const onButtonClick = async () => {
@@ -38,7 +27,7 @@ export const GraphNavbar: FC<{}> = () => {
     }
 
     return (
-        <div className="max-w-xl mx-auto">
+        <div className="container max-w-xl mx-auto">
             <Navbar className="rounded-box shadow-xl bg-base-100 glass">
                 <div className="flex flex-col w-full">
                     {/*  statbar section top section*/}
@@ -52,6 +41,7 @@ export const GraphNavbar: FC<{}> = () => {
                     {/* rest of the navbar */}
                     <div className="flex flex-1 flex-row w-full justify-center gap-0 md:gap-2">
                         <div>
+                            {/* Cog icon click for opening/closing dev panel modal */}
                             <Swap
                                 className="btn btn-md"
                                 active={menuOpen === true}
@@ -63,11 +53,11 @@ export const GraphNavbar: FC<{}> = () => {
                                 offElement={<CogOutline className="w-8 h-8" />}
                             />
                         </div>
+                        {/* Search Bar */}
                         <div className="flex-grow">
                             <SearchBar />
                         </div>
-
-                        {/* <LayoutToolbar /> */}
+                        {/* Centrifuge Logo */}
                         <div>
                             <Button size="md" onClick={onButtonClick}>
                                 <img
@@ -75,11 +65,6 @@ export const GraphNavbar: FC<{}> = () => {
                                     className={"h-10"}
                                     alt="Centrifuge"
                                 />
-                                {/* <img
-                                            src={CentrifugeText}
-                                            className="h-5 w-10"
-                                            alt="Centrifuge"
-                                        /> */}
                             </Button>
                         </div>
                     </div>

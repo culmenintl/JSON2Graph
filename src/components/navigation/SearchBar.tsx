@@ -4,7 +4,7 @@ import { actions } from "../../stores/Store"
 
 import debounce from "lodash/debounce"
 
-export const SearchBar: FC<{}> = () => {
+export const SearchBar: FC = () => {
     const debouncedSearch = debounce(async (value: string) => {
         console.log("searching for", value)
         await actions.data.searchNodesApi(value)

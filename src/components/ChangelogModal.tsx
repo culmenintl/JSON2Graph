@@ -3,6 +3,7 @@ import { Button, Modal } from "react-daisyui"
 
 import { marked } from "marked"
 
+// Changelog modal component, handles the display of the changelog markdown
 export const ChangelogModal: FC<{}> = () => {
     const [changelog, setChangelog] = useState<string>("")
 
