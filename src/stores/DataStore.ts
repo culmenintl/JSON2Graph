@@ -140,9 +140,9 @@ export const DataStore = createStore("Data")(
             )
 
             // figure out if there is an existing graph, and if so, just change the data
-            // set.graphinData(graphinData as GraphinData)
+            set.graphinData(graphinData as GraphinData)
 
-            // indexData(get.searchApi(), graphinData as GraphinData)
+            indexData(get.searchApi(), graphinData as GraphinData)
             set.totalRows(data.length)
             set.sampledRows(subDataset.length)
         } catch (error) {
