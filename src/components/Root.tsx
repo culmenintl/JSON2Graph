@@ -6,8 +6,7 @@ import "@antv/graphin/dist/index.css" // Don't forget to import CSS
 import "@antv/graphin-icons/dist/index.css"
 
 // graphin components used
-const { DragCanvas, ZoomCanvas, DragNode, ActivateRelations, DragCombo } =
-    Behaviors
+const { DragCanvas, ZoomCanvas, ActivateRelations, DragCombo } = Behaviors
 
 import { useSnackbar } from "notistack"
 import { DeveloperPanel } from "./DeveloperPanel"
@@ -58,7 +57,7 @@ export const Root: FC<{}> = () => {
             }, 100)
         })
     }
-    // side effect to get graphin instance once it's ready
+    // side effect to get graphin instance async
     useEffect(() => {
         const getRef = async () => {
             const graphinInstance = await getGraphinRef()
@@ -74,13 +73,11 @@ export const Root: FC<{}> = () => {
         getRef()
     }, [graphGraphinData])
 
-    // side effect to set graphin data once it's ready
     // if not ready, show loading logo
-    if (!graphGraphinData) return <LoadingLogo />
 
     return (
         <div className="absolute inset-0">
-            {userTheme && (
+            {graphGraphinData ? (
                 <Graphin
                     data={graphGraphinData}
                     ref={graphinRef}
@@ -105,12 +102,14 @@ export const Root: FC<{}> = () => {
                     <DragCanvas enableOptimize />
                     <DragCombo />
                     <ZoomCanvas enableOptimize sensitivity={1} />
-                    <div className="absolute bottom-0 w-full pb-5">
-                        <GraphNavbar />
-                    </div>
-                    <DeveloperPanel />
                 </Graphin>
+            ) : (
+                <LoadingLogo />
             )}
+            <div className="absolute bottom-0 w-full pb-5">
+                <GraphNavbar />
+            </div>
+            <DeveloperPanel />
         </div>
     )
 }

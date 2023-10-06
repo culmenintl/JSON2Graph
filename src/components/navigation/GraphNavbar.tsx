@@ -1,6 +1,6 @@
 import { Cog8ToothIcon as CogOutline } from "@heroicons/react/24/outline"
 import { Cog8ToothIcon as CogSolid } from "@heroicons/react/24/solid"
-import { FC } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { Navbar, Button, Swap } from "react-daisyui"
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 
@@ -9,10 +9,18 @@ import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
+import autoAnimate from "@formkit/auto-animate"
+
 // GraphNavbar component, which is the main navbar for the graph view
 // contains the search bar, search results, and stats bar
 export const GraphNavbar: FC = () => {
     const menuOpen = useTrackedStore().app.menuOpen()
+    const graphGraphinData = useTrackedStore().data.graphinData()
+    const parent = useRef(null)
+
+    useEffect(() => {
+        parent.current && autoAnimate(parent.current)
+    }, [parent])
 
     const onButtonClick = async () => {
         fetch("/api/map")
@@ -29,11 +37,13 @@ export const GraphNavbar: FC = () => {
     return (
         <div className="container max-w-xl mx-auto">
             <Navbar className="rounded-box shadow-xl bg-base-100 glass">
-                <div className="flex flex-col w-full">
+                <div ref={parent} className="flex flex-col w-full">
                     {/*  statbar section top section*/}
-                    <div>
-                        <GraphStatsBar />
-                    </div>
+                    {graphGraphinData && (
+                        <div>
+                            <GraphStatsBar />
+                        </div>
+                    )}
                     {/* search results below stat bar */}
                     <div className="w-full">
                         <SearchResults />

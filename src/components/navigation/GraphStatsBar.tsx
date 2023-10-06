@@ -28,7 +28,8 @@ export const GraphStatsBar: FC<{}> = () => {
     console.log(formattedSampleRows) // Output: "1234k"
 
     return (
-        <div>
+        <>
+            {/* Only show if there is data in the store */}
             <div className="flex flex-1 flex-row w-full gap-2 text-sm text-slate-400 justify-center py-3">
                 <div className="">{nodesCount} nodes</div>
                 <Divider horizontal />
@@ -38,6 +39,6 @@ export const GraphStatsBar: FC<{}> = () => {
                     {sampledRows.toLocaleString()}/{formattedSampleRows} rows
                 </div>
             </div>
-        </div>
+        </>
     )
 }

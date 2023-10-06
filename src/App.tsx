@@ -17,7 +17,7 @@ function App() {
         <div className="flex h-screen min-h-screen flex-col items-center justify-center">
             <SnackbarProvider
                 anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-                classes={{ containerRoot: "pb-16" }}
+                classes={{ containerRoot: "pb-36" }}
                 maxSnack={5}
                 autoHideDuration={3000}
             >

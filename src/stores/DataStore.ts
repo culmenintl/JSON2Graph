@@ -1,7 +1,7 @@
 import { DataToGraphConfig, RedditNode, STATUS } from "../lib/AppTypes"
 import fileConfig from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphinData, IUserNode } from "@antv/graphin"
+import { GraphinData, IUserNode, Utils } from "@antv/graphin"
 import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 import { actions, store } from "./Store"
@@ -27,8 +27,8 @@ interface State {
 
 const initialState: State = {
     state: "done",
-    graphinData: undefined,
-    //   graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
+    // graphinData: Utils.mock(10),
+    graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
     JsonSample: undefined,
     dataUrl: "/reddit.comments.10k.json",
     dataSet: {
@@ -140,9 +140,9 @@ export const DataStore = createStore("Data")(
             )
 
             // figure out if there is an existing graph, and if so, just change the data
-            set.graphinData(graphinData as GraphinData)
+            // set.graphinData(graphinData as GraphinData)
 
-            indexData(get.searchApi(), graphinData as GraphinData)
+            // indexData(get.searchApi(), graphinData as GraphinData)
             set.totalRows(data.length)
             set.sampledRows(subDataset.length)
         } catch (error) {

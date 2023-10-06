@@ -2,8 +2,9 @@ import { FC } from "react"
 
 import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
 import CentrifugeText from "/images/centrifuge-text.svg"
-import { useTrackedStore } from "../stores/Store"
-import { Loading } from "react-daisyui"
+import { Circles } from "./Circles"
+
+import { StatusDisplay } from "./StatusDisplay"
 
 type Props = {
     size?: number
@@ -14,21 +15,29 @@ export const LoadingLogo: FC<Props> = () => {
     return (
         <>
             <div
-                role="status"
                 className={
-                    "flex-column absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 items-center justify-center"
+                    "flex flex-1 flex-col absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 items-center justify-center"
                 }
             >
-                {/* rome-ignore lint/a11y/useAltText: <explanation> */}
+                <div className="absolute -z-10">
+                    <Circles />
+                </div>
                 <img
+                    alt="Logo"
                     src={CentrifugeLogoCentered}
-                    className={"mx-auto h-20 w-20 animate-spin-logo"}
+                    className="flex flex-1 w-20"
                 />
-                {/* rome-ignore lint/a11y/useAltText: <explanation> */}
-                <img src={CentrifugeText} className="mt-3 w-40" />
-                <span className="font-semibold text-md flex flex-1 flex-row items-end">
-                    {useTrackedStore().app.status()}
-                    <Loading variant="dots" className="ml-2" />
+                <img
+                    alt="Logo"
+                    src={CentrifugeText}
+                    className="flex flex-1 mt-3 w-40"
+                />
+
+                <span className="flex flex-1 flex-row items-end">
+                    <span className="text-md text-gray-400 font-semibold animate-pulse">
+                        <StatusDisplay />
+                    </span>
+                    {/* <Loading variant="dots" className="ml-2" /> */}
                 </span>
             </div>
         </>
