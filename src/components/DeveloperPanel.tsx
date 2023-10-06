@@ -20,9 +20,7 @@ const SampleJsonData = (data: Object) => (
 )
 
 export const DeveloperPanel: React.FC = () => {
-    const { theme, setTheme } = useTheme()
-
-    const userTheme = useTrackedStore().app.theme()
+    const userTheme = useTrackedStore().pref.theme()
 
     const rowsToSample = useTrackedStore().data.rowsToSample()
 
@@ -36,7 +34,7 @@ export const DeveloperPanel: React.FC = () => {
     const filterGraphByDegree = useTrackedStore().graph.filterGraphByDegree()
     const filteringLimit = useTrackedStore().graph.filteringLimit()
 
-    const hoverMode = useTrackedStore().graph.hoverMode()
+    const hoverMode = useTrackedStore().pref.hoverMode()
     const JsonSample = useStore().data.JsonSample()
 
     const nodesCount = useTrackedStore()
@@ -53,24 +51,6 @@ export const DeveloperPanel: React.FC = () => {
         if (menuOpen) actions.app.menuOpen(false)
         else actions.app.menuOpen(true)
     })
-
-    // method to toggle the theme
-    const toggleTheme = () => {
-        // console.log("toggling theme", theme)
-        if (theme === "light") {
-            document
-                .getElementsByTagName("html")[0]
-                .setAttribute("data-theme", "dark")
-            setTheme("dark")
-            actions.app.theme("dark")
-        } else {
-            document
-                .getElementsByTagName("html")[0]
-                .setAttribute("data-theme", "light")
-            setTheme("light")
-            actions.app.theme("light")
-        }
-    }
 
     const dialogRef = useRef<HTMLDialogElement>(null)
     useEffect(() => {
@@ -139,7 +119,14 @@ export const DeveloperPanel: React.FC = () => {
                                 <Toggle
                                     checked={userTheme === "dark"}
                                     // checked={userTheme === "dark"}
-                                    onChange={() => toggleTheme()}
+                                    onChange={() => {
+                                        const theme =
+                                            userTheme === "dark"
+                                                ? "light"
+                                                : "dark"
+
+                                        actions.pref.theme(theme)
+                                    }}
                                 />
                             </Table.Row>
                             <Table.Row>
@@ -188,7 +175,7 @@ export const DeveloperPanel: React.FC = () => {
                                 <Toggle
                                     checked={hoverMode}
                                     onChange={() => {
-                                        actions.graph.hoverMode(!hoverMode)
+                                        actions.pref.hoverMode(!hoverMode)
                                         // actions.data.fetchData()
                                     }}
                                 />

@@ -343,9 +343,6 @@ interface State {
     // filtering / sampling
     filterGraphByDegree: boolean
     filteringLimit: number
-
-    // interaction modes
-    hoverMode: boolean
 }
 
 const initialState: State = {
@@ -357,8 +354,6 @@ const initialState: State = {
 
     filterGraphByDegree: true,
     filteringLimit: 2,
-
-    hoverMode: true,
 }
 
 export const GraphStore = createStore("Graph")(

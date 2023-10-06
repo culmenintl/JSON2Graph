@@ -37,7 +37,7 @@ import { NodeToolTip } from "./NodeToolTip"
 
 const Root: FC<{}> = () => {
     //
-    const { theme, setTheme } = useTheme(useTrackedStore().app.theme())
+    const { theme, setTheme } = useTheme(useTrackedStore().pref.theme())
 
     // notistack
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()

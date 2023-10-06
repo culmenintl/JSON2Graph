@@ -61,7 +61,7 @@ export const NodeToolTip: React.FC<{}> = () => {
     const placement = "auto"
     const hasArrow = false
     const style = {}
-    const hoverMode = useTrackedStore().graph.hoverMode()
+    const hoverMode = useTrackedStore().pref.hoverMode()
     return (
         <Tooltip bindType="node" placement={placement} hasArrow={hasArrow}>
             {(value: TooltipValue) => {

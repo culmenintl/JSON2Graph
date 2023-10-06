@@ -167,7 +167,7 @@ export const populateGraphinData = (
         // console.log("row", row)
         // console.log("nodes", config.nodes)
         config.nodes?.forEach((nodeConfig) => {
-            console.log("nodeConfig", nodeConfig)
+            // console.log("nodeConfig", nodeConfig)
             addNodeToG6Graph(graphData, row, nodeConfig)
         })
 
