@@ -1,6 +1,5 @@
 import G6, { Graph, GraphData, LayoutConfig } from "@antv/g6"
 import { createStore } from "@udecode/zustood"
-import { setCombos } from "../lib/Utils"
 import { GraphinRefStore } from "./GraphinRefStore"
 
 export enum LayoutTypes {
@@ -31,32 +30,34 @@ export enum Layouts {
     comboCombined = "comboCombined",
 }
 
-const LayoutsMap: { [key: string]: LayoutConfig } = {
-    [Layouts.graphinForce]: {
-        type: "graphin-force",
-        preset: {
-            type: "concentric",
-        },
-        gpuEnabled: false,
-        workerEnabled: false,
-        workerScriptURL: "",
-        onTick: () => {},
-        onLayoutEnd: () => {},
-        animate: true,
-    },
+const maxIteration = 500
+
+export const LayoutsMap: { [key: string]: LayoutConfig } = {
+    // [Layouts.graphinForce]: BaseLayoutConfig = {
+    //     type: "graphin-force",
+    //     // gpuEnabled: false,
+    //     // workerScriptURL: "",
+    //     onTick: () => {},
+    //     onLayoutEnd: () => {},
+    //     animate: true,
+    // },
     [Layouts.force2]: {
         type: "force2",
-        preset: {
-            type: "random",
-        },
         gpuEnabled: false,
-        workerEnabled: false,
+        _meta: {
+            title: "Force 2",
+            subtitle: "Space filling layout, good for large graphs.",
+            tags: ["force", "force2", "large graph"],
+        },
+        // gpuEnabled: false,
+        // ,
         // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("force2 layout end")
         },
         animate: true,
+        preventOverlap: true,
     },
     [Layouts.random]: {
         type: "random",
@@ -149,25 +150,9 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.force]: {
         type: "force",
-        preset: {
-            type: "force",
-            preventOverlap: true,
-            linkDistance: 100,
-            nodeStrength: -30,
-            edgeStrength: 0.1,
-
-            nodeSize: 30,
-            nodeSpacing: 5,
-            nodePadding: 5,
-
-            nodeDraggable: true,
-            nodeMovable: true,
-            edgeMovable: true,
-            edgeDraggable: true,
-        },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("force layout end")
@@ -195,17 +180,14 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.gForce]: {
         type: "gForce",
-        preset: {
-            type: "gForce",
-        },
         gpuEnabled: true,
         workerEnabled: false,
-        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("gForce layout end")
         },
         animate: true,
+        preventOverlap: true,
         maxIteration: 2000,
     },
     [Layouts.mds]: {
@@ -244,9 +226,9 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
             clustering: true,
             clusterGravity: 10,
         },
-        gpuEnabled: false,
-        workerEnabled: false,
-        workerScriptURL: "",
+        gpuEnabled: true,
+        workerEnabled: true,
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("forceAtlas2 layout end")
@@ -321,7 +303,7 @@ const LayoutsMap: { [key: string]: LayoutConfig } = {
         // edgeDraggable: true,
         // },
 
-        gpuEnabled: true,
+        gpuEnabled: false,
         workerEnabled: false,
         // workerScriptURL: "",
         onTick: () => {},
@@ -390,20 +372,6 @@ export const filterGraphByDegree = (
         return
     }
 
-    // remove nodes with less than X degree
-    // const removedNodes: string[] = []
-    // graphData.nodes = graphData.nodes?.filter((node) => {
-    //     const degree = inputGraph.getNodeDegree(node.id, "total") as number
-    //     console.log("degree", degree, node.id)
-    //     // count both incoming and outgoing neighbor nodes
-    //     if (degree < minimumDegree) {
-    //         inputGraph.removeItem(node.id)
-    //         removedNodes.push(node.id)
-    //         return false
-    //     }
-    //     return true
-    // })
-
     inputGraph.getNodes().forEach((node) => {
         const degree = inputGraph.getNodeDegree(node.getID(), "total") as number
         console.log("degree", degree, node.getID())
@@ -423,48 +391,6 @@ export const filterGraphByDegree = (
             })
         }
     })
-
-    // graphData.nodes?.map((node) => {
-    //     const degree = inputGraph.getNodeDegree(node.id, "total") as number
-    //     console.log("degree", degree, node.id)
-    //     // count both incoming and outgoing neighbor nodes
-    //     if (degree < minimumDegree) {
-    //         inputGraph.updateItem(node.id, {
-    //             visible: false,
-    //         })
-    //         inputGraph.getNode
-
-    //         // inputGraph.getNeighbors(node.id).forEach((neighbor) => {
-    //         //     inputGraph.updateItem(neighbor.getID(), {
-    //         //         visible: false,
-    //         //     })
-    //         // })
-    //     }
-    // })
-
-    // remove edges associated with removed nodes
-    // graphData.edges?.map((edge) => {
-    //     if (removedNodes.includes(edge.sourceNode?.getID() as string)) {
-    //         inputGraph.updateItem(edge.id)
-    //         return false
-    //     }
-    //     if (removedNodes.includes(edge.targetNode?.getID() as string)) {
-    //         return false
-    //     }
-    //     return true
-    // })
-
-    // console.log("removedNodes", removedNodes)
-    // console.log("removed", removedNodes.length, "nodes")
-    // console.log("removed", graphData.edges?.length, "edges")
-
-    // recalculate combos
-    // setCombos(graphData)
-    // graphData.combos = []
-
-    // inputGraph.changeData(graphData)
-    // inputGraph.refresh()
-    // inputGraph.refreshPositions()
 }
 
 export const resetVisibility = (inputGraph: Graph): void => {

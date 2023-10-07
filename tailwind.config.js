@@ -1,7 +1,7 @@
 module.exports = {
     content: [
         "./index.html",
-        "./src/**/*.{js,jsx,ts,tsx}",
+        "./src/**/*.{js,jsx,ts,tsx,gif,png,jpg,jpeg,svg}",
         "node_modules/daisyui/dist/**/*.js",
         "node_modules/react-daisyui/dist/**/*.js",
     ],

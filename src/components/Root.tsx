@@ -6,7 +6,8 @@ import "@antv/graphin/dist/index.css" // Don't forget to import CSS
 import "@antv/graphin-icons/dist/index.css"
 
 // graphin components used
-const { DragCanvas, ZoomCanvas, ActivateRelations, DragCombo } = Behaviors
+const { DragCanvas, ZoomCanvas, ActivateRelations, DragCombo, DragNode } =
+    Behaviors
 
 import { useSnackbar } from "notistack"
 import { DeveloperPanel } from "./DeveloperPanel"
@@ -14,6 +15,8 @@ import { GraphNavbar } from "./navigation/GraphNavbar"
 import { actions, useTrackedStore } from "../stores/Store"
 import { NodeToolTip } from "./NodeToolTip"
 import { LoadingLogo } from "./LoadingLogo"
+import getEdgeStyleByTheme from "@antv/graphin/lib/theme/edge-style"
+import { EdgeTheme } from "@antv/graphin/lib/theme"
 
 export const Root: FC<{}> = () => {
     const userTheme = useTrackedStore().pref.theme()
@@ -82,9 +85,7 @@ export const Root: FC<{}> = () => {
                     data={graphGraphinData}
                     ref={graphinRef}
                     layout={initialLayout}
-                    fitCenter={true}
-                    fitView={true}
-                    groupByTypes={false}
+                    groupByTypes={true}
                     dragCombo={true}
                     theme={{
                         mode: userTheme === "dark" ? "dark" : "light",
@@ -93,7 +94,9 @@ export const Root: FC<{}> = () => {
                         type: "circle",
                     }}
                     animate={true}
+                    fitView={true}
                 >
+                    <DragNode />
                     {/* Handles the on hover node tooltips */}
                     <NodeToolTip />
                     {/* Activates the closest relationships */}

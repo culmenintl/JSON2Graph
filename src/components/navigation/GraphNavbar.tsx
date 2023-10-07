@@ -1,15 +1,16 @@
 import { Cog8ToothIcon as CogOutline } from "@heroicons/react/24/outline"
 import { FC, useCallback, useEffect, useRef } from "react"
-import { Navbar, Button, Swap, Modal } from "react-daisyui"
-import CentrifugeLogoCentered from "/images/cent-logo-centered.svg"
+import { Navbar, Swap, Modal } from "react-daisyui"
 
-import { useTrackedStore } from "../../stores/Store"
+import { actions, store, useTrackedStore } from "../../stores/Store"
 import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
 import autoAnimate from "@formkit/auto-animate"
 import { DeveloperPanel } from "../DeveloperPanel"
+import { Layouts, LayoutsMap } from "../../stores/GraphStore"
+import { LayoutSelector } from "../LayoutSelector"
 
 // GraphNavbar component, which is the main navbar for the graph view
 // contains the search bar, search results, and stats bar
@@ -23,15 +24,16 @@ export const GraphNavbar: FC = () => {
     }, [parent])
 
     const onButtonClick = async () => {
-        fetch("/api/map")
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data)
-            })
-            .catch((error) => {
-                console.error("Error:", error)
-            })
-        // alert("Opening Centrifuge")
+        // update the g6 layout to force a re-render
+        const graph = store.graphinRef.graphRef()
+
+        // create layout and update graph
+        const layout = LayoutsMap[Layouts.forceAtlas2]
+
+        // graph?.updateLayout(layout)
+
+        // set the layout
+        actions.graph.selectedLayout(layout)
     }
 
     const dialogRef = useRef<HTMLDialogElement>(null)
@@ -76,13 +78,15 @@ export const GraphNavbar: FC = () => {
                         </div>
                         {/* Centrifuge Logo */}
                         <div>
-                            <Button size="md" onClick={onButtonClick}>
+                            <LayoutSelector />
+
+                            {/* <Button size="md" onClick={onButtonClick}>
                                 <img
                                     src={CentrifugeLogoCentered}
                                     className={"h-10"}
                                     alt="Centrifuge"
                                 />
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
                 </div>
