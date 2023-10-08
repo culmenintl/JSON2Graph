@@ -95,6 +95,7 @@ export enum STATUS {
     FETCHING = "Fetching Data",
     SHAPING = "Creating Graph",
     AI = "Analyzing Data",
+    SIMULATING = "Simulating Graph",
     GRAPH_SIMULATED = "Graph Simulated",
 }
 

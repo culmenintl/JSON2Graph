@@ -2,8 +2,8 @@ import React from "react"
 import { Avatar, Card, Dropdown } from "react-daisyui"
 
 import layoutImage from "./../assets/layouts/force2.gif"
-import { LayoutsMap } from "../stores/GraphStore"
 import { actions } from "../stores/Store"
+import { LayoutsMap } from "../stores/Layouts"
 
 export const LayoutSelector: React.FC = () => {
     return (

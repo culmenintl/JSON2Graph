@@ -9,10 +9,11 @@ const initTheme = "light"
 
 interface State {
     devMode: boolean
-    status: STATUS
+    status: STATUS | undefined
     loading: boolean
     menuOpen: boolean
     colors: ThemeColors
+    panelNavigation: "data" | "layout" | "settings"
 }
 
 const initialState: State = {
@@ -21,6 +22,7 @@ const initialState: State = {
     menuOpen: false,
     status: STATUS.FETCHING,
     colors: stripAndCamelCase(daisyuiColors)[`${initTheme}`],
+    panelNavigation: "data",
 }
 
 export const AppStore = createStore("App")(

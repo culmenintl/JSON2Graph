@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import Graphin, { Behaviors } from "@antv/graphin"
 
 // graphin CSS
@@ -10,16 +10,20 @@ const { DragCanvas, ZoomCanvas, ActivateRelations, DragCombo, DragNode } =
     Behaviors
 
 import { useSnackbar } from "notistack"
-import { DeveloperPanel } from "./DeveloperPanel"
 import { GraphNavbar } from "./navigation/GraphNavbar"
 import { actions, useTrackedStore } from "../stores/Store"
 import { NodeToolTip } from "./NodeToolTip"
 import { LoadingLogo } from "./LoadingLogo"
-import getEdgeStyleByTheme from "@antv/graphin/lib/theme/edge-style"
-import { EdgeTheme } from "@antv/graphin/lib/theme"
+import autoAnimate from "@formkit/auto-animate"
 
 export const Root: FC<{}> = () => {
     const userTheme = useTrackedStore().pref.theme()
+    const parent = useRef(null)
+    useEffect(() => {
+        parent.current && autoAnimate(parent.current)
+    }, [parent])
+
+    const [ready, setReady] = useState(false)
 
     // notistack
     const { enqueueSnackbar } = useSnackbar()
@@ -29,6 +33,7 @@ export const Root: FC<{}> = () => {
 
     const graphGraphinData = useTrackedStore().data.graphinData()
     const initialLayout = useTrackedStore().graph.selectedLayout()
+    const graphReady = useTrackedStore().graph.graphReady()
 
     // Load data on mount asynchronously
     useEffect(() => {
@@ -76,11 +81,21 @@ export const Root: FC<{}> = () => {
         getRef()
     }, [graphGraphinData])
 
+    useEffect(() => {
+        if (graphReady && graphGraphinData && graphinRef.current) {
+            // set timeout to allow graph to render
+            setTimeout(() => {
+                setReady(true)
+            }, 3000)
+        }
+    }, [graphReady, graphGraphinData, graphinRef.current])
+
     // if not ready, show loading logo
 
     return (
-        <div className="absolute inset-0">
-            {graphGraphinData ? (
+        <div ref={parent} className="absolute inset-0">
+            {!ready && <LoadingLogo />}
+            {graphGraphinData && (
                 <Graphin
                     data={graphGraphinData}
                     ref={graphinRef}
@@ -106,8 +121,6 @@ export const Root: FC<{}> = () => {
                     <DragCombo />
                     <ZoomCanvas enableOptimize sensitivity={1} />
                 </Graphin>
-            ) : (
-                <LoadingLogo />
             )}
             <div className="absolute bottom-0 w-full pb-5">
                 <GraphNavbar />
