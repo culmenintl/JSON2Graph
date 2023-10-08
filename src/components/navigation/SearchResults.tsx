@@ -1,6 +1,6 @@
-import { FC } from "react"
+import { FC, useEffect, useRef } from "react"
 import { Table } from "react-daisyui"
-import { useStore } from "../../stores/Store"
+import { store, useTrackedStore } from "../../stores/Store"
 
 import { IUserNode } from "@antv/graphin"
 import {
@@ -8,24 +8,45 @@ import {
     truncateString as truncate,
 } from "../../lib/Utils"
 
-export const SearchResults: FC<{}> = () => {
-    const searchResults = useStore().data.searchResults()
-    const searchValue = useStore().data.searchTerm()
-    const truncateLength = 15
+type SpanProps = {
+    term?: string
+    value: string
+}
+const SpanComponent: FC<SpanProps> = ({ term, value }) => {
+    if (!value) return null
 
-    // method to cound the sum of all values in the searchResults map
-    const count = Array.from(searchResults?.values() ?? []).reduce(
-        (acc: number, nodes: IUserNode[]) => {
-            return acc + nodes?.length
-        },
-        0,
+    const truncateLength = 15
+    const parts = value.split(new RegExp(`(${term})`, "gi"))
+
+    term = term?.toLowerCase()
+    // only highlight the text that is the same as the search term
+    return (
+        <span className="inline-block">
+            {parts.map((part, i) => (
+                <span
+                    // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                    key={i}
+                    className={
+                        part.toLowerCase() === term ?? "".toLowerCase()
+                            ? "bg-yellow-200"
+                            : ""
+                    }
+                >
+                    {truncate(part, truncateLength)}
+                </span>
+            ))}
+        </span>
     )
+}
+
+export const SearchResults: FC<{}> = () => {
+    const searchResults = useTrackedStore().data.searchResults()
+    const searchTerm = useTrackedStore().data.searchTerm()
+    const graphinApis = store.graphinRef.graphinApis()
+    const graph = store.graphinRef.graphRef()
 
     return (
-        <div className="container max-w-xl max-h-96 overflow-y-auto px-4">
-            <span className="text-sm text-slate-400">
-                {searchValue && `"${searchValue}" has ${count} results`}
-            </span>
+        <div className="container max-w-xl overflow-y-auto px-4 max-h-96">
             {Array.from(searchResults?.values() ?? []).map(
                 (nodes: IUserNode[]) => {
                     return (
@@ -40,31 +61,42 @@ export const SearchResults: FC<{}> = () => {
                                 </Table.Head>
                                 <Table.Body>
                                     {nodes.map((node: IUserNode) => (
-                                        <Table.Row key={generateId()}>
-                                            <span>
-                                                {truncate(
-                                                    node._metadata?._title,
-                                                    truncateLength,
-                                                )}
-                                            </span>
-                                            <span>
-                                                {truncate(
-                                                    node._metadata?._subtitle,
-                                                    truncateLength,
-                                                )}
-                                            </span>
-                                            <span>
-                                                {truncate(
-                                                    node._metadata?._clusterId,
-                                                    truncateLength,
-                                                )}
-                                            </span>
-                                            <span>
-                                                {truncate(
-                                                    node._metadata?._body,
-                                                    truncateLength,
-                                                )}
-                                            </span>
+                                        <Table.Row
+                                            key={generateId()}
+                                            onClick={() => {
+                                                graph?.zoomTo(1)
+                                                console.log("clicked", node)
+                                                graphinApis?.focusNodeById(
+                                                    node.id,
+                                                )
+                                                // zoom graph if not zoomed
+                                            }}
+                                            className="hover cursor-pointer"
+                                        >
+                                            <SpanComponent
+                                                term={searchTerm}
+                                                value={node._metadata?._title}
+                                            />
+                                            <SpanComponent
+                                                term={searchTerm}
+                                                value={
+                                                    node._metadata?._subtitle
+                                                }
+                                            />
+                                            <SpanComponent
+                                                term={searchTerm}
+                                                value={node._metadata?._title}
+                                            />
+                                            <SpanComponent
+                                                term={searchTerm}
+                                                value={
+                                                    node._metadata?._clusterId
+                                                }
+                                            />
+                                            <SpanComponent
+                                                term={searchTerm}
+                                                value={node._metadata?._body}
+                                            />
                                         </Table.Row>
                                     ))}
                                 </Table.Body>

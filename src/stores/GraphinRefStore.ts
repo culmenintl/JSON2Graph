@@ -1,4 +1,5 @@
-import G6, { Graph, GraphData, LayoutConfig } from "@antv/g6"
+import { Graph } from "@antv/g6"
+import { ApisType } from "@antv/graphin/lib/apis/types"
 import { createStore } from "@udecode/zustood"
 
 interface State {
@@ -6,7 +7,7 @@ interface State {
     graphRef: Graph | undefined
 
     // Graphin apis
-    graphinApis: any
+    graphinApis: ApisType | undefined
 }
 
 const initialState: State = {
