@@ -2,12 +2,13 @@ import autoAnimate from "@formkit/auto-animate"
 import React, { useEffect, useRef, useState } from "react"
 
 type Props = {
+    speed?: number
     size?: number
     iconOnly?: boolean
 }
-export const Circles: React.FC<Props> = ({ size, iconOnly }) => {
+export const Circles: React.FC<Props> = ({ size, iconOnly, speed = 1000 }) => {
     const [numbers, setNumbers] = useState<number[]>(
-        new Array(150).fill("").map((_, i) => i),
+        new Array(size ?? 60 * 3).fill("").map((_, i) => i),
     )
 
     const randomize = () => {
@@ -20,17 +21,17 @@ export const Circles: React.FC<Props> = ({ size, iconOnly }) => {
     useEffect(() => {
         parent.current &&
             autoAnimate(parent.current, {
-                duration: 1500,
+                duration: speed,
                 easing: "ease-in-out",
             })
     }, [parent])
 
     // call every 1 second
     useEffect(() => {
-        // randomize()
+        randomize()
         const interval = setInterval(() => {
             randomize()
-        }, 1700)
+        }, speed + 100)
         return () => clearInterval(interval)
     }, [])
 

@@ -13,14 +13,14 @@ type Props = {
 // Basic fullscreen loading animation w/ centrifuge logo
 export const LoadingLogo: FC<Props> = () => {
     return (
-        <>
+        <div className="absolute w-full h-full bg-gradient-to-br from-base-100 to-base-200 z-10">
             <div
                 className={
-                    "flex flex-1 flex-col absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 items-center justify-center"
+                    "absolute flex flex-1 flex-col top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 items-center justify-center"
                 }
             >
                 <div className="absolute -z-10">
-                    <Circles />
+                    <Circles speed={1300} />
                 </div>
                 <img
                     alt="Logo"
@@ -40,6 +40,6 @@ export const LoadingLogo: FC<Props> = () => {
                     {/* <Loading variant="dots" className="ml-2" /> */}
                 </span>
             </div>
-        </>
+        </div>
     )
 }
