@@ -1,3 +1,29 @@
+#### 0.1.9 (2023-10-08)
+
+##### Build System / Dependencies
+
+* **fix:**  removed unused component (1bbdf976)
+
+##### Chores
+
+* **app:**  Cleaned up unused, old files (71572da6)
+
+##### New Features
+
+* **UI:**  Added navigation to Settings modal, added some polish to loading, moved layout outside of graph store file (8b41b8c7)
+* **ui:**
+  *  added layout selection (102c9673)
+  *  updated loading logo and state display (6d0609fa)
+
+##### Bug Fixes
+
+* **ui:**
+  *  made loading screen overlay background (a92e61d6)
+  *  made dev panel modal closeable by click (b542ba5f)
+  *  cleaned up theming (de74ba5a)
+  *  created preferences store, persists theme and hover options (d863374b)
+* **api:**  Added client error handling for API call. (4907ad3f)
+
 #### 0.1.8 (2023-09-27)
 
 ##### Bug Fixes
