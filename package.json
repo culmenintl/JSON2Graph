@@ -1,6 +1,6 @@
 {
     "name": "surge-web",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "scripts": {
         "dev": "vite",
         "api:build": "tsc --project api",
