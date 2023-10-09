@@ -37,16 +37,21 @@ export const SearchBar: FC = () => {
                 bordered
                 type="text"
                 placeholder="Search"
+                value={searchTerm ?? ""}
                 onChange={(e) => {
-                    debouncedSearch(e.target.value)
+                    const value = e.target.value
+                    actions.data.setSearchTerm(value)
                 }}
                 onSubmit={(e) => {
                     console.log("submit", e)
                     // prevent form submission
                     e.preventDefault()
                 }}
+                onFocus={() => {
+                    actions.data.showResults(true)
+                }}
             />
-            {searchTerm && (
+            {(searchResults?.size ? true : false) && (
                 <div className="flex flex-1 flex-row fixed bottom-5 right-32 items-center">
                     <div className="">
                         <span className="text-sm text-slate-400 bg-base-10">

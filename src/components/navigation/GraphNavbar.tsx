@@ -8,10 +8,8 @@ import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
 import autoAnimate from "@formkit/auto-animate"
-import { DeveloperPanel } from "../DeveloperPanel"
 import { Layouts, LayoutsMap } from "../../stores/Layouts"
 import { LayoutSelector } from "../LayoutSelector"
-import { BottomNav } from "./BottomNav"
 import { PanelNavigation } from "./PanelNavigation"
 
 // GraphNavbar component, which is the main navbar for the graph view
@@ -45,7 +43,7 @@ export const GraphNavbar: FC = () => {
     }, [dialogRef])
 
     return (
-        <div className="container max-w-xl mx-auto">
+        <div className="flex flex-1 max-w-xl mx-auto pointer-events-auto">
             <Modal ref={dialogRef} backdrop className="max-w-xl p-0">
                 <PanelNavigation />
             </Modal>

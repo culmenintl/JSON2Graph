@@ -3,9 +3,9 @@ import Graphin from "@antv/graphin"
 // Icons from Graphin
 const icons = Graphin.registerFontFamily(IconLoader)
 
-import { ComboConfig, EdgeConfig, GraphData } from "@antv/g6"
+import { ComboConfig, EdgeConfig, Graph, GraphData } from "@antv/g6"
 import { IUserEdge, IUserNode } from "@antv/graphin"
-import { store } from "../stores/Store"
+import { actions, store } from "../stores/Store"
 import {
     CONTENT_COLORS,
     DataToGraphConfig,
@@ -416,4 +416,12 @@ export const stripAndCamelCase = (obj: { [index: string]: any }) => {
         }
         return result
     }, {})
+}
+
+export const initEvents = (graph: Graph) => {
+    graph.on("canvas:click", (event) => {
+        actions.data.showResults(false)
+        const { x, y } = event
+        console.log(`Clicked at (${x}, ${y})`)
+    })
 }

@@ -6,6 +6,7 @@ import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 import { actions, store } from "./Store"
 import { enqueueSnackbar } from "notistack"
+import debounce from "lodash/debounce"
 
 interface State {
     dataSet: DataToGraphConfig
@@ -23,6 +24,7 @@ interface State {
     searchApi: SearchApi
     searchTerm: string | undefined
     searchResults: Map<string, IUserNode[]> | undefined
+    showResults: boolean
 }
 
 const initialState: State = {
@@ -46,6 +48,7 @@ const initialState: State = {
     searchApi: new SearchApi(),
     searchTerm: undefined,
     searchResults: undefined,
+    showResults: false,
 }
 
 export const DataStore = createStore("Data")(
@@ -155,8 +158,7 @@ export const DataStore = createStore("Data")(
 
     searchNodesApi: async (searchTerm: string) => {
         if (!searchTerm) {
-            set.searchResults(new Map<string, IUserNode[]>())
-            set.searchTerm(undefined)
+            actions.data.clearSearch()
             return
         }
         set.searchTerm(searchTerm)
@@ -172,6 +174,27 @@ export const DataStore = createStore("Data")(
 
         console.log("grouped", groupedResults)
         set.searchResults(groupedResults)
+    },
+    setSearchTerm: async (searchTerm: string) => {
+        if (!searchTerm) {
+            set.searchResults(new Map<string, IUserNode[]>())
+            set.searchTerm(undefined)
+            return
+        }
+        const debouncedSearch = debounce(async (value: string) => {
+            // console.log("searching for", value)
+            await actions.data.searchNodesApi(get.searchTerm() as string)
+        }, 1000)
+
+        set.searchTerm(searchTerm)
+        set.showResults(true)
+
+        debouncedSearch(searchTerm)
+    },
+    clearSearch: async () => {
+        set.searchResults(new Map<string, IUserNode[]>())
+        set.searchTerm(undefined)
+        set.showResults(false)
     },
 }))
 

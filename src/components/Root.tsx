@@ -15,6 +15,7 @@ import { actions, useTrackedStore } from "../stores/Store"
 import { NodeToolTip } from "./NodeToolTip"
 import { LoadingLogo } from "./LoadingLogo"
 import autoAnimate from "@formkit/auto-animate"
+import { initEvents } from "../lib/Utils"
 
 export const Root: FC<{}> = () => {
     const userTheme = useTrackedStore().pref.theme()
@@ -74,6 +75,7 @@ export const Root: FC<{}> = () => {
                 // setGraph(graph)
                 // console.log("ref", graphinRef, graph, apis)
                 // console.log("graphinInstance", graph.getNodes())
+                initEvents(graph)
                 actions.graphinRef.graphRef(graph)
                 actions.graphinRef.graphinApis(apis)
             }
@@ -122,7 +124,7 @@ export const Root: FC<{}> = () => {
                     <ZoomCanvas enableOptimize sensitivity={1} />
                 </Graphin>
             )}
-            <div className="absolute bottom-0 w-full pb-5">
+            <div className="absolute bottom-0 w-full pb-5 pointer-events-none">
                 <GraphNavbar />
             </div>
         </div>

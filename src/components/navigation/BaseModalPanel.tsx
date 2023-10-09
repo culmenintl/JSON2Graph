@@ -6,7 +6,7 @@ interface Props {
 }
 export const BaseModalPanel: React.FC<Props> = ({ children }) => {
     return (
-        <div className="container p-4 flex flex-col h-full">
+        <div className="p-4 flex flex-col h-full">
             <Card
                 bordered={false}
                 compact

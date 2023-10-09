@@ -3,7 +3,7 @@ import { Button, Range, Table, Toggle, Input, Loading } from "react-daisyui"
 import { actions, useStore, useTrackedStore } from "../stores/Store"
 
 import { useHotkeys } from "react-hotkeys-hook"
-import { ChangelogModal } from "./ChangelogModal"
+// import { ChangelogModal } from "./ChangelogModal"
 import { BaseModalPanel } from "./navigation/BaseModalPanel"
 
 const SampleJsonData = (data: Object) => (
@@ -28,15 +28,15 @@ export const DeveloperPanel: React.FC = () => {
     const hoverMode = useTrackedStore().pref.hoverMode()
     const JsonSample = useStore().data.JsonSample()
 
-    const nodesCount = useTrackedStore()
-        .graphinRef.graphRef()
-        ?.getNodes()
-        .length.toLocaleString()
+    // const nodesCount = useTrackedStore()
+    //     .graphinRef.graphRef()
+    //     ?.getNodes()
+    //     .length?.toLocaleString()
 
-    const edgesCount = useTrackedStore()
-        .graphinRef.graphRef()
-        ?.getEdges()
-        .length.toLocaleString()
+    // const edgesCount = useTrackedStore()
+    //     .graphinRef.graphRef()
+    //     ?.getEdges()
+    //     .length?.toLocaleString()
 
     useHotkeys("mod+i", () => {
         if (menuOpen) actions.app.menuOpen(false)
@@ -59,7 +59,7 @@ export const DeveloperPanel: React.FC = () => {
                 <span className="absolute top-0 right-2 text-sm text-gray-400 underline">
                     {APP_VERSION}
                 </span>
-                <ChangelogModal />
+                {/* <ChangelogModal /> */}
                 <Input
                     className="flex flex-1 w-full"
                     size="md"
@@ -149,11 +149,11 @@ export const DeveloperPanel: React.FC = () => {
                     </Table.Row>
                     <Table.Row>
                         <span>Nodes</span>
-                        <span className="ml-auto">{nodesCount}</span>
+                        <span className="ml-auto">{0}</span>
                     </Table.Row>
                     <Table.Row>
                         <span>Edges</span>
-                        <span className="ml-auto">{edgesCount}</span>
+                        <span className="ml-auto">{0}</span>
                     </Table.Row>
 
                     <Table.Row>
