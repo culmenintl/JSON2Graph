@@ -1,3 +1,11 @@
+#### 0.1.10 (2023-10-09)
+
+##### New Features
+
+* **search:**
+  *  Polished search functionality (9c8b1894)
+  *  Updated search results to hightlight matching values, now click to focus on node from results, also animation polish. (28f33dbf)
+
 #### 0.1.9 (2023-10-08)
 
 ##### Build System / Dependencies
