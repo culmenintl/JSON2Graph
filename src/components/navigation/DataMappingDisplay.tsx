@@ -11,6 +11,7 @@ const isNodeByKey = (key: string, config: _NodeConfig) => {
     }
     return false
 }
+
 const isDataByKey = (key: string, config: _NodeConfig) => {
     if (config["content_data_property"] === key) {
         return true

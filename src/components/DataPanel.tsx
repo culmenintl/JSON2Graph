@@ -80,10 +80,21 @@ export const DataPanel: React.FC = () => {
                         <span className="label label-text">
                             Local Examples:
                         </span>
-                        <Badge variant="outline" color="primary">
+                        <Badge
+                            variant="outline"
+                            color="primary"
+                            onClick={() => alert("This is currently disabled.")}
+                            className="cursor-pointer"
+                        >
                             Reddit 10k
                         </Badge>
-                        <Badge variant="outline">Yelp 3.5k</Badge>
+                        <Badge
+                            variant="outline"
+                            onClick={() => alert("This is currently disabled.")}
+                            className="cursor-pointer"
+                        >
+                            Yelp 3.5k
+                        </Badge>
                     </div>
                 </div>
 

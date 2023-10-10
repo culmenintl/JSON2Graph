@@ -13,7 +13,7 @@ type Props = {
 // Basic fullscreen loading animation w/ centrifuge logo
 export const LoadingLogo: FC<Props> = () => {
     return (
-        <div className="absolute w-full h-full bg-gradient-to-br from-base-100 to-base-200 z-10">
+        <div className="absolute w-full h-full bg-gradient-to-br from-base-100 to-base-300 z-10">
             <div
                 className={
                     "absolute flex flex-1 flex-col top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 items-center justify-center"

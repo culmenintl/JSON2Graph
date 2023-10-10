@@ -43,7 +43,7 @@ export const Circles: React.FC<Props> = ({ size, iconOnly, speed = 1000 }) => {
             <div className="boxes w-64 h-64" ref={parent}>
                 {numbers.map((number) => (
                     <div
-                        className="box border rounded-full bg-base-200 m-2 w-1 h-1"
+                        className="box border rounded-full bg-gray-400 m-2 w-1 h-1"
                         key={number}
                     >
                         {null}
