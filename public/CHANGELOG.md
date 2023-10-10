@@ -1,3 +1,9 @@
+#### 0.1.11 (2023-10-10)
+
+##### New Features
+
+* **ui:**  Seperated data / graph / settings panels, cleaned up UI. Now showing Config Settings & Mapping Preview (fbaa6978)
+
 #### 0.1.10 (2023-10-09)
 
 ##### New Features
