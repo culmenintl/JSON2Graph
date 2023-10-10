@@ -3,10 +3,7 @@ import { Button, Collapse, Table } from "react-daisyui"
 import { actions, store, useTrackedStore } from "../../stores/Store"
 
 import { IUserNode } from "@antv/graphin"
-import {
-    generateUniqueId as generateId,
-    truncateString as truncate,
-} from "../../lib/Utils"
+import { generateUniqueId as generateId, truncateString } from "../../lib/Utils"
 
 type SpanProps = {
     term?: string
@@ -32,7 +29,7 @@ const SpanComponent: FC<SpanProps> = ({ term, value }) => {
                             : ""
                     }
                 >
-                    {truncate(part, truncateLength)}
+                    {truncateString(part, truncateLength)}
                 </span>
             ))}
         </span>

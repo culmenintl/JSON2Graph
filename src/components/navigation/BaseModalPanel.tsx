@@ -6,14 +6,12 @@ interface Props {
 }
 export const BaseModalPanel: React.FC<Props> = ({ children }) => {
     return (
-        <div className="p-4 flex flex-col h-full">
-            <Card
-                bordered={false}
-                compact
-                className="flex-1 overflow-y-auto h-full"
-            >
-                {children}
-            </Card>
-        </div>
+        <Card
+            bordered={false}
+            compact
+            className="flex-1 overflow-y-auto min-h-[75vh]"
+        >
+            <Card.Body className="">{children}</Card.Body>
+        </Card>
     )
 }

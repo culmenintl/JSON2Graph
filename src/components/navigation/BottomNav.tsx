@@ -2,8 +2,8 @@ import { FC } from "react"
 import { BottomNavigation } from "react-daisyui"
 import {
     CubeTransparentIcon,
-    PlayPauseIcon,
     CogIcon,
+    CircleStackIcon,
 } from "@heroicons/react/24/outline"
 import { actions, useTrackedStore } from "../../stores/Store"
 
@@ -23,20 +23,23 @@ export const BottomNav: FC = () => {
                     e.preventDefault()
                     actions.app.panelNavigation("data")
                 }}
+                className="p-1"
             >
-                <CubeTransparentIcon />
+                <CircleStackIcon />
                 <BottomNavigation.Label>Data</BottomNavigation.Label>
             </BottomNavigation.Item>
             <BottomNavigation.Item
-                active={isSelected("layout")}
-                color={isSelected("layout") ? "primary" : undefined}
+                active={isSelected("graph")}
+                color={isSelected("graph") ? "primary" : undefined}
                 onClick={(e) => {
                     e.preventDefault()
-                    actions.app.panelNavigation("layout")
+                    actions.app.panelNavigation("graph")
                 }}
+                className="p-1"
             >
-                <PlayPauseIcon />
-                <BottomNavigation.Label>Layout</BottomNavigation.Label>
+                <CubeTransparentIcon />
+
+                <BottomNavigation.Label>Graph</BottomNavigation.Label>
             </BottomNavigation.Item>
             <BottomNavigation.Item
                 active={panelNavigation === "settings"}
@@ -45,6 +48,7 @@ export const BottomNav: FC = () => {
                     e.preventDefault()
                     actions.app.panelNavigation("settings")
                 }}
+                className="p-1"
             >
                 <CogIcon />
                 <BottomNavigation.Label>Settings</BottomNavigation.Label>

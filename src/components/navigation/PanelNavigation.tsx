@@ -2,10 +2,10 @@ import React from "react"
 import autoAnimate from "@formkit/auto-animate"
 
 import { useTrackedStore } from "../../stores/Store"
-import { DeveloperPanel } from "../DeveloperPanel"
+import { DataPanel } from "../DataPanel"
 import { BottomNav } from "./BottomNav"
 import { SettingsPanel } from "./SettingsPanel"
-import { LayoutsPanel } from "./LayoutsPanel"
+import { GraphPanel } from "./GraphPanel"
 
 export const PanelNavigation: React.FC = () => {
     const panelNavigation = useTrackedStore().app.panelNavigation()
@@ -18,13 +18,13 @@ export const PanelNavigation: React.FC = () => {
     const showPanel = () => {
         switch (panelNavigation) {
             case "data":
-                return <DeveloperPanel />
-            case "layout":
-                return <LayoutsPanel />
+                return <DataPanel />
+            case "graph":
+                return <GraphPanel />
             case "settings":
                 return <SettingsPanel />
             default:
-                return <DeveloperPanel />
+                return <DataPanel />
         }
     }
 

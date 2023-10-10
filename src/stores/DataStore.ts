@@ -32,7 +32,7 @@ const initialState: State = {
     // graphinData: Utils.mock(10),
     graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
     JsonSample: undefined,
-    dataUrl: "/reddit.comments.10k.json",
+    dataUrl: "reddit.comments.10k.json",
     dataSet: {
         data: undefined,
         nodes: undefined,
@@ -74,7 +74,7 @@ export const DataStore = createStore("Data")(
             // )
 
             // const resp = await fetch("https://swapi.dev/api/people")
-            const resp = await fetch(get.dataUrl() as string)
+            const resp = await fetch(`/${get.dataUrl()}` as string)
             const json = await resp.json()
 
             actions.app.status(STATUS.AI)
@@ -99,6 +99,8 @@ export const DataStore = createStore("Data")(
 
             // get the first 5 rows if they exist
             const sample = subDataset.slice(0, 5)
+
+            set.JsonSample(sample[0])
 
             const bodyReq = {
                 example: JSON.stringify(sample),

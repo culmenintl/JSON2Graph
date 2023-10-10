@@ -7,6 +7,7 @@ import { stripAndCamelCase } from "../lib/Utils"
 interface State {
     theme: string
     colors: ThemeColors
+    aiMappingEnabled: boolean
 
     // graph pref
     hoverMode: boolean
@@ -16,6 +17,7 @@ const initialState: State = {
     // app state
     theme: "light",
     colors: stripAndCamelCase(daisyuiColors)[`${"light"}`],
+    aiMappingEnabled: false,
 
     // graph pref
     hoverMode: true,

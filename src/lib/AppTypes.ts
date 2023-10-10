@@ -77,7 +77,13 @@ export interface _EdgeConfig extends ID_CONFIG {
     label?: string
 }
 
+export type GraphConfig = {
+    datasets: DataToGraphConfig[]
+}
+
 export type DataToGraphConfig = {
+    id?: string
+    url?: string
     description?: string
     data?: any
     nodes: _NodeConfig[] | undefined

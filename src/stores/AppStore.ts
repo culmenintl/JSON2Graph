@@ -13,7 +13,7 @@ interface State {
     loading: boolean
     menuOpen: boolean
     colors: ThemeColors
-    panelNavigation: "data" | "layout" | "settings"
+    panelNavigation: "data" | "graph" | "settings"
 }
 
 const initialState: State = {

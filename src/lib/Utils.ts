@@ -1,11 +1,12 @@
 import IconLoader from "@antv/graphin-icons"
 import Graphin from "@antv/graphin"
+import { findIndex, isEqual } from "lodash"
 // Icons from Graphin
 const icons = Graphin.registerFontFamily(IconLoader)
 
 import { ComboConfig, EdgeConfig, Graph, GraphData } from "@antv/g6"
 import { IUserEdge, IUserNode } from "@antv/graphin"
-import { actions, store } from "../stores/Store"
+import { actions, store, useTrackedStore } from "../stores/Store"
 import {
     CONTENT_COLORS,
     DataToGraphConfig,
@@ -33,8 +34,21 @@ export const getColorFromNodeConfig = (
     nodeConfig: _NodeConfig,
     content = false,
 ) => {
+    // console.log("config", nodeConfig)
+    if (!nodeConfig) {
+        return undefined
+    }
+
+    const configs = store.data.dataSet().nodes
+    // console.log("configs", configs)
+    if (!configs) {
+        return undefined
+    }
+
     // find index of the nodeConfig in the list of nodeConfigs
-    const index = store.data.dataSet().nodes?.indexOf(nodeConfig)
+    const index = findIndex(configs, (config) => isEqual(config, nodeConfig))
+
+    // console.log("index", index)
 
     // get the color palette
     const themeColors = store.app.colors()
@@ -42,13 +56,10 @@ export const getColorFromNodeConfig = (
     const source = content ? CONTENT_COLORS : NODE_COLORS
 
     // get the color from the palette for the nodeConfig index
-    const value =
-        index !== undefined ? Object.values(source)[index as number] : undefined
+    const value = Object.values(source)[index]
 
-    // return the color
-    return value !== undefined
-        ? themeColors[value as keyof ThemeColors]
-        : undefined
+    // console.log("value", value)
+    return themeColors[value as keyof ThemeColors]
 }
 
 export const setNodeColor = (node: IUserNode, nodeConfig: _NodeConfig) => {
@@ -294,19 +305,6 @@ export const addNodeToG6Graph = (
                     label: {
                         value: row[nodeConfig.content_data_property],
                     },
-                }),
-                ...(nodeConfig.label && {
-                    lavel: nodeConfig.clusterLabel,
-                    // badges: [
-                    //     {
-                    //         position: "RT",
-                    //         type: "text",
-                    //         value: nodeConfig.clusterLabel,
-                    //         size: [15, 15],
-                    //         fill: "red",
-                    //         color: "#fff",
-                    //     },
-                    // ],
                 }),
             },
 
