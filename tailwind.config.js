@@ -19,7 +19,7 @@ module.exports = {
     ],
     daisyui: {
         themes: [
-            "light", // first one will be the default theme
+            "light",
             "dark",
             "cupcake",
             "bumblebee",
@@ -40,6 +40,14 @@ module.exports = {
             "black",
             "luxury",
             "dracula",
+            "cmyk",
+            "autumn",
+            "business",
+            "acid",
+            "lemonade",
+            "night",
+            "coffee",
+            "winter",
         ],
     },
 }

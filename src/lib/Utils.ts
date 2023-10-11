@@ -51,7 +51,10 @@ export const getColorFromNodeConfig = (
     // console.log("index", index)
 
     // get the color palette
-    const themeColors = store.app.colors()
+    const themeColors = store.pref.colors()
+    if (!themeColors) {
+        return undefined
+    }
 
     const source = content ? CONTENT_COLORS : NODE_COLORS
 

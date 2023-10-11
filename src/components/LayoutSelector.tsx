@@ -17,48 +17,47 @@ export const LayoutSelector: React.FC = () => {
                 {Object.keys(LayoutsMap).map((key) => {
                     const layout = LayoutsMap[key]
                     return (
-                        <>
-                            <Dropdown.Item
-                                key={key}
-                                onClick={() => {
-                                    actions.graph.selectedLayout(layout)
-                                }}
-                                className="flex flex-1 p-1 gap-2 "
-                            >
-                                <div className="flex flex-1 flex-row p-1">
-                                    {/* image */}
-                                    <div className="flex">
-                                        <img
-                                            alt="Layout"
-                                            src={layoutImage}
-                                            className="w-16 rounded-sm"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-1 pl-2">
-                                        <span className="text-base">
-                                            {layout._meta?.title}
-                                        </span>
-                                        <span className="text-xs text-gray-400 line-clamp-1">
-                                            {layout._meta?.description}
-                                        </span>
-                                        <span className="flex flex-1 flex-row gap-1">
-                                            {layout._meta?.tags?.map((tag) => {
-                                                return (
-                                                    <Badge
-                                                        size="sm"
-                                                        outline
-                                                        color="info"
-                                                    >
-                                                        {tag}
-                                                    </Badge>
-                                                )
-                                            })}
-                                        </span>
-                                    </div>
+                        <Dropdown.Item
+                            key={key}
+                            onClick={() => {
+                                actions.graph.selectedLayout(layout)
+                            }}
+                            className="flex flex-1 p-1 gap-2 "
+                        >
+                            <div className="flex flex-1 flex-row p-1">
+                                {/* image */}
+                                <div className="flex">
+                                    <img
+                                        alt="Layout"
+                                        src={layoutImage}
+                                        className="w-16 rounded-sm"
+                                    />
                                 </div>
-                                {/* <p>{subtitle}</p> */}
-                            </Dropdown.Item>
-                        </>
+                                <div className="grid grid-cols-1 pl-2">
+                                    <span className="text-base">
+                                        {layout._meta?.title}
+                                    </span>
+                                    <span className="text-xs text-gray-400 line-clamp-1">
+                                        {layout._meta?.description}
+                                    </span>
+                                    <span className="flex flex-1 flex-row gap-1">
+                                        {layout._meta?.tags?.map((tag) => {
+                                            return (
+                                                <Badge
+                                                    size="sm"
+                                                    outline
+                                                    color="info"
+                                                    key={tag + key}
+                                                >
+                                                    {tag}
+                                                </Badge>
+                                            )
+                                        })}
+                                    </span>
+                                </div>
+                            </div>
+                            {/* <p>{subtitle}</p> */}
+                        </Dropdown.Item>
                     )
                 })}
             </Dropdown.Menu>

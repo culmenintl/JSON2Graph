@@ -5,14 +5,11 @@ import { STATUS, ThemeColors } from "../lib/AppTypes"
 
 import { stripAndCamelCase } from "../lib/Utils"
 
-const initTheme = "light"
-
 interface State {
     devMode: boolean
     status: STATUS | undefined
     loading: boolean
     menuOpen: boolean
-    colors: ThemeColors
     panelNavigation: "data" | "graph" | "settings"
 }
 
@@ -21,7 +18,6 @@ const initialState: State = {
     devMode: false,
     menuOpen: false,
     status: STATUS.FETCHING,
-    colors: stripAndCamelCase(daisyuiColors)[`${initTheme}`],
     panelNavigation: "data",
 }
 

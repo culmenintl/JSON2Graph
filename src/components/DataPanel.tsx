@@ -7,10 +7,10 @@ import { useHotkeys } from "react-hotkeys-hook"
 import { BaseModalPanel } from "./navigation/BaseModalPanel"
 import { DataMappingDisplay } from "./navigation/DataMappingDisplay"
 import { MiniGraph } from "./MiniGraph"
-import { ChangelogModal } from "./ChangelogModal"
 import { GraphData } from "@antv/g6"
 import { exportGraphAsCSV } from "../lib/Utils"
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
+import ThemeSwitcher from "./navigation/ThemeSwitcher"
 
 const SampleJsonData = (data: Object) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
@@ -128,8 +128,13 @@ export const DataPanel: React.FC = () => {
                         Map your data to a graph structure using AI
                     </span>
                 </div>
+                <h3>Node Colors</h3>
+                <div>
+                    <ThemeSwitcher />
+                </div>
             </div>
-            <div className="fixed bottom-20 right-0 left-0 justify-center flex">
+
+            <div className="mx-auto">
                 <Button onClick={onExport} className="w-96" variant="link">
                     Export .CSV <ArrowUpOnSquareIcon className="h-5 w-5" />
                 </Button>

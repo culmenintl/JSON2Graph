@@ -6,7 +6,8 @@ import { stripAndCamelCase } from "../lib/Utils"
 
 interface State {
     theme: string
-    colors: ThemeColors
+    nodeTheme: string
+    colors: ThemeColors | undefined
     aiMappingEnabled: boolean
 
     // graph pref
@@ -16,11 +17,13 @@ interface State {
 const initialState: State = {
     // app state
     theme: "light",
-    colors: stripAndCamelCase(daisyuiColors)[`${"light"}`],
+    nodeTheme: "light",
+    // colors: stripAndCamelCase(daisyuiColors)[`${"light"}`],
+    colors: undefined,
     aiMappingEnabled: false,
 
     // graph pref
-    hoverMode: true,
+    hoverMode: false,
 }
 
 export const PreferencesStore = createStore("Preferences")(
@@ -29,7 +32,13 @@ export const PreferencesStore = createStore("Preferences")(
         devtools: { enabled: true },
         persist: {
             enabled: true,
-            name: "Pref",
+            name: "Preferences",
         },
     },
-)
+).extendActions((set, get, api) => ({
+    setNodeColors: (theme: string) => {
+        set.nodeTheme(theme)
+        const colors = stripAndCamelCase(daisyuiColors)[`${theme}`]
+        set.colors(colors)
+    },
+}))

@@ -13,7 +13,7 @@ import { LayoutSelector } from "../LayoutSelector"
 import { PanelNavigation } from "./PanelNavigation"
 import { exportGraphAsCSV } from "../../lib/Utils"
 import { GraphData } from "@antv/g6"
-import { LegendComponent } from "../LegendComponent"
+import { LegendComponent } from "./LegendComponent"
 
 // GraphNavbar component, which is the main navbar for the graph view
 // contains the search bar, search results, and stats bar

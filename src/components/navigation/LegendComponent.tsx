@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { Badge } from "react-daisyui"
-import { useTrackedStore } from "../stores/Store"
-import { getColorFromNodeConfig } from "../lib/Utils"
+import { useTrackedStore } from "../../stores/Store"
+import { getColorFromNodeConfig } from "../../lib/Utils"
 
 export const LegendComponent: FC<{}> = () => {
     const dataset = useTrackedStore().data.dataSet()
