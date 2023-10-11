@@ -1,3 +1,10 @@
+#### 0.2.1 (2023-10-11)
+
+##### New Features
+
+* **export:**  Added export to CSV (9896597a)
+* **state:**  added handling for AI request pref (ff05d46d)
+
 #### 0.1.13 (2023-10-11)
 
 ##### Bug Fixes
