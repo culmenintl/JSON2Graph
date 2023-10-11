@@ -114,29 +114,35 @@ export const DataStore = createStore("Data")(
                 body: JSON.stringify(bodyReq),
             }
 
-            try {
-                const mapReq = await fetch("/api/map", options)
+            if (store.pref.aiMappingEnabled()) {
+                try {
+                    const mapReq = await fetch("/api/map", options)
 
-                const mapResp = await mapReq.json()
+                    const mapResp = await mapReq.json()
 
-                console.log("mapResp", JSON.parse(mapResp))
+                    console.log("mapResp", JSON.parse(mapResp))
 
-                actions.app.status(STATUS.SHAPING)
+                    actions.app.status(STATUS.SHAPING)
 
-                const config = JSON.parse(mapResp)
+                    const config = JSON.parse(mapResp)
 
-                set.dataSet({ ...config, data: subDataset })
-            } catch (error) {
-                // console.error("Failed to fetch.", error)
+                    set.dataSet({ ...config, data: subDataset })
+                } catch (error) {
+                    // console.error("Failed to fetch.", error)
+                    const parsedConfig = JSON.parse(JSON.stringify(fileConfig))
+                    const config = parsedConfig.datasets[0]
+                    set.dataSet({ ...config, data: subDataset })
+                    enqueueSnackbar(
+                        "Unable to call API. Using file configuration.",
+                        {
+                            variant: "error",
+                        },
+                    )
+                }
+            } else {
                 const parsedConfig = JSON.parse(JSON.stringify(fileConfig))
                 const config = parsedConfig.datasets[0]
                 set.dataSet({ ...config, data: subDataset })
-                enqueueSnackbar(
-                    "Unable to call API. Using file configuration.",
-                    {
-                        variant: "error",
-                    },
-                )
             }
 
             const graphinData = populateGraphinData(
