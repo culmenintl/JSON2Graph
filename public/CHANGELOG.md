@@ -1,3 +1,9 @@
+#### 0.2.7 (2023-10-11)
+
+##### Bug Fixes
+
+* **ui:**  re added loading screen (baf64b61)
+
 #### 0.2.6 (2023-10-11)
 
 ##### New Features
