@@ -1,3 +1,9 @@
+#### 0.2.4 (2023-10-11)
+
+##### New Features
+
+* **ui:**  added legend component, build fix attempt (672927ce)
+
 #### 0.2.3 (2023-10-11)
 
 ##### New Features
