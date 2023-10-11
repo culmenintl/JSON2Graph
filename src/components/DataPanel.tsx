@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Toggle, Input, Collapse, Badge, Card, Button } from "react-daisyui"
 import { actions, store, useTrackedStore } from "../stores/Store"
 
@@ -10,20 +10,24 @@ import { MiniGraph } from "./MiniGraph"
 import { GraphData } from "@antv/g6"
 import { exportGraphAsCSV } from "../lib/Utils"
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
+import fileConfig from "../../configs/data.mapping.json"
 import ThemeSwitcher from "./navigation/ThemeSwitcher"
-
-const SampleJsonData = (data: Object) => (
-    <pre>{JSON.stringify(data, null, 2)}</pre>
-)
+import { GraphConfig } from "../lib/AppTypes"
 
 export const DataPanel: React.FC = () => {
-    const description = useTrackedStore().data.dataSet().description
+    const description = useTrackedStore().data.dataSet()?.description
     const aiMappingEnabled = useTrackedStore().pref.aiMappingEnabled()
 
     // handles the opening and closing of the menu
     const menuOpen = useTrackedStore().app.menuOpen()
+    const config = fileConfig as unknown as GraphConfig
+
+    const configIndex = useTrackedStore().data.configIndex()
 
     useHotkeys("mod+i", () => {
+        const graph = store.graphinRef.graphRef()
+        const graphData = graph?.save()
+        console.log(graphData)
         if (menuOpen) actions.app.menuOpen(false)
         else actions.app.menuOpen(true)
     })
@@ -41,7 +45,6 @@ export const DataPanel: React.FC = () => {
         // update the g6 layout to force a re-render
         const graph = store.graphinRef.graphRef()
         const graphData = graph?.save()
-
         exportGraphAsCSV(graphData as GraphData)
     }
 
@@ -70,7 +73,9 @@ export const DataPanel: React.FC = () => {
                             bordered
                             type="text"
                             placeholder={"Enter a data url"}
-                            disabled={useTrackedStore().app.loading()}
+                            disabled={
+                                !useTrackedStore().pref.aiMappingEnabled()
+                            }
                             onChange={(e) => {
                                 actions.data.dataUrl(e.target.value)
                             }}
@@ -78,11 +83,44 @@ export const DataPanel: React.FC = () => {
                             value={useTrackedStore().data.dataUrl()}
                         />
                     </div>
+                    <h3>Local Examples:</h3>
                     <div className="flex flex-row items-center">
-                        <span className="label label-text">
-                            Local Examples:
-                        </span>
-                        <Badge
+                        <div className="grid grid-cols-2 gap-2">
+                            {config.datasets.map((dataset, index) => {
+                                return (
+                                    <Card
+                                        className={`hover:bg-base-200 cursor-pointer ${
+                                            index === configIndex
+                                                ? "border-primary"
+                                                : ""
+                                        }`}
+                                        onClick={async () => {
+                                            await actions.data.setConfigIndex(
+                                                index,
+                                            )
+                                        }}
+                                        key={dataset.label}
+                                    >
+                                        <Card.Body className="">
+                                            <span>{dataset.label}</span>
+                                            <p className="text-xs text-gray-400">
+                                                {dataset.description}
+                                            </p>
+                                            {index === configIndex && (
+                                                <Badge
+                                                    color="primary"
+                                                    className="text-xs"
+                                                    outline
+                                                >
+                                                    Active
+                                                </Badge>
+                                            )}
+                                        </Card.Body>
+                                    </Card>
+                                )
+                            })}
+                        </div>
+                        {/* <Badge
                             variant="outline"
                             color="primary"
                             onClick={() => alert("This is currently disabled.")}
@@ -92,11 +130,14 @@ export const DataPanel: React.FC = () => {
                         </Badge>
                         <Badge
                             variant="outline"
-                            onClick={() => alert("This is currently disabled.")}
+                            onClick={async () => {
+                                // alert("This is currently disabled.")
+                                await actions.data.setConfigIndex(2)
+                            }}
                             className="cursor-pointer"
                         >
                             Yelp 3.5k
-                        </Badge>
+                        </Badge> */}
                     </div>
                 </div>
 
@@ -136,7 +177,8 @@ export const DataPanel: React.FC = () => {
 
             <div className="mx-auto">
                 <Button onClick={onExport} className="w-96" variant="link">
-                    Export .CSV <ArrowUpOnSquareIcon className="h-5 w-5" />
+                    Export Graph .CSV
+                    <ArrowUpOnSquareIcon className="h-5 w-5" />
                 </Button>
             </div>
         </BaseModalPanel>

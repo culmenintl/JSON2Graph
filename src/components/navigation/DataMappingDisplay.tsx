@@ -53,7 +53,7 @@ const NodeBadge: React.FC<{ JSONKey: string; configs: _NodeConfig[] }> = ({
 
 export const DataMappingDisplay: React.FC = () => {
     const config = fileConfig as unknown as GraphConfig
-    const nodeConfigs = config.datasets[0].nodes
+    const nodeConfigs = useTrackedStore().data.dataSet()?.nodes
     const graphReady = useTrackedStore().graph.graphReady()
 
     const dataJson = store.data?.JsonSample() as any
@@ -69,6 +69,7 @@ export const DataMappingDisplay: React.FC = () => {
             <Table.Body>
                 {Object.keys(dataJson).map((key, index) => {
                     if (!nodeConfigs) return null
+                    console.log()
                     return (
                         <Table.Row key={key + index}>
                             <div className="truncate overflow-x-auto">
@@ -81,7 +82,10 @@ export const DataMappingDisplay: React.FC = () => {
                                 </div>
                             </div>
                             <code className="">
-                                {truncateString(dataJson[key], 15)}
+                                {truncateString(
+                                    JSON.stringify(dataJson[key]),
+                                    15,
+                                )}
                             </code>
                         </Table.Row>
                     )

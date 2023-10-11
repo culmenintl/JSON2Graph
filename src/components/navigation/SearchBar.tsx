@@ -38,7 +38,7 @@ export const SearchBar: FC = () => {
                     actions.data.setSearchTerm(value)
                 }}
                 onSubmit={(e) => {
-                    console.log("submit", e)
+                    // console.log("submit", e)
                     // prevent form submission
                     e.preventDefault()
                 }}

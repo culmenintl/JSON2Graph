@@ -39,7 +39,7 @@ export const getColorFromNodeConfig = (
         return undefined
     }
 
-    const configs = store.data.dataSet().nodes
+    const configs = store.data.dataSet()?.nodes
     // console.log("configs", configs)
     if (!configs) {
         return undefined
@@ -87,7 +87,7 @@ function setSizeBasedOnDegrees(graphData: GraphData) {
     )
 
     const minSize = 10
-    const maxSize = maxDegree * 10
+    const maxSize = maxDegree * 3
 
     graphData.nodes?.forEach((node) => {
         // console.log(node.clusterLabel.length)
@@ -290,14 +290,16 @@ export const addNodeToG6Graph = (
     }
 
     const nodeExists = graphData.nodes.some(
-        (node) => node.id === record[nodeConfig.id_data_property as string],
+        (node) =>
+            node.id ===
+            record[nodeConfig.id_data_property as string].toString(),
     )
 
     // console.log("nodeExists", nodeExists)
 
     if (!nodeExists) {
         const node: ExtendedNode = {
-            id: record[nodeConfig.id_data_property as string],
+            id: record[nodeConfig.id_data_property as string].toString(),
             ...(nodeConfig.content_data_property && {
                 label: {
                     value: row[nodeConfig.content_data_property],
@@ -353,7 +355,7 @@ export const addEdgesToG6Graph = (
     row: unknown,
     edgeConfig: _EdgeConfig,
 ): void => {
-    const record = row as Record<string, unknown>
+    const record = row as Record<string, string>
 
     if (
         !record[edgeConfig.source_node_id] ||
@@ -379,8 +381,8 @@ export const addEdgesToG6Graph = (
             id: `${record[edgeConfig.source_node_id]}-${
                 record[edgeConfig.target_node_id]
             }`,
-            source: record[edgeConfig.source_node_id] as string,
-            target: record[edgeConfig.target_node_id] as string,
+            source: record[edgeConfig.source_node_id].toString() as string,
+            target: record[edgeConfig.target_node_id].toString() as string,
             label: edgeConfig.edgeLabel
                 ? record[edgeConfig.edgeLabel as string]
                 : undefined,
@@ -434,7 +436,7 @@ export const exportGraphAsCSV = (graphData: GraphData) => {
     // Create a CSV string with headers for nodes and edges
     let csv = "node_type,row\n"
     nodes.forEach((node) => {
-        console.log("node", node)
+        // console.log("node", node)
         csv += `${JSON.stringify(node._metadata._type)},${JSON.stringify(
             node._metadata._data,
         )}\n`
@@ -451,5 +453,25 @@ export const exportGraphAsCSV = (graphData: GraphData) => {
         `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`,
     )
     link.setAttribute("download", "graph.csv")
+    link.click()
+}
+
+export const exportNodesAsCsv = (nodes: ExtendedNode[]) => {
+    // Create a CSV string with headers for nodes and edges
+    let csv = "node_type,row\n"
+    nodes.forEach((node) => {
+        // console.log("node", node)
+        csv += `${JSON.stringify(node._metadata._type)},${JSON.stringify(
+            node._metadata._data,
+        )}\n`
+    })
+
+    // Create a download link and click it to download the CSV file
+    const link = document.createElement("a")
+    link.setAttribute(
+        "href",
+        `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`,
+    )
+    link.setAttribute("download", "node-selection.csv")
     link.click()
 }

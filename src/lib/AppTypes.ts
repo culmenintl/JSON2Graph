@@ -92,6 +92,7 @@ export type GraphConfig = {
 export type DataToGraphConfig = {
     id?: string
     url?: string
+    label?: string
     description?: string
     data?: any
     nodes: _NodeConfig[] | undefined
@@ -101,7 +102,7 @@ export type DataToGraphConfig = {
 export type _GraphData = {
     nodes: ExtendedNode[]
     edges: IUserEdge[]
-    combos: ComboConfig[]
+    combos?: ComboConfig[]
 }
 
 export enum STATUS {

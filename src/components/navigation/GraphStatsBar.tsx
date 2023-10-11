@@ -25,7 +25,7 @@ export const GraphStatsBar: FC<{}> = () => {
         totalRows >= 1000
             ? `${Math.floor(totalRows / 1000)}k`
             : sampledRows.toString()
-    console.log(formattedSampleRows) // Output: "1234k"
+    // console.log(formattedSampleRows) // Output: "1234k"
 
     return (
         <>

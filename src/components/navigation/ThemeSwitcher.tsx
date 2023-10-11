@@ -1,6 +1,5 @@
-import { FC, useEffect } from "react"
-import { Dropdown, useTheme } from "react-daisyui"
-import { actions, useTrackedStore } from "../../stores/Store"
+import { FC } from "react"
+import { Dropdown } from "react-daisyui"
 import { ThemesArray } from "../../lib/AppTypes"
 import { ThemeItem } from "./ThemeItem"
 
@@ -8,15 +7,6 @@ import { ThemeItem } from "./ThemeItem"
  * A component that allows the user to switch between light and dark themes.
  */
 export const ThemeSwitcher: FC = () => {
-    const userTheme = useTrackedStore().pref.theme()
-    const { setTheme } = useTheme(userTheme)
-
-    // useEffect(() => {
-    //     actions.pref.setNodeColors()
-    //     // setTheme(userTheme)
-
-    // }, [userTheme])
-
     return (
         <>
             <Dropdown vertical="top">

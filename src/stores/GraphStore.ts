@@ -2,7 +2,6 @@ import { Graph, GraphData, LayoutConfig } from "@antv/g6"
 import { createStore } from "@udecode/zustood"
 import { GraphinRefStore } from "./GraphinRefStore"
 import { Layouts, LayoutsMap } from "./Layouts"
-import debounce from "lodash/debounce"
 
 interface State {
     layouts: LayoutConfig[]
@@ -37,8 +36,6 @@ export const GraphStore = createStore("Graph")(
     },
 ).extendActions((set, get, api) => ({
     filterGraphByDegree: () => {
-        console.log("filterGraphByDegree")
-        console.log("filterGraphByDegree")
         const degree = get.filteringLimit()
         const graph = GraphinRefStore.get.graphRef()
         if (graph) {
@@ -51,24 +48,24 @@ export const filterGraphByDegree = (
     inputGraph: Graph,
     minimumDegree: number,
 ): void => {
-    console.log("filterGraphByDegree", minimumDegree)
+    // console.log("filterGraphByDegree", minimumDegree)
     const graphData: GraphData = inputGraph.save() as GraphData
 
     inputGraph.getCombos().forEach((combo) => {
-        console.log("uncombo", combo.getID())
+        // console.log("uncombo", combo.getID())
         inputGraph.uncombo(combo.getID())
     })
 
     resetVisibility(inputGraph)
 
     if (!graphData) {
-        console.log("returning because graphData is null")
+        // console.log("returning because graphData is null")
         return
     }
 
     inputGraph.getNodes().forEach((node) => {
         const degree = inputGraph.getNodeDegree(node.getID(), "in") as number
-        console.log("degree", degree, node.getID())
+        // console.log("degree", degree, node.getID())
         if (degree < minimumDegree) {
             inputGraph.updateItem(node.getID(), {
                 visible: false,

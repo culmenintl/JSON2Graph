@@ -2,17 +2,14 @@ import { Cog8ToothIcon as CogOutline } from "@heroicons/react/24/outline"
 import { FC, useCallback, useEffect, useRef } from "react"
 import { Navbar, Swap, Modal } from "react-daisyui"
 
-import { actions, store, useTrackedStore } from "../../stores/Store"
+import { useTrackedStore } from "../../stores/Store"
 import { GraphStatsBar } from "./GraphStatsBar"
 import { SearchBar } from "./SearchBar"
 import { SearchResults } from "./SearchResults"
 
 import autoAnimate from "@formkit/auto-animate"
-import { Layouts, LayoutsMap } from "../../stores/Layouts"
 import { LayoutSelector } from "../LayoutSelector"
 import { PanelNavigation } from "./PanelNavigation"
-import { exportGraphAsCSV } from "../../lib/Utils"
-import { GraphData } from "@antv/g6"
 import { LegendComponent } from "./LegendComponent"
 
 // GraphNavbar component, which is the main navbar for the graph view

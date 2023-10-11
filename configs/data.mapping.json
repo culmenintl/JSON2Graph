@@ -3,6 +3,7 @@
         {
             "id": "reddit",
             "url": "reddit.comments.1k.json",
+            "label": "reddit comments - comments/subreddits/users",
             "description": "A synthetic 'message' dataset of reddit comments, authors and subreddits",
             "nodes": [
                 {
@@ -34,6 +35,120 @@
                     "source_node_id": "id",
                     "target_node_id": "subreddit_id",
                     "label": "commented in"
+                }
+            ]
+        },
+        {
+            "id": "reddit2",
+            "url": "reddit.comments.5k.json",
+            "label": "reddit comments - comments/subreddits",
+            "description": "Reddit comment dataset showing comments and subreddits.",
+            "nodes": [
+                {
+                    "id_data_property": "id",
+                    "content_data_property": "body",
+                    "label": "Commented"
+                },
+                {
+                    "name": "subreddit",
+                    "id_data_property": "subreddit_id",
+                    "content_data_property": "subreddit",
+                    "label": "Subreddit"
+                }
+            ],
+            "edges": [
+                {
+                    "source_node_id": "id",
+                    "target_node_id": "subreddit_id",
+                    "label": "commented in"
+                }
+            ]
+        },
+        {
+            "id": "yelp_businesses",
+            "url": "yelp.3.5k.json",
+            "label": "yelp businesses - businesses/states",
+            "description": "Yelp business data. This configuration shows businesses and states.",
+            "nodes": [
+                {
+                    "id_data_property": "business_id",
+                    "content_data_property": "name",
+                    "label": "Business"
+                },
+                {
+                    "id_data_property": "state",
+                    "content_data_property": "state",
+                    "label": "State"
+                }
+            ],
+            "edges": [
+                {
+                    "source_node_id": "business_id",
+                    "target_node_id": "state",
+                    "label": "Is in",
+                    "merge": true
+                }
+            ]
+        },
+        {
+            "id": "yelp_stars",
+            "url": "yelp.3.5k.json",
+            "label": "yelp businesses - stars",
+            "description": "Yelp business data. This configuration shows businesses and stars.",
+            "nodes": [
+                {
+                    "id_data_property": "business_id",
+                    "content_data_property": "name",
+                    "label": "Business"
+                },
+                {
+                    "id_data_property": "stars",
+                    "content_data_property": "stars",
+                    "label": "Stars"
+                }
+            ],
+            "edges": [
+                {
+                    "source_node_id": "business_id",
+                    "target_node_id": "stars",
+                    "label": "has"
+                }
+            ]
+        },
+        {
+            "id": "yelp_businesses2",
+            "url": "yelp.3.5k.json",
+            "label": "yelp businesses - businesses/zip/states",
+            "description": "Yelp business data. This configuration shows businesses, zip codes and states.",
+            "nodes": [
+                {
+                    "id_data_property": "name",
+                    "content_data_property": "name",
+                    "label": "Business"
+                },
+                {
+                    "id_data_property": "state",
+                    "content_data_property": "state",
+                    "label": "State"
+                },
+                {
+                    "id_data_property": "postal_code",
+                    "content_data_property": "postal_code",
+                    "label": "Zip"
+                }
+            ],
+            "edges": [
+                {
+                    "source_node_id": "postal_code",
+                    "target_node_id": "state",
+                    "label": "Is in",
+                    "merge": true
+                },
+                {
+                    "source_node_id": "name",
+                    "target_node_id": "postal_code",
+                    "label": "Is in",
+                    "merge": true
                 }
             ]
         }

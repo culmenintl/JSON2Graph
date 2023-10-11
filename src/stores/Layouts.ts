@@ -71,6 +71,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
     [Layouts.force2]: {
         type: "force2",
         gpuEnabled: false,
+        maxIteration: 1000,
         _meta: {
             title: "Force 2",
             description: "Space filling layout, good for large graphs",
@@ -98,7 +99,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {},
         animate: true,
@@ -115,7 +116,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {},
         animate: true,
@@ -132,7 +133,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {},
         animate: true,
@@ -149,7 +150,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {},
         animate: true,
@@ -166,7 +167,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {},
         animate: true,
@@ -198,7 +199,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {},
         animate: false,
@@ -233,7 +234,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         maxIteration: 1000,
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("fruchterman layout end")
@@ -279,7 +280,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         edgeDraggable: true,
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("mds layout end")
@@ -334,7 +335,7 @@ export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
         // },
         gpuEnabled: false,
         workerEnabled: false,
-        workerScriptURL: "",
+        // workerScriptURL: "",
         outerLayout: new G6.Layout["forceAtlas2"]({
             maxIteration: 1000,
             gravity: 10,

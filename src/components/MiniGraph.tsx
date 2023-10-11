@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React from "react"
 import fileConfig from "../../configs/data.mapping.json"
 import { GraphConfig, _EdgeConfig, _NodeConfig } from "../lib/AppTypes"
 import Graphin, { Behaviors } from "@antv/graphin"
@@ -7,10 +7,10 @@ import { setNodeColor, setNodeIcon } from "../lib/Utils"
 
 export const MiniGraph: React.FC = () => {
     const userTheme = useTrackedStore().pref.theme()
-    const graphReady = useTrackedStore().graph.graphReady()
     const config = fileConfig as unknown as GraphConfig
-    const nodes: _NodeConfig[] = config.datasets[0].nodes ?? []
-    const edges: _EdgeConfig[] = config.datasets[0].edges ?? []
+    const index = useTrackedStore().data.configIndex()
+    const nodes: _NodeConfig[] = config.datasets[index].nodes ?? []
+    const edges: _EdgeConfig[] = config.datasets[index].edges ?? []
 
     const { DragCanvas, ZoomCanvas, FitView, DragNode } = Behaviors
 
@@ -43,24 +43,22 @@ export const MiniGraph: React.FC = () => {
 
     return (
         <div className="w-full max-h-36 overflow-clip">
-            {graphReady && (
-                <Graphin
-                    data={graphGraphinData}
-                    layout={{
-                        type: "mds",
-                    }}
-                    theme={{
-                        mode: userTheme === "dark" ? "dark" : "light",
-                    }}
-                    animate={true}
-                    // fitView={true}
-                    height={144}
-                >
-                    <DragNode disabled />
-                    <DragCanvas disabled />
-                    <ZoomCanvas disabled />
-                </Graphin>
-            )}
+            <Graphin
+                data={graphGraphinData}
+                layout={{
+                    type: "mds",
+                }}
+                theme={{
+                    mode: userTheme === "dark" ? "dark" : "light",
+                }}
+                animate={true}
+                // fitView={true}
+                height={144}
+            >
+                <DragNode disabled />
+                <DragCanvas disabled />
+                <ZoomCanvas disabled />
+            </Graphin>
         </div>
     )
 }

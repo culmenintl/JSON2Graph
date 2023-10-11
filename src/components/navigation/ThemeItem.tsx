@@ -9,7 +9,7 @@ export const ThemeItem: FC<Props> = ({ name }) => {
     return (
         // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         <div
-            className="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent"
+            className="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent w-full"
             data-set-theme={name}
             data-act-class="!outline-base-content"
             onClick={() => {
@@ -18,12 +18,10 @@ export const ThemeItem: FC<Props> = ({ name }) => {
         >
             <div
                 data-theme={name}
-                className="bg-base-100 text-base-content w-full cursor-pointer font-sans"
+                className="bg-base-100 text-base-content cursor-pointer font-sans w-full"
             >
-                <div className="grid grid-cols-5 grid-rows-3">
-                    <div className="bg-base-200 col-start-1 row-span-2 row-start-1" />
-                    <div className="bg-base-300 col-start-1 row-start-3" />
-                    <div className="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2">
+                <div className="grid grid-cols-1">
+                    <div className="col-span-4 row-span-3 row-start-1 flex flex-col gap-1 p-2">
                         <div className="font-bold">{name}</div>
                         <div className="flex flex-wrap gap-1">
                             <div className="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6">

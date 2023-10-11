@@ -1,7 +1,7 @@
-import { DataToGraphConfig, RedditNode, STATUS } from "../lib/AppTypes"
+import { DataToGraphConfig, STATUS } from "../lib/AppTypes"
 import fileConfig from "../../configs/data.mapping.json"
 import { populateGraphinData } from "../lib/Utils"
-import { GraphinData, IUserNode, Utils } from "@antv/graphin"
+import { GraphinData, IUserNode } from "@antv/graphin"
 import SearchApi from "js-worker-search"
 import { createStore } from "@udecode/zustood"
 import { actions, store } from "./Store"
@@ -9,10 +9,12 @@ import { enqueueSnackbar } from "notistack"
 import debounce from "lodash/debounce"
 
 interface State {
-    dataSet: DataToGraphConfig
+    dataSet: DataToGraphConfig | undefined
+    configIndex: number
+
     graphinData: GraphinData | undefined
     rowsToSample: number | undefined
-    state: "pending" | "done" | "error"
+    loadingState: "pending" | "done" | "error"
     JsonSample: Object | undefined
     dataUrl: string | undefined
     totalRows: number
@@ -28,16 +30,12 @@ interface State {
 }
 
 const initialState: State = {
-    state: "done",
-    // graphinData: Utils.mock(10),
-    graphinData: { nodes: Utils.mock(10).nodes, edges: Utils.mock(10).edges },
+    loadingState: "done",
+    graphinData: undefined,
     JsonSample: undefined,
-    dataUrl: "reddit.comments.10k.json",
-    dataSet: {
-        data: undefined,
-        nodes: undefined,
-        edges: undefined,
-    },
+    dataUrl: undefined,
+    configIndex: 0,
+    dataSet: fileConfig.datasets[0] as DataToGraphConfig,
     rowsToSample: 200,
     totalRows: 0,
     sampledRows: 0,
@@ -61,20 +59,16 @@ export const DataStore = createStore("Data")(
         actions.app.loading(true)
         actions.app.status(STATUS.FETCHING)
 
-        // clear out the configs and data
-        set.dataSet({ ...initialState.dataSet })
-        set.graphinData(undefined)
-        set.searchApi(new SearchApi())
-        store.graphinRef.graphRef()?.clear()
-
         try {
             // fetch data from config
             // const resp = await fetch(
             //     `${import.meta.env.VITE_PUBLIC_URL}/${get.dataSet().url}`,
             // )
 
+            const config = fileConfig.datasets[get.configIndex()]
+
             // const resp = await fetch("https://swapi.dev/api/people")
-            const resp = await fetch(`/${get.dataUrl()}` as string)
+            const resp = await fetch(`/${config.url}` as string)
             const json = await resp.json()
 
             actions.app.status(STATUS.AI)
@@ -120,7 +114,7 @@ export const DataStore = createStore("Data")(
 
                     const mapResp = await mapReq.json()
 
-                    console.log("mapResp", JSON.parse(mapResp))
+                    // console.log("mapResp", JSON.parse(mapResp))
 
                     actions.app.status(STATUS.SHAPING)
 
@@ -130,7 +124,7 @@ export const DataStore = createStore("Data")(
                 } catch (error) {
                     // console.error("Failed to fetch.", error)
                     const parsedConfig = JSON.parse(JSON.stringify(fileConfig))
-                    const config = parsedConfig.datasets[0]
+                    const config = parsedConfig.datasets[get.configIndex()]
                     set.dataSet({ ...config, data: subDataset })
                     enqueueSnackbar(
                         "Unable to call API. Using file configuration.",
@@ -141,14 +135,18 @@ export const DataStore = createStore("Data")(
                 }
             } else {
                 const parsedConfig = JSON.parse(JSON.stringify(fileConfig))
-                const config = parsedConfig.datasets[0]
+                const config = parsedConfig.datasets[get.configIndex()]
                 set.dataSet({ ...config, data: subDataset })
             }
 
-            const graphinData = populateGraphinData(
-                get.dataSet().data,
-                get.dataSet(),
-            )
+            const dataSet = get.dataSet()
+            const dataSetData = dataSet?.data
+
+            if (!dataSetData) {
+                throw new Error("No data found.")
+            }
+
+            const graphinData = populateGraphinData(dataSetData, dataSet)
 
             // figure out if there is an existing graph, and if so, just change the data
             set.graphinData(graphinData as GraphinData)
@@ -158,7 +156,7 @@ export const DataStore = createStore("Data")(
             set.sampledRows(subDataset.length)
         } catch (error) {
             console.error("Failed to fetch.", error)
-            set.state("error")
+            set.loadingState("error")
             throw error
         }
         actions.app.loading(false)
@@ -176,11 +174,11 @@ export const DataStore = createStore("Data")(
         const foundNodes =
             data?.nodes.filter((node) => searchResults.includes(node.id)) || []
 
-        console.log("found", foundNodes)
+        // console.log("found", foundNodes)
 
         const groupedResults = groupNodesByType(foundNodes)
 
-        console.log("grouped", groupedResults)
+        // console.log("grouped", groupedResults)
         set.searchResults(groupedResults)
     },
     setSearchTerm: async (searchTerm: string) => {
@@ -203,6 +201,25 @@ export const DataStore = createStore("Data")(
         set.searchResults(new Map<string, IUserNode[]>())
         set.searchTerm(undefined)
         set.showResults(false)
+    },
+    clearStore: async () => {
+        set.state((state) => ({ ...state, ...initialState }))
+        // reset store
+        // method to clear the store back to initial state
+        // set.loadingState
+        // set.dataSet(undefined)
+        // set.graphinData(undefined)
+        // set.JsonSample(undefined)
+        // set.dataUrl(undefined)
+        // set.totalRows(0)
+        store.graphinRef.graphRef()?.clear()
+        store.graphinRef.graphRef()?.destroy()
+    },
+    setConfigIndex: async (index: number) => {
+        actions.data.clearStore()
+        set.configIndex(index)
+        set.dataSet(fileConfig.datasets[get.configIndex()] as DataToGraphConfig)
+        await actions.data.fetchData()
     },
 }))
 

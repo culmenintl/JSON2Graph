@@ -52,14 +52,12 @@ export const SearchResults: FC<{}> = () => {
             icon="arrow"
             tabIndex={0}
             onBlur={() => {
-                console.log("blur")
                 actions.data.showResults(false)
             }}
         >
             <Collapse.Content
                 className="overflow-y-auto"
                 onBlur={() => {
-                    console.log("blur")
                     actions.data.showResults(false)
                 }}
             >
@@ -94,7 +92,7 @@ export const SearchResults: FC<{}> = () => {
                                                 key={generateId()}
                                                 onClick={() => {
                                                     graph?.zoomTo(1)
-                                                    console.log("clicked", node)
+                                                    // console.log("clicked", node)
                                                     actions.data.showResults(
                                                         false,
                                                     )
