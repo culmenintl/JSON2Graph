@@ -107,7 +107,7 @@ export const Root: FC<{}> = () => {
 
     return (
         <div ref={parent} className="absolute inset-0">
-            {/* {!ready && <LoadingLogo />} */}
+            {!ready && <LoadingLogo />}
             {graphinData && (
                 <Graphin
                     data={graphinData}
