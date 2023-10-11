@@ -1,3 +1,9 @@
+#### 0.2.3 (2023-10-11)
+
+##### New Features
+
+* **layouts:**  added layout titles and descriptions (3ad00175)
+
 #### 0.2.2 (2023-10-11)
 
 ##### Bug Fixes
