@@ -1,6 +1,7 @@
-import { Card, Table, Toggle, Range } from "react-daisyui"
+import { Table, Toggle, Range } from "react-daisyui"
 import { BaseModalPanel } from "./BaseModalPanel"
-import { actions, store, useTrackedStore } from "../../stores/Store"
+import { actions, useTrackedStore } from "../../stores/Store"
+import { debounce } from "lodash"
 
 export const GraphPanel: React.FC = () => {
     const rowsToSample = useTrackedStore().data.rowsToSample()
@@ -10,10 +11,15 @@ export const GraphPanel: React.FC = () => {
     const clusteringEnabled = useTrackedStore().graph.clusteringEnabled()
 
     // filter nodes by degree
-    const filterGraphByDegree = useTrackedStore().graph.filterGraphByDegree()
     const filteringLimit = useTrackedStore().graph.filteringLimit()
 
     const hoverMode = useTrackedStore().pref.hoverMode()
+
+    const debounceFetchData = debounce(actions.data.fetchData, 2000)
+    const debounceFilterGraphByDegree = debounce(
+        actions.graph.filterGraphByDegree,
+        2000,
+    )
     return (
         <BaseModalPanel>
             <div className="pl-4 prose mb-10">
@@ -36,7 +42,7 @@ export const GraphPanel: React.FC = () => {
                                 actions.graph.clusteringEnabled(
                                     !clusteringEnabled,
                                 )
-                                actions.data.fetchData()
+                                debounceFetchData()
                             }}
                         />
                     </Table.Row>
@@ -53,12 +59,11 @@ export const GraphPanel: React.FC = () => {
                         <Range
                             disabled={!clusteringEnabled}
                             min={0}
-                            max={10}
+                            max={5}
                             value={clusteringLimit}
                             onChange={(val: any) => {
-                                if (val.target.value === clusteringLimit) return
                                 actions.graph.clusteringLimit(val.target.value)
-                                actions.data.fetchData()
+                                debounceFetchData()
                             }}
                         />
                     </Table.Row>
@@ -89,43 +94,13 @@ export const GraphPanel: React.FC = () => {
                             </span>
                         </div>
                         <Range
-                            disabled={!filterGraphByDegree}
                             min={0}
-                            max={store.data.totalRows()}
+                            max={5}
                             value={filteringLimit}
                             onChange={(val: any) => {
-                                // console.log(
-                                //     "changing filter limit",
-                                //     val.target.value,
-                                // )
                                 actions.graph.filteringLimit(val.target.value)
+                                debounceFilterGraphByDegree()
                             }}
-                            onBlur={(val: any) => {
-                                // console.log("onblur", val.target.value)
-                                actions.graph.filterGraphByDegree(
-                                    val.target.value,
-                                )
-                                // actions.data.fetchData()
-                            }}
-                        />
-                    </Table.Row>
-                    <Table.Row>
-                        <div className="flex flex-1 flex-col justify-center prose">
-                            <span>Sample Rows</span>
-                            <span className="text-xs font-normal text-gray-400">
-                                Sampling rows will speed up the graph creation
-                                when working with large datasets
-                            </span>
-                        </div>
-
-                        <Toggle
-                            checked={rowsToSample !== 0}
-                            onChange={() =>
-                                actions.data.rowsToSample(
-                                    rowsToSample === 0 ? 200 : 0,
-                                )
-                            }
-                            color="primary"
                         />
                     </Table.Row>
                     <Table.Row>
@@ -142,10 +117,11 @@ export const GraphPanel: React.FC = () => {
                         <Range
                             min={0}
                             max={rowsLimit}
+                            step={Math.round(rowsLimit * 0.2)}
                             value={rowsToSample}
                             onChange={(val: any) => {
                                 actions.data.rowsToSample(val.target.value)
-                                // actions.data.fetchData()
+                                debounceFetchData()
                             }}
                         />
                     </Table.Row>

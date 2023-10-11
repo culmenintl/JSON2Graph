@@ -1,16 +1,6 @@
-import React, { useCallback, useEffect, useRef } from "react"
-import {
-    Button,
-    Range,
-    Table,
-    Toggle,
-    Input,
-    Loading,
-    Collapse,
-    Badge,
-    Card,
-} from "react-daisyui"
-import { actions, useStore, useTrackedStore } from "../stores/Store"
+import React from "react"
+import { Toggle, Input, Collapse, Badge, Card } from "react-daisyui"
+import { actions, useTrackedStore } from "../stores/Store"
 
 import { useHotkeys } from "react-hotkeys-hook"
 // import { ChangelogModal } from "./ChangelogModal"

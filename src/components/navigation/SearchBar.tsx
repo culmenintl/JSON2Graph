@@ -2,16 +2,11 @@ import { FC, useEffect, useRef, useState } from "react"
 import { Input } from "react-daisyui"
 import { actions, useTrackedStore } from "../../stores/Store"
 
-import debounce from "lodash/debounce"
 import { IUserNode } from "@antv/graphin"
 import autoAnimate from "@formkit/auto-animate"
 
 export const SearchBar: FC = () => {
     const parent = useRef(null)
-    const debouncedSearch = debounce(async (value: string) => {
-        console.log("searching for", value)
-        await actions.data.searchNodesApi(value)
-    }, 500)
 
     const searchResults = useTrackedStore().data.searchResults()
     const searchTerm = useTrackedStore().data.searchTerm()

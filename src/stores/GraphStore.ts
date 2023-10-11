@@ -2,6 +2,7 @@ import { Graph, GraphData, LayoutConfig } from "@antv/g6"
 import { createStore } from "@udecode/zustood"
 import { GraphinRefStore } from "./GraphinRefStore"
 import { Layouts, LayoutsMap } from "./Layouts"
+import debounce from "lodash/debounce"
 
 interface State {
     layouts: LayoutConfig[]
@@ -14,7 +15,6 @@ interface State {
     clusteringLimit: number
 
     // filtering / sampling
-    filterGraphByDegree: boolean
     filteringLimit: number
 }
 
@@ -25,10 +25,9 @@ const initialState: State = {
     selectedLayout: LayoutsMap[Layouts.gForce],
 
     clusteringEnabled: false,
-    clusteringLimit: 5,
+    clusteringLimit: 0,
 
-    filterGraphByDegree: true,
-    filteringLimit: 2,
+    filteringLimit: 0,
 }
 
 export const GraphStore = createStore("Graph")(
@@ -37,11 +36,13 @@ export const GraphStore = createStore("Graph")(
         devtools: { enabled: true },
     },
 ).extendActions((set, get, api) => ({
-    filterGraphByDegree: (minimumDegree: number) => {
+    filterGraphByDegree: () => {
+        console.log("filterGraphByDegree")
+        console.log("filterGraphByDegree")
+        const degree = get.filteringLimit()
         const graph = GraphinRefStore.get.graphRef()
-        console.log("graph", graph)
         if (graph) {
-            filterGraphByDegree(graph, minimumDegree)
+            filterGraphByDegree(graph, degree)
         }
     },
 }))
@@ -66,7 +67,7 @@ export const filterGraphByDegree = (
     }
 
     inputGraph.getNodes().forEach((node) => {
-        const degree = inputGraph.getNodeDegree(node.getID(), "total") as number
+        const degree = inputGraph.getNodeDegree(node.getID(), "in") as number
         console.log("degree", degree, node.getID())
         if (degree < minimumDegree) {
             inputGraph.updateItem(node.getID(), {
@@ -84,6 +85,7 @@ export const filterGraphByDegree = (
             })
         }
     })
+    inputGraph.changeData(inputGraph.save() as GraphData)
 }
 
 export const resetVisibility = (inputGraph: Graph): void => {

@@ -1,6 +1,5 @@
-import { Button, Input, Loading, Table, Toggle } from "react-daisyui"
+import { Button, Table, Toggle } from "react-daisyui"
 import { BaseModalPanel } from "./BaseModalPanel"
-import { filterGraphByDegree } from "../../stores/GraphStore"
 import { useTrackedStore, actions } from "../../stores/Store"
 
 export const SettingsPanel: React.FC = () => {
