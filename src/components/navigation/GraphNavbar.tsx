@@ -11,6 +11,8 @@ import autoAnimate from "@formkit/auto-animate"
 import { Layouts, LayoutsMap } from "../../stores/Layouts"
 import { LayoutSelector } from "../LayoutSelector"
 import { PanelNavigation } from "./PanelNavigation"
+import { exportGraphAsCSV } from "../../lib/Utils"
+import { GraphData } from "@antv/g6"
 
 // GraphNavbar component, which is the main navbar for the graph view
 // contains the search bar, search results, and stats bar
@@ -22,19 +24,6 @@ export const GraphNavbar: FC = () => {
     useEffect(() => {
         parent.current && autoAnimate(parent.current)
     }, [parent])
-
-    const onButtonClick = async () => {
-        // update the g6 layout to force a re-render
-        const graph = store.graphinRef.graphRef()
-
-        // create layout and update graph
-        const layout = LayoutsMap[Layouts.forceAtlas2]
-
-        // graph?.updateLayout(layout)
-
-        // set the layout
-        actions.graph.selectedLayout(layout)
-    }
 
     const dialogRef = useRef<HTMLDialogElement>(null)
     const handleOpen = useCallback(() => {

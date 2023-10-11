@@ -423,3 +423,30 @@ export const initEvents = (graph: Graph) => {
         console.log(`Clicked at (${x}, ${y})`)
     })
 }
+
+export const exportGraphAsCSV = (graphData: GraphData) => {
+    const nodes = graphData.nodes as ExtendedNode[]
+    const edges = graphData.edges as IUserEdge[]
+
+    // Create a CSV string with headers for nodes and edges
+    let csv = "node_type,row\n"
+    nodes.forEach((node) => {
+        console.log("node", node)
+        csv += `${JSON.stringify(node._metadata._type)},${JSON.stringify(
+            node._metadata._data,
+        )}\n`
+    })
+    csv += "\nsource,target,label,type\n"
+    edges.forEach((edge) => {
+        csv += `${edge.source},${edge.target},${edge.label},${edge.type}\n`
+    })
+
+    // Create a download link and click it to download the CSV file
+    const link = document.createElement("a")
+    link.setAttribute(
+        "href",
+        `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`,
+    )
+    link.setAttribute("download", "graph.csv")
+    link.click()
+}

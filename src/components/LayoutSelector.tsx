@@ -1,14 +1,17 @@
 import React from "react"
-import { Avatar, Card, Dropdown } from "react-daisyui"
+import { Dropdown } from "react-daisyui"
 
 import layoutImage from "./../assets/layouts/force2.gif"
 import { actions } from "../stores/Store"
 import { LayoutsMap } from "../stores/Layouts"
+import { Squares2X2Icon } from "@heroicons/react/24/outline"
 
 export const LayoutSelector: React.FC = () => {
     return (
         <Dropdown end horizontal="right" vertical="bottom">
-            <Dropdown.Toggle>Layouts</Dropdown.Toggle>
+            <Dropdown.Toggle>
+                <Squares2X2Icon className="w-8 h-8" />
+            </Dropdown.Toggle>
             <Dropdown.Menu className="w-64">
                 {Object.keys(LayoutsMap).map((key) => {
                     const layout = LayoutsMap[key]

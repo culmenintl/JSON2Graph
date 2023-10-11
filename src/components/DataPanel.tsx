@@ -1,6 +1,6 @@
 import React from "react"
-import { Toggle, Input, Collapse, Badge, Card } from "react-daisyui"
-import { actions, useTrackedStore } from "../stores/Store"
+import { Toggle, Input, Collapse, Badge, Card, Button } from "react-daisyui"
+import { actions, store, useTrackedStore } from "../stores/Store"
 
 import { useHotkeys } from "react-hotkeys-hook"
 // import { ChangelogModal } from "./ChangelogModal"
@@ -8,6 +8,9 @@ import { BaseModalPanel } from "./navigation/BaseModalPanel"
 import { DataMappingDisplay } from "./navigation/DataMappingDisplay"
 import { MiniGraph } from "./MiniGraph"
 import { ChangelogModal } from "./ChangelogModal"
+import { GraphData } from "@antv/g6"
+import { exportGraphAsCSV } from "../lib/Utils"
+import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
 
 const SampleJsonData = (data: Object) => (
     <pre>{JSON.stringify(data, null, 2)}</pre>
@@ -34,10 +37,19 @@ export const DataPanel: React.FC = () => {
         }
     }
 
+    const onExport = async () => {
+        // update the g6 layout to force a re-render
+        const graph = store.graphinRef.graphRef()
+        const graphData = graph?.save()
+
+        exportGraphAsCSV(graphData as GraphData)
+    }
+
     return (
         <BaseModalPanel>
             <div className="pl-4 prose">
                 <h1 className="">Graph Data</h1>
+
                 <span className="absolute top-5 right-5 text-sm text-gray-400 font-bold underline">
                     v{APP_VERSION}
                 </span>
@@ -116,6 +128,11 @@ export const DataPanel: React.FC = () => {
                         Map your data to a graph structure using AI
                     </span>
                 </div>
+            </div>
+            <div className="fixed bottom-20 right-0 left-0 justify-center flex">
+                <Button onClick={onExport} className="w-96" variant="link">
+                    Export .CSV <ArrowUpOnSquareIcon className="h-5 w-5" />
+                </Button>
             </div>
         </BaseModalPanel>
     )
