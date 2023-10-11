@@ -13,6 +13,7 @@ import { LayoutSelector } from "../LayoutSelector"
 import { PanelNavigation } from "./PanelNavigation"
 import { exportGraphAsCSV } from "../../lib/Utils"
 import { GraphData } from "@antv/g6"
+import { LegendComponent } from "../LegendComponent"
 
 // GraphNavbar component, which is the main navbar for the graph view
 // contains the search bar, search results, and stats bar
@@ -39,11 +40,9 @@ export const GraphNavbar: FC = () => {
             <Navbar className="rounded-box shadow-xl bg-base-100 glass">
                 <div ref={parent} className="flex flex-col w-full">
                     {/*  statbar section top section*/}
-                    {graphGraphinData && (
-                        <div>
-                            <GraphStatsBar />
-                        </div>
-                    )}
+                    {graphGraphinData && <GraphStatsBar />}
+                    {/*  statbar section top section*/}
+                    {graphGraphinData && <LegendComponent />}
                     {/* search results below stat bar */}
                     <div className="w-full">
                         <SearchResults />
