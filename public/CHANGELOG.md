@@ -1,3 +1,9 @@
+#### 0.2.8 (2023-10-11)
+
+##### Bug Fixes
+
+* **ui:**  local examples working mobile (c00874cf)
+
 #### 0.2.7 (2023-10-11)
 
 ##### Bug Fixes
