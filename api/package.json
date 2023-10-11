@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "build": "yarn tsc",
+        "build": "yarn tsc && cp staticwebapp.config.json dist/staticwebapp.config.json",
         "watch": "yarn tsc -w",
         "clean": "rimraf dist",
         "prestart": "yarn clean && yarn build",
