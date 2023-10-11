@@ -1,5 +1,6 @@
 import G6, { LayoutConfig } from "@antv/g6"
 import { actions } from "./Store"
+import { ExtendedLayoutConfig } from "../lib/AppTypes"
 
 export enum LayoutTypes {
     static = "static",
@@ -58,7 +59,7 @@ export class BaseLayoutConfig implements LayoutConfig {
     }
 }
 
-export const LayoutsMap: { [key: string]: LayoutConfig } = {
+export const LayoutsMap: { [key: string]: ExtendedLayoutConfig } = {
     // [Layouts.graphinForce]: BaseLayoutConfig = {
     //     type: "graphin-force",
     //     // gpuEnabled: false,
@@ -72,8 +73,8 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         gpuEnabled: false,
         _meta: {
             title: "Force 2",
-            subtitle: "Space filling layout, good for large graphs.",
-            tags: ["force", "force2", "large graph"],
+            description: "Space filling layout, good for large graphs",
+            tags: ["Space Out", "Large Graph", "Animated"],
         },
         // gpuEnabled: false,
         // ,
@@ -90,6 +91,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         preset: {
             type: "random",
         },
+        _meta: {
+            title: "Random",
+            description: "Randomly places nodes",
+            tags: ["Preset", "Large Graph"],
+        },
         gpuEnabled: false,
         workerEnabled: false,
         workerScriptURL: "",
@@ -101,6 +107,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         type: "concentric",
         preset: {
             type: "concentric",
+        },
+        _meta: {
+            title: "Concentric",
+            description: "Concentric node placement",
+            tags: ["Preset", "Small Graph"],
         },
         gpuEnabled: false,
         workerEnabled: false,
@@ -114,6 +125,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         preset: {
             type: "circular",
         },
+        _meta: {
+            title: "Circular",
+            description: "Circular node placement",
+            tags: ["Preset", "Small Graph"],
+        },
         gpuEnabled: false,
         workerEnabled: false,
         workerScriptURL: "",
@@ -125,6 +141,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         type: "grid",
         preset: {
             type: "grid",
+        },
+        _meta: {
+            title: "Grid",
+            description: "Grid node placement",
+            tags: ["Preset", "Small Graph"],
         },
         gpuEnabled: false,
         workerEnabled: false,
@@ -138,17 +159,10 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         preset: {
             type: "radial",
         },
-        gpuEnabled: false,
-        workerEnabled: false,
-        workerScriptURL: "",
-        onTick: () => {},
-        onLayoutEnd: () => {},
-        animate: true,
-    },
-    [Layouts.radialout]: {
-        type: "radialout",
-        preset: {
-            type: "radialout",
+        _meta: {
+            title: "Radial",
+            description: "Radial node placement",
+            tags: ["Preset", "Small Graph"],
         },
         gpuEnabled: false,
         workerEnabled: false,
@@ -157,6 +171,18 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         onLayoutEnd: () => {},
         animate: true,
     },
+    // [Layouts.radialout]: {
+    //     type: "radialout",
+    //     preset: {
+    //         type: "radialout",
+    //     },
+    //     gpuEnabled: false,
+    //     workerEnabled: false,
+    //     workerScriptURL: "",
+    //     onTick: () => {},
+    //     onLayoutEnd: () => {},
+    //     animate: true,
+    // },
 
     [Layouts.dagre]: {
         type: "dagre",
@@ -164,8 +190,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
             type: "dagre",
             rankdir: "LR",
             align: "DL",
-            nodesep: 20,
-            ranksep: 50,
+        },
+        _meta: {
+            title: "Dagre",
+            description: "Heirarchical node placement",
+            tags: ["Preset", "Small Graph"],
         },
         gpuEnabled: false,
         workerEnabled: false,
@@ -176,6 +205,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.force]: {
         type: "force",
+        _meta: {
+            title: "Force",
+            description: "Classic force-directed layout",
+            tags: ["Preset", "Classic"],
+        },
         gpuEnabled: false,
         workerEnabled: false,
         // workerScriptURL: "",
@@ -187,14 +221,16 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.fruchterman]: {
         type: "fruchterman",
-        preset: {
-            type: "fruchterman",
-            gravity: 10,
-            speed: 5,
-            clustering: true,
-            clusterGravity: 10,
-            maxIteration: 1000,
+        _meta: {
+            title: "Fruchterman",
+            description: "Different force-directed layout",
+            tags: ["Large Graph"],
         },
+        gravity: 10,
+        speed: 5,
+        clustering: true,
+        clusterGravity: 10,
+        maxIteration: 1000,
         gpuEnabled: false,
         workerEnabled: false,
         workerScriptURL: "",
@@ -208,6 +244,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
         type: "gForce",
         gpuEnabled: true,
         workerEnabled: false,
+        _meta: {
+            title: "GForce",
+            description: "GPU enabled force-directed layout",
+            tags: ["GPU", "Large Graph", "Fast"],
+        },
         onTick: () => {},
         onLayoutEnd: () => {
             console.log("gForce layout end")
@@ -220,21 +261,22 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.mds]: {
         type: "mds",
-        preset: {
-            type: "mds",
-
-            maxIteration: 1000,
-            linkDistance: 100,
-            nodeStrength: -30,
-            edgeStrength: 0.1,
-            nodeSize: 30,
-            nodeSpacing: 5,
-            nodePadding: 5,
-            nodeDraggable: true,
-            nodeMovable: true,
-            edgeMovable: true,
-            edgeDraggable: true,
+        _meta: {
+            title: "MDS",
+            description: "Multidemensional scaling layout",
+            tags: ["Large Graph", "Fast"],
         },
+        maxIteration: 1000,
+        linkDistance: 100,
+        nodeStrength: -30,
+        edgeStrength: 0.1,
+        nodeSize: 30,
+        nodeSpacing: 5,
+        nodePadding: 5,
+        nodeDraggable: true,
+        nodeMovable: true,
+        edgeMovable: true,
+        edgeDraggable: true,
         gpuEnabled: false,
         workerEnabled: false,
         workerScriptURL: "",
@@ -246,14 +288,16 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.forceAtlas2]: {
         type: "forceAtlas2",
-        preset: {
-            type: "forceAtlas2",
-            maxIteration: 1000,
-            gravity: 10,
-            speed: 5,
-            clustering: true,
-            clusterGravity: 10,
+        _meta: {
+            title: "ForceAtlas2",
+            description: "Force directed, converges quickly",
+            tags: ["GPU", "Large Graph", "Fast"],
         },
+        maxIteration: 1000,
+        gravity: 10,
+        speed: 5,
+        clustering: true,
+        clusterGravity: 10,
         gpuEnabled: true,
         workerEnabled: true,
         // workerScriptURL: "",
@@ -265,6 +309,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.comboForce]: {
         type: "comboForce",
+        _meta: {
+            title: "ClusterForce",
+            description: "Used for clustering.",
+            tags: ["Clustering"],
+        },
         linkDistance: 50,
         nodeStrength: 30,
         edgeStrength: 0.1,
@@ -302,6 +351,11 @@ export const LayoutsMap: { [key: string]: LayoutConfig } = {
     },
     [Layouts.comboCombined]: {
         type: "comboCombined",
+        _meta: {
+            title: "ClusterCombined",
+            description: "Main layout for clustering.",
+            tags: ["Clustering", "Large Graph"],
+        },
         // preset: {
         //     type: "comboCombined",
         maxIteration: 2000,

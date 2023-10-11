@@ -1,4 +1,4 @@
-import { ComboConfig } from "@antv/g6"
+import { ComboConfig, LayoutConfig } from "@antv/g6"
 import { IUserEdge, IUserNode } from "@antv/graphin"
 
 export type ExtendedNode = IUserNode & {
@@ -13,6 +13,14 @@ export type ExtendedNode = IUserNode & {
         _clusterCount?: number
         _clusterColor?: string
         _clusterOpacity?: number
+    }
+}
+
+export type ExtendedLayoutConfig = LayoutConfig & {
+    _meta?: {
+        title: string
+        description: string
+        tags?: string[]
     }
 }
 
