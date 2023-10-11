@@ -1,3 +1,9 @@
+#### 0.2.6 (2023-10-11)
+
+##### New Features
+
+* **UI:**  added mapping switcher, added datasets, allowed quick switching of local mappings. (6c03545c)
+
 #### 0.2.5 (2023-10-11)
 
 ##### New Features
