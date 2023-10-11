@@ -1,3 +1,9 @@
+#### 0.2.5 (2023-10-11)
+
+##### New Features
+
+* **UI:**  Added node theme (9d29d860)
+
 #### 0.2.4 (2023-10-11)
 
 ##### New Features
