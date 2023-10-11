@@ -1,3 +1,9 @@
+#### 0.1.13 (2023-10-11)
+
+##### Bug Fixes
+
+* **graph:**  fixed bugs with clustering / filtering / sampling using debounce (4afe46fe)
+
 #### 0.1.12 (2023-10-10)
 
 #### 0.1.11 (2023-10-10)
