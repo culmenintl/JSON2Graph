@@ -1,3 +1,9 @@
+#### 0.2.2 (2023-10-11)
+
+##### Bug Fixes
+
+* **build:**  added config to dist for api (bdd02a51)
+
 #### 0.2.1 (2023-10-11)
 
 ##### New Features
