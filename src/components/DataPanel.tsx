@@ -85,7 +85,7 @@ export const DataPanel: React.FC = () => {
                     </div>
                     <h3>Local Examples:</h3>
                     <div className="flex flex-row items-center">
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {config.datasets.map((dataset, index) => {
                                 return (
                                     <Card
@@ -176,7 +176,7 @@ export const DataPanel: React.FC = () => {
             </div>
 
             <div className="mx-auto">
-                <Button onClick={onExport} className="w-96" variant="link">
+                <Button onClick={onExport} className="w-full" variant="link">
                     Export Graph .CSV
                     <ArrowUpOnSquareIcon className="h-5 w-5" />
                 </Button>
