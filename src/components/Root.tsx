@@ -25,6 +25,8 @@ import { LoadingLogo } from "./LoadingLogo"
 import autoAnimate from "@formkit/auto-animate"
 import { initEvents } from "../lib/Utils"
 import { ContextMenuComponent } from "./ContextMenuComponent"
+import { useHotkeys } from "react-hotkeys-hook"
+import { HOVERMODE_HOTKEY } from "../lib/Constants"
 
 export const Root: FC<{}> = () => {
     const userTheme = useTrackedStore().pref.theme()
@@ -102,6 +104,14 @@ export const Root: FC<{}> = () => {
             setReady(false)
         }
     }, [graphReady, graphinData, graphinRef.current])
+
+    const hoverMode = useTrackedStore().pref.hoverMode()
+    useHotkeys(HOVERMODE_HOTKEY, () => {
+        actions.pref.hoverMode(!hoverMode)
+        enqueueSnackbar(`Hover mode ${!hoverMode ? "enabled" : "disabled"}`, {
+            variant: "info",
+        })
+    })
 
     // if not ready, show loading logo
 

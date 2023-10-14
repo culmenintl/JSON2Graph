@@ -1,1 +1,1 @@
-export const STORAGE = "local-storage"
+export const HOVERMODE_HOTKEY = "mod+i"

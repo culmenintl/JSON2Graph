@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Toggle, Input, Collapse, Badge, Card, Button } from "react-daisyui"
 import { actions, store, useTrackedStore } from "../stores/Store"
 
@@ -23,14 +23,7 @@ export const DataPanel: React.FC = () => {
     const config = fileConfig as unknown as GraphConfig
 
     const configIndex = useTrackedStore().data.configIndex()
-
-    useHotkeys("mod+i", () => {
-        const graph = store.graphinRef.graphRef()
-        const graphData = graph?.save()
-        console.log(graphData)
-        if (menuOpen) actions.app.menuOpen(false)
-        else actions.app.menuOpen(true)
-    })
+    const hoverMode = useTrackedStore().pref.hoverMode()
 
     const handleKeyDown = async (
         event: React.KeyboardEvent<HTMLInputElement>,

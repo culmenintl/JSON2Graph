@@ -1,4 +1,4 @@
-import { Table, Toggle, Range } from "react-daisyui"
+import { Table, Toggle, Range, Kbd } from "react-daisyui"
 import { BaseModalPanel } from "./BaseModalPanel"
 import { actions, useTrackedStore } from "../../stores/Store"
 import { debounce } from "lodash"
@@ -74,6 +74,9 @@ export const GraphPanel: React.FC = () => {
                             <span className="text-xs font-normal text-gray-400">
                                 Hovering over a node will show the node's
                                 metadata
+                            </span>
+                            <span>
+                                <Kbd size="xs">cmd + i</Kbd>
                             </span>
                         </div>
 
