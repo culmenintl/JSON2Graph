@@ -3,7 +3,7 @@ import { Divider } from "react-daisyui"
 import { useStore, useTrackedStore } from "../../stores/Store"
 
 export const GraphStatsBar: FC<{}> = () => {
-    let sampledRows = useTrackedStore().data.rowsToSample()
+    let sampledRows = useTrackedStore().data.sampledRows()
     const totalRows = useStore().data.totalRows()
 
     const nodesCount = useStore()

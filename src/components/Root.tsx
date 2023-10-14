@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useCallback, useEffect, useRef, useState } from "react"
 import Graphin, { Behaviors, Components } from "@antv/graphin"
 
 // graphin CSS
@@ -27,6 +27,8 @@ import { initEvents } from "../lib/Utils"
 import { ContextMenuComponent } from "./ContextMenuComponent"
 import { useHotkeys } from "react-hotkeys-hook"
 import { HOVERMODE_HOTKEY } from "../lib/Constants"
+import { Button, Modal } from "react-daisyui"
+import { marked } from "marked"
 
 export const Root: FC<{}> = () => {
     const userTheme = useTrackedStore().pref.theme()
@@ -113,6 +115,29 @@ export const Root: FC<{}> = () => {
         })
     })
 
+    const showchangeLog = useTrackedStore().app.showChangelog()
+
+    const ref = useRef<HTMLDialogElement>(null)
+    const handleShow = useCallback(() => {
+        ref.current?.showModal()
+    }, [ref])
+
+    const handleHide = useCallback(() => {
+        ref.current?.close()
+        actions.app.showChangelog(false)
+    }, [ref])
+
+    const changelog = useTrackedStore().app.changelog()
+
+    useEffect(() => {
+        if (showchangeLog) {
+            actions.app.fetchChangelog()
+            handleShow()
+        } else {
+            handleHide()
+        }
+    }, [showchangeLog])
+
     // if not ready, show loading logo
 
     return (
@@ -153,7 +178,7 @@ export const Root: FC<{}> = () => {
                     {/* Handles the on hover node tooltips */}
                     <NodeToolTip />
                     {/* Activates the closest relationships */}
-                    {/* <ActivateRelations trigger="dblclick" /> */}
+                    <ActivateRelations trigger="click" />
 
                     <DragCanvas enableOptimize />
                     <DragCombo />
@@ -162,6 +187,19 @@ export const Root: FC<{}> = () => {
             )}
             <div className="absolute bottom-0 w-full pb-5 pointer-events-none">
                 {graphinData && <GraphNavbar />}
+                <Modal ref={ref} open={false}>
+                    <Modal.Header className="font-bold">Changelog</Modal.Header>
+                    <Modal.Body
+                        className="prose"
+                        // rome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                        dangerouslySetInnerHTML={{ __html: marked(changelog) }}
+                    />
+                    <Modal.Actions className="sticky bottom-0">
+                        <Button color="primary" onClick={handleHide}>
+                            Close
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
             </div>
         </div>
     )

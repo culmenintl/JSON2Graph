@@ -12,6 +12,9 @@ interface State {
 
     // graph pref
     hoverMode: boolean
+
+    // sampledRows
+    rowsToSample: number
 }
 
 const initialState: State = {
@@ -24,6 +27,7 @@ const initialState: State = {
 
     // graph pref
     hoverMode: false,
+    rowsToSample: 1000,
 }
 
 export const PreferencesStore = createStore("Preferences")(

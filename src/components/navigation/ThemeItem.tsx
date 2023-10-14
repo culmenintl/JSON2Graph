@@ -1,15 +1,18 @@
 import { FC } from "react"
-import { useTheme } from "react-daisyui"
+import { Badge } from "react-daisyui"
 import { actions } from "../../stores/Store"
 
 export type Props = {
     name: string
+    active?: boolean
 }
-export const ThemeItem: FC<Props> = ({ name }) => {
+export const ThemeItem: FC<Props> = ({ name, active }) => {
     return (
         // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         <div
-            className="border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent w-full"
+            className={`border-base-content/20 hover:border-base-content/40 overflow-hidden rounded-lg border outline outline-2 outline-offset-2 outline-transparent w-full ${
+                active ? "border-primary shadow-lg shadow-primary" : ""
+            }}`}
             data-set-theme={name}
             data-act-class="!outline-base-content"
             onClick={() => {
@@ -47,7 +50,7 @@ export const ThemeItem: FC<Props> = ({ name }) => {
                         </div>
                     </div>
                 </div>
-            </div>{" "}
+            </div>
         </div>
     )
 }

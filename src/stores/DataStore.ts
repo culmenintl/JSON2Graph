@@ -13,12 +13,11 @@ interface State {
     configIndex: number
 
     graphinData: GraphinData | undefined
-    rowsToSample: number | undefined
     loadingState: "pending" | "done" | "error"
     JsonSample: Object | undefined
+    sampledRows: number
     dataUrl: string | undefined
     totalRows: number
-    sampledRows: number
     nodesCount: number
     edgesCount: number
 
@@ -33,12 +32,11 @@ const initialState: State = {
     loadingState: "done",
     graphinData: undefined,
     JsonSample: undefined,
+    sampledRows: 0,
     dataUrl: undefined,
     configIndex: 0,
     dataSet: fileConfig.datasets[0] as DataToGraphConfig,
-    rowsToSample: 200,
     totalRows: 0,
-    sampledRows: 0,
     nodesCount: 0,
     edgesCount: 0,
 
@@ -83,7 +81,9 @@ export const DataStore = createStore("Data")(
                 data = json
             }
 
-            const rows = get.rowsToSample() ? get.rowsToSample() : data.length
+            const rows = store.pref.rowsToSample()
+                ? store.pref.rowsToSample()
+                : data.length
 
             // sub sample data to the number rows requested
             const subDataset = data.filter(
@@ -153,7 +153,7 @@ export const DataStore = createStore("Data")(
 
             indexData(get.searchApi(), graphinData as GraphinData)
             set.totalRows(data.length)
-            set.sampledRows(subDataset.length)
+            store.pref.rowsToSample(subDataset.length)
         } catch (error) {
             console.error("Failed to fetch.", error)
             set.loadingState("error")

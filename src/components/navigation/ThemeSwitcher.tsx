@@ -1,39 +1,35 @@
 import { FC } from "react"
-import { Dropdown } from "react-daisyui"
+import { Badge, Dropdown } from "react-daisyui"
 import { ThemesArray } from "../../lib/AppTypes"
 import { ThemeItem } from "./ThemeItem"
+import { useTrackedStore } from "../../stores/Store"
 
 /**
  * A component that allows the user to switch between light and dark themes.
  */
 export const ThemeSwitcher: FC = () => {
+    const nodeTheme = useTrackedStore().pref.nodeTheme()
     return (
         <>
-            <Dropdown vertical="top">
-                <Dropdown.Toggle button={true}>
-                    Change Theme
-                    {/* rome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
-                    <svg
-                        width="12px"
-                        height="12px"
-                        className="h-2 w-2 fill-current opacity-60"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 2048 2048"
-                    >
-                        <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z" />
-                    </svg>
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="grid grid-cols-1 w-52 max-h-96 overflow-y-auto">
-                    {ThemesArray.map((t, i) => {
-                        return (
-                            // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                            <Dropdown.Item key={i}>
-                                <ThemeItem name={t} />
-                            </Dropdown.Item>
-                        )
-                    })}
-                </Dropdown.Menu>
-            </Dropdown>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-10 gap-x-3">
+                {ThemesArray.map((t, i) => {
+                    return (
+                        <div
+                            key={i}
+                            className="flex flex-1 flex-col items-center"
+                        >
+                            <ThemeItem name={t} active={t === nodeTheme} />
+                            {t === nodeTheme && (
+                                <div className="absolute mt-20">
+                                    <Badge color="primary" size="lg">
+                                        Active
+                                    </Badge>
+                                </div>
+                            )}
+                        </div>
+                    )
+                })}
+            </div>
         </>
     )
 }

@@ -4,7 +4,7 @@ import { actions, useTrackedStore } from "../../stores/Store"
 import { debounce } from "lodash"
 
 export const GraphPanel: React.FC = () => {
-    const rowsToSample = useTrackedStore().data.rowsToSample()
+    const rowsToSample = useTrackedStore().pref.rowsToSample()
     const rowsLimit = useTrackedStore().data.totalRows()
 
     const clusteringLimit = useTrackedStore().graph.clusteringLimit()
@@ -123,7 +123,7 @@ export const GraphPanel: React.FC = () => {
                             step={Math.round(rowsLimit * 0.2)}
                             value={rowsToSample}
                             onChange={(val: any) => {
-                                actions.data.rowsToSample(val.target.value)
+                                actions.pref.rowsToSample(val.target.value)
                                 debounceFetchData()
                             }}
                         />

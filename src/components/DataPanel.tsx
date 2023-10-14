@@ -1,5 +1,13 @@
-import React from "react"
-import { Toggle, Input, Collapse, Badge, Card, Button } from "react-daisyui"
+import React, { FC, useCallback, useEffect, useRef, useState } from "react"
+import {
+    Toggle,
+    Input,
+    Collapse,
+    Badge,
+    Card,
+    Button,
+    Modal,
+} from "react-daisyui"
 import { actions, store, useTrackedStore } from "../stores/Store"
 
 import { useHotkeys } from "react-hotkeys-hook"
@@ -13,17 +21,17 @@ import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
 import fileConfig from "../../configs/data.mapping.json"
 import ThemeSwitcher from "./navigation/ThemeSwitcher"
 import { GraphConfig } from "../lib/AppTypes"
+import { marked } from "marked"
 
 export const DataPanel: React.FC = () => {
     const description = useTrackedStore().data.dataSet()?.description
     const aiMappingEnabled = useTrackedStore().pref.aiMappingEnabled()
+    const dataUrl = useTrackedStore().data.dataUrl()
 
     // handles the opening and closing of the menu
-    const menuOpen = useTrackedStore().app.menuOpen()
     const config = fileConfig as unknown as GraphConfig
 
     const configIndex = useTrackedStore().data.configIndex()
-    const hoverMode = useTrackedStore().pref.hoverMode()
 
     const handleKeyDown = async (
         event: React.KeyboardEvent<HTMLInputElement>,
@@ -46,7 +54,11 @@ export const DataPanel: React.FC = () => {
             <div className="pl-4 prose">
                 <h1 className="">Graph Data</h1>
 
-                <span className="absolute top-5 right-5 text-sm text-gray-400 font-bold underline">
+                {/* rome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+                <span
+                    className="absolute btn btn-link top-1 right-1 text-sm font-bold lowercase cursor-pointer"
+                    onClick={() => actions.app.showChangelog(true)}
+                >
                     v{APP_VERSION}
                 </span>
                 <Card>
@@ -55,28 +67,53 @@ export const DataPanel: React.FC = () => {
 
                 <h3>Description</h3>
                 <p>{description}</p>
-
-                <h3>Source</h3>
-                <div>
-                    <div className="flex flex-row items-center gap-2">
-                        <span className="label label-text">https://</span>
-                        <Input
-                            className="flex flex-1 w-full"
-                            size="md"
-                            bordered
-                            type="text"
-                            placeholder={"Enter a data url"}
-                            disabled={
-                                !useTrackedStore().pref.aiMappingEnabled()
-                            }
-                            onChange={(e) => {
-                                actions.data.dataUrl(e.target.value)
+                <div className="flex flex-col my-10">
+                    <div className="flex flex-row items-center">
+                        <span className="text-md font-semibold mr-10 block">
+                            AI Mapping ✨
+                        </span>
+                        <Toggle
+                            checked={aiMappingEnabled}
+                            // checked={userTheme === "dark"}
+                            onChange={() => {
+                                actions.pref.aiMappingEnabled(!aiMappingEnabled)
+                                alert("AI Mapping is currently disabled.")
                             }}
-                            onKeyDown={handleKeyDown}
-                            value={useTrackedStore().data.dataUrl()}
                         />
                     </div>
-                    <h3>Local Examples:</h3>
+                    <span className="text-sm text-gray-400">
+                        Map your data to a graph structure using AI
+                    </span>
+                </div>
+
+                <div>
+                    {aiMappingEnabled && (
+                        <div>
+                            <h3>Source</h3>
+                            <div>
+                                <div className="flex flex-row items-center gap-2">
+                                    <span className="label label-text">
+                                        https://
+                                    </span>
+                                    <Input
+                                        className="flex flex-1 w-full"
+                                        size="md"
+                                        bordered
+                                        type="text"
+                                        placeholder={"Enter a data url"}
+                                        disabled={!aiMappingEnabled}
+                                        onChange={(e) => {
+                                            actions.data.dataUrl(e.target.value)
+                                        }}
+                                        onKeyDown={handleKeyDown}
+                                        value={dataUrl}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <h3>Local Graph Datasets</h3>
                     <div className="flex flex-row items-center">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {config.datasets.map((dataset, index) => {
@@ -134,41 +171,17 @@ export const DataPanel: React.FC = () => {
                     </div>
                 </div>
 
-                <h3>Mapping</h3>
+                <h3>Graph to Data Mapping</h3>
 
-                <Collapse icon="arrow" checkbox>
-                    <Collapse.Title className="bg-base-200">
-                        <span>Graph Configuration</span>
-                    </Collapse.Title>
-                    <Collapse.Content className="px-0">
-                        <DataMappingDisplay />
-                    </Collapse.Content>
-                </Collapse>
-                <div className="flex flex-col my-6">
-                    <div className="flex flex-row items-center">
-                        <span className="text-md font-semibold mr-10 block">
-                            AI Mapping ✨
-                        </span>
-                        <Toggle
-                            checked={aiMappingEnabled}
-                            // checked={userTheme === "dark"}
-                            onChange={() => {
-                                actions.pref.aiMappingEnabled(!aiMappingEnabled)
-                                alert("AI Mapping is currently disabled.")
-                            }}
-                        />
-                    </div>
-                    <span className="text-sm text-gray-400">
-                        Map your data to a graph structure using AI
-                    </span>
-                </div>
-                <h3>Node Colors</h3>
+                <DataMappingDisplay />
+
+                <h3>Select Node Color Scheme</h3>
                 <div>
                     <ThemeSwitcher />
                 </div>
             </div>
 
-            <div className="mx-auto">
+            <div className="mx-auto my-10">
                 <Button onClick={onExport} className="w-full" variant="link">
                     Export Graph .CSV
                     <ArrowUpOnSquareIcon className="h-5 w-5" />
