@@ -1,3 +1,17 @@
+#### 0.2.9 (2023-10-14)
+
+##### New Features
+
+* **hotkey:**  Added cmd+i to toggle hovermode (c75a9cba)
+
+##### Bug Fixes
+
+* **build:**  added SWA deploy on GH actions (5d983c70)
+
+##### Refactors
+
+* **ui:**  moved node theme select, added back in changelog modal, row sampling preferences saved, re-enabled node relational highlight (52db47c4)
+
 #### 0.2.8 (2023-10-11)
 
 ##### Bug Fixes
