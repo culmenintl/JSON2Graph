@@ -1,3 +1,9 @@
+#### 0.2.10 (2023-10-14)
+
+##### Build System / Dependencies
+
+* **deploy:**  fix for az func in package.json (478b5822)
+
 #### 0.2.9 (2023-10-14)
 
 ##### New Features
